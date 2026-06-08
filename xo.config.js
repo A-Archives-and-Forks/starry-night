@@ -10,9 +10,12 @@ const xoConfig = [
       'max-depth': 'off',
       'no-bitwise': 'off',
       'no-template-curly-in-string': 'off',
+      'require-unicode-regexp': 'off',
+      'unicorn/no-array-sort': 'off',
       'unicorn/prefer-at': 'off',
       'unicorn/prefer-string-raw': 'off',
-      'unicorn/prefer-string-replace-all': 'off'
+      'unicorn/prefer-string-replace-all': 'off',
+      'unicorn/require-module-specifiers': 'off'
     },
     space: true
   },

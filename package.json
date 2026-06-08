@@ -16,7 +16,7 @@
     "@types/json-stable-stringify": "^1.0.0",
     "@types/mdast": "^4.0.0",
     "@types/node": "^25.0.0",
-    "c8": "^10.0.0",
+    "c8": "^11.0.0",
     "css": "^3.0.0",
     "generate-github-markdown-css": "^6.0.0",
     "globals": "^17.0.0",
@@ -27,9 +27,9 @@
     "remark-cli": "^12.0.0",
     "remark-preset-wooorm": "^11.0.0",
     "type-coverage": "^2.0.0",
-    "typescript": "^5.0.0",
+    "typescript": "^6.0.0",
     "unist-builder": "^4.0.0",
-    "xo": "^1.0.0",
+    "xo": "^2.0.0",
     "yaml": "^2.0.0"
   },
   "exports": {
@@ -73,6 +73,11 @@
   "main#": "to do: next major: remove `main`?",
   "main": "index.js",
   "name": "@wooorm/starry-night",
+  "overrides": {
+    "c8": {
+      "yargs": "^18.0.0"
+    }
+  },
   "prettier": {
     "bracketSpacing": false,
     "semi": false,
