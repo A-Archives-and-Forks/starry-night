@@ -38,6 +38,7 @@ const grammar = {
     '.gpx',
     '.grxml',
     '.hzp',
+    '.icls',
     '.iml',
     '.ivy',
     '.jelly',

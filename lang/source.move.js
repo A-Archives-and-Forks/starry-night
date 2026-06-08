@@ -57,6 +57,10 @@ const grammar = {
         {include: '#module'}
       ]
     },
+    address_literal: {
+      match: '\\b0x[A-Fa-f0-9]+\\b',
+      name: 'support.constant.address.base16.move'
+    },
     annotation: {
       begin: '#\\[',
       end: '\\]',
@@ -209,7 +213,6 @@ const grammar = {
         {include: '#literals'},
         {include: '#control'},
         {include: '#move_copy'},
-        {include: '#resource_methods'},
         {include: '#self_access'},
         {include: '#module_access'},
         {include: '#label'},
@@ -273,7 +276,6 @@ const grammar = {
       name: 'meta.fun_call.move',
       patterns: [
         {include: '#comments'},
-        {include: '#resource_methods'},
         {include: '#self_access'},
         {include: '#module_access'},
         {include: '#move_copy'},
@@ -372,10 +374,6 @@ const grammar = {
         {match: '\\b(\\w+)\\b', name: 'meta.entity.name.type.module.move'}
       ]
     },
-    inline: {
-      match: '\\b(inline)\\b',
-      name: 'storage.modifier.visibility.inline.move'
-    },
     label: {match: "'[a-z][a-z_0-9]*", name: 'string.quoted.single.label.move'},
     let: {match: '\\b(let)\\b', name: 'keyword.control.move'},
     'line-comments': {
@@ -386,6 +384,7 @@ const grammar = {
     literals: {
       name: 'meta.literal.move',
       patterns: [
+        {match: '@[0-9][0-9_]*', name: 'support.constant.address.decimal.move'},
         {
           match: '@0x[A-F0-9a-f]+',
           name: 'support.constant.address.base16.move'
@@ -395,26 +394,45 @@ const grammar = {
           name: 'support.constant.address.name.move'
         },
         {
-          match: '0x[_a-fA-F0-9]+(?:u(?:8|16|32|64|128|256))?',
-          name: 'constant.numeric.hex.move'
+          captures: {
+            1: {name: 'constant.numeric.hex.move'},
+            2: {name: 'entity.name.type.integer.move'}
+          },
+          match: '\\b(0x[_a-fA-F0-9]+)([ui](8|16|32|64|128|256))?\\b',
+          name: 'meta.constant.numeric.hex.move'
         },
         {
-          match:
-            '(?<!(?:\\w|(?:(?<!\\.)\\.)))[0-9][_0-9]*(?:\\.(?!\\.)(?:[0-9][_0-9]*)?)?(?:[eE][+\\-]?[_0-9]+)?(?:[u](?:8|16|32|64|128|256))?',
-          name: 'constant.numeric.move'
+          captures: {
+            1: {name: 'constant.numeric.decimal.move'},
+            2: {name: 'entity.name.type.integer.move'}
+          },
+          match: '\\b([0-9][_0-9]*)([ui](8|16|32|64|128|256))?\\b',
+          name: 'meta.constant.numeric.move'
+        },
+        {
+          begin: '"',
+          end: '"',
+          name: 'meta.string.literal.move',
+          patterns: [
+            {
+              match: '\\\\x[a-fA-F0-9][A-Fa-f0-9]',
+              name: 'constant.character.escape.hex.move'
+            },
+            {match: '\\\\.', name: 'constant.character.escape.move'},
+            {match: '.', name: 'string.quoted.double.raw.move'}
+          ]
         },
         {
           begin: '\\bb"',
           end: '"',
           name: 'meta.vector.literal.ascii.move',
           patterns: [
-            {match: '\\\\.', name: 'constant.character.escape.move'},
-            {match: '\\\\[nrt\\0"]', name: 'constant.character.escape.move'},
             {
               match: '\\\\x[a-fA-F0-9][A-Fa-f0-9]',
               name: 'constant.character.escape.hex.move'
             },
-            {match: '[\\x00-\\x7F]', name: 'string.quoted.double.raw.move'}
+            {match: '\\\\.', name: 'constant.character.escape.move'},
+            {match: '.', name: 'string.quoted.double.raw.move'}
           ]
         },
         {
@@ -466,7 +484,7 @@ const grammar = {
           end: '}',
           name: 'meta.match.block.move',
           patterns: [
-            {match: '\\b(=>)\\b', name: 'operator.match.move'},
+            {match: '=>', name: 'operator.match.move'},
             {include: '#expr'}
           ]
         },
@@ -565,7 +583,7 @@ const grammar = {
     },
     phantom: {match: '\\b(phantom)\\b', name: 'keyword.control.phantom.move'},
     primitives: {
-      match: '\\b(u8|u16|u32|u64|u128|u256|address|bool|signer)\\b',
+      match: '\\b([ui](8|16|32|64|128|256)|address|bool|signer)\\b',
       name: 'support.type.primitives.move'
     },
     public: {
@@ -770,8 +788,8 @@ const grammar = {
         {match: '\\b(as)\\b', name: 'keyword.control.as.move'},
         {match: '\\b(Self)\\b', name: 'variable.language.self.use.fun.move'},
         {
-          match: '\\b(_______[a-z][a-z_0-9]+)\\b',
-          name: 'entity.name.function.use.move'
+          match: '\\b([a-z][a-z_0-9]*)\\b',
+          name: 'meta.entity.name.function.use.move'
         },
         {include: '#types'},
         {include: '#escaped_identifier'},

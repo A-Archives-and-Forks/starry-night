@@ -739,7 +739,7 @@ const grammar = {
       ]
     },
     function_call: {
-      begin: '([a-zA-Z][a-zA-Z0-9_]*)\\s*(\\()',
+      begin: '(?<!\\.)\\b([a-zA-Z][a-zA-Z0-9_]*)\\s*(\\()',
       beginCaptures: {
         1: {
           name: 'entity.name.function.matlab',
@@ -842,7 +842,7 @@ const grammar = {
         {
           captures: {3: {name: 'storage.type.number.imaginary.matlab'}},
           match:
-            '(?<=[\\s\\+\\-\\*\\/\\\\=:\\[\\(\\{,^]|^)\\d*\\.?\\d+([eE][+-]?\\d)?([0-9&&[^\\.]])*(i|j)?\\b',
+            '(?<=[\\s\\+\\-\\*\\/\\\\=;:\\[\\(\\{,^]|^)\\d*\\.?\\d+([eE][+-]?\\d)?([0-9&&[^\\.]])*(i|j)?\\b',
           name: 'constant.numeric.decimal.matlab'
         },
         {
@@ -904,10 +904,6 @@ const grammar = {
         {include: '#rules_before_command_dual'},
         {include: '#rules_after_command_dual'}
       ]
-    },
-    property: {
-      match: '(?<=\\.)[a-zA-Z][a-zA-Z0-9_]*(?![a-zA-Z0-9_]|(?:\\(|\\{|\\.\\())',
-      name: 'variable.other.property.matlab'
     },
     property_access: {match: '\\.', name: 'punctuation.accessor.dot.matlab'},
     punctuation: {
@@ -1117,7 +1113,7 @@ const grammar = {
             {captures: {1: {patterns: [{include: '$self'}]}}, match: '([%].*)'},
             {
               captures: {1: {patterns: [{include: '$self'}]}},
-              match: '(=[^;]*)'
+              match: '(=(?:[^{\\[;]+|\\[[^\\]]*\\]|\\{[^}]*\\})*)'
             },
             {
               captures: {1: {patterns: [{include: '#validators'}]}},

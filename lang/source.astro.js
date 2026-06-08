@@ -1,6 +1,6 @@
 // This is a TextMate grammar distributed by `starry-night`.
 // This grammar is developed at
-// <https://github.com/withastro/language-tools>
+// <https://github.com/withastro/astro>
 // and licensed `mit`.
 // See <https://github.com/wooorm/starry-night> for more info.
 /**
@@ -12,19 +12,26 @@ const grammar = {
   dependencies: ['source.js', 'source.ts', 'source.tsx'],
   extensions: ['.astro'],
   injections: {
-    'L:(meta.script.astro) (meta.lang.js | meta.lang.javascript | meta.lang.partytown | meta.lang.node) - (meta source)':
+    'L:(meta.script.astro) (meta.lang.js | meta.lang.javascript | meta.lang.partytown | meta.lang.node) - (meta.embedded.block source)':
       {
         patterns: [
           {
-            begin: '(?<=>)(?!</)',
+            begin: '(?<=>)(?=[^\\n]+</script[\\s>])',
             contentName: 'source.js',
-            end: '(?=</)',
+            end: '(?=</script[\\s>])',
             name: 'meta.embedded.block.astro',
             patterns: [{include: 'source.js'}]
+          },
+          {
+            begin: '(?<=>)(?!</)',
+            contentName: 'source.js',
+            name: 'meta.embedded.block.astro',
+            patterns: [{include: 'source.js'}],
+            while: '^(?!\\s*</script[\\s>])'
           }
         ]
       },
-    'L:(meta.script.astro) (meta.lang.json) - (meta source)': {
+    'L:(meta.script.astro) (meta.lang.json) - (meta.embedded.block source)': {
       patterns: [
         {
           begin: '(?<=>)(?!</)',
@@ -35,30 +42,47 @@ const grammar = {
         }
       ]
     },
-    'L:(meta.script.astro) (meta.lang.ts | meta.lang.typescript) - (meta source)':
+    'L:(meta.script.astro) (meta.lang.ts | meta.lang.typescript) - (meta.embedded.block source)':
       {
         patterns: [
           {
-            begin: '(?<=>)(?!</)',
+            begin: '(?<=>)(?=[^\\n]+</script[\\s>])',
             contentName: 'source.ts',
-            end: '(?=</)',
+            end: '(?=</script[\\s>])',
             name: 'meta.embedded.block.astro',
             patterns: [{include: 'source.ts'}]
+          },
+          {
+            begin: '(?<=>)(?!</)',
+            contentName: 'source.ts',
+            name: 'meta.embedded.block.astro',
+            patterns: [{include: 'source.ts'}],
+            while: '^(?!\\s*</script[\\s>])'
           }
         ]
       },
-    'L:meta.script.astro - meta.lang - (meta source)': {
+    'L:meta.embedded.expression.astro - meta.embedded.block': {
+      patterns: [{include: '#tags-lang'}]
+    },
+    'L:meta.script.astro - meta.lang - (meta.embedded.block source)': {
       patterns: [
+        {
+          begin: '(?<=>)(?=[^\\n]+</script[\\s>])',
+          contentName: 'source.js',
+          end: '(?=</script[\\s>])',
+          name: 'meta.embedded.block.astro',
+          patterns: [{include: 'source.js'}]
+        },
         {
           begin: '(?<=>)(?!</)',
           contentName: 'source.js',
-          end: '(?=</)',
           name: 'meta.embedded.block.astro',
-          patterns: [{include: 'source.js'}]
+          patterns: [{include: 'source.js'}],
+          while: '^(?!\\s*</script[\\s>])'
         }
       ]
     },
-    'L:meta.style.astro - meta.lang - (meta source)': {
+    'L:meta.style.astro - meta.lang - (meta.embedded.block source)': {
       patterns: [
         {
           begin: '(?<=>)(?!</)',
@@ -69,7 +93,7 @@ const grammar = {
         }
       ]
     },
-    'L:meta.style.astro meta.lang.css - (meta source)': {
+    'L:meta.style.astro meta.lang.css - (meta.embedded.block source)': {
       patterns: [
         {
           begin: '(?<=>)(?!</)',
@@ -80,7 +104,7 @@ const grammar = {
         }
       ]
     },
-    'L:meta.style.astro meta.lang.less - (meta source)': {
+    'L:meta.style.astro meta.lang.less - (meta.embedded.block source)': {
       patterns: [
         {
           begin: '(?<=>)(?!</)',
@@ -91,7 +115,7 @@ const grammar = {
         }
       ]
     },
-    'L:meta.style.astro meta.lang.postcss - (meta source)': {
+    'L:meta.style.astro meta.lang.postcss - (meta.embedded.block source)': {
       patterns: [
         {
           begin: '(?<=>)(?!</)',
@@ -102,7 +126,7 @@ const grammar = {
         }
       ]
     },
-    'L:meta.style.astro meta.lang.sass - (meta source)': {
+    'L:meta.style.astro meta.lang.sass - (meta.embedded.block source)': {
       patterns: [
         {
           begin: '(?<=>)(?!</)',
@@ -113,7 +137,7 @@ const grammar = {
         }
       ]
     },
-    'L:meta.style.astro meta.lang.scss - (meta source)': {
+    'L:meta.style.astro meta.lang.scss - (meta.embedded.block source)': {
       patterns: [
         {
           begin: '(?<=>)(?!</)',
@@ -124,7 +148,7 @@ const grammar = {
         }
       ]
     },
-    'L:meta.style.astro meta.lang.stylus - (meta source)': {
+    'L:meta.style.astro meta.lang.stylus - (meta.embedded.block source)': {
       patterns: [
         {
           begin: '(?<=>)(?!</)',
@@ -356,10 +380,24 @@ const grammar = {
     frontmatter: {
       begin: '\\A(-{3})\\s*$',
       beginCaptures: {1: {name: 'comment'}},
-      contentName: 'source.ts',
       end: '(^|\\G)(-{3})|\\.{3}\\s*$',
       endCaptures: {2: {name: 'comment'}},
-      patterns: [{include: 'source.ts'}]
+      patterns: [
+        {
+          begin: '(?<=\\n)(?=[^\\n]+^-{3})',
+          contentName: 'source.ts',
+          end: '(?=^-{3})',
+          name: 'meta.embedded.block.astro',
+          patterns: [{include: 'source.ts'}]
+        },
+        {
+          begin: '(?<=\\n)',
+          contentName: 'source.ts',
+          name: 'meta.embedded.block.astro',
+          patterns: [{include: 'source.ts'}],
+          while: '^(?!\\s*-{3})'
+        }
+      ]
     },
     interpolation: {
       patterns: [
@@ -431,7 +469,7 @@ const grammar = {
       patterns: [{include: '#tags-start-attributes'}]
     },
     'tags-lang': {
-      begin: '<(script|style)',
+      begin: '<(script|style)(?=\\s|/?>)',
       beginCaptures: {0: {patterns: [{include: '#tags-start-node'}]}},
       end: '</\\1\\s*>|/>',
       endCaptures: {0: {patterns: [{include: '#tags-end-node'}]}},

@@ -10,7 +10,7 @@
 /** @type {Grammar} */
 const grammar = {
   extensions: [],
-  names: ['robots.txt', 'robots', 'robots-txt'],
+  names: ['robots-exclusion-rules', 'robots', 'robots-txt', 'robotx.txt'],
   patterns: [{include: '#main'}],
   repository: {
     comment: {

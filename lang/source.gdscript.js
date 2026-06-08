@@ -171,9 +171,10 @@ const grammar = {
     class_is: {
       captures: {
         1: {name: 'storage.type.is.gdscript'},
-        2: {name: 'entity.name.type.class.gdscript'}
+        2: {name: 'storage.type.not.gdscript'},
+        3: {name: 'entity.name.type.class.gdscript'}
       },
-      match: '\\s+(is)\\s+([a-zA-Z_]\\w*)'
+      match: '\\s+(is)\\s+(not?)\\s+\\s+([a-zA-Z_]\\w*)'
     },
     class_name: {
       captures: {
@@ -288,7 +289,7 @@ const grammar = {
         1: {name: 'keyword.language.gdscript storage.type.function.gdscript'},
         2: {name: 'entity.name.function.gdscript'}
       },
-      end: '(:)',
+      end: '(:)|\n',
       endCaptures: {1: {name: 'punctuation.section.function.begin.gdscript'}},
       name: 'meta.function.gdscript',
       patterns: [

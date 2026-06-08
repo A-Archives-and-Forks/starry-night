@@ -16,18 +16,19 @@ const grammar = {
     'alias-id': {
       begin: '(=)\\s*',
       beginCaptures: {1: {name: 'keyword.operator.assignment.tsp'}},
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.alias-id.typespec',
       patterns: [{include: '#expression'}]
     },
     'alias-statement': {
       begin:
-        '\\b(alias)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)\\s*',
+        '(?:(internal)\\s+)?\\b(alias)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)\\s*',
       beginCaptures: {
-        1: {name: 'keyword.other.tsp'},
-        2: {name: 'entity.name.type.tsp'}
+        1: {name: 'storage.modifier.tsp'},
+        2: {name: 'keyword.other.tsp'},
+        3: {name: 'entity.name.type.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.alias-statement.typespec',
       patterns: [{include: '#alias-id'}, {include: '#type-parameters'}]
     },
@@ -37,7 +38,7 @@ const grammar = {
         1: {name: 'entity.name.tag.tsp'},
         2: {name: 'entity.name.tag.tsp'}
       },
-      end: '(?=([_$[:alpha:]]|`))|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=([_$[:alpha:]]|`))|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.augment-decorator-statement.typespec',
       patterns: [{include: '#token'}, {include: '#parenthesized-expression'}]
     },
@@ -64,12 +65,13 @@ const grammar = {
     },
     'const-statement': {
       begin:
-        '\\b(const)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
+        '(?:(internal)\\s+)?\\b(const)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
       beginCaptures: {
-        1: {name: 'keyword.other.tsp'},
-        2: {name: 'variable.name.tsp'}
+        1: {name: 'storage.modifier.tsp'},
+        2: {name: 'keyword.other.tsp'},
+        3: {name: 'variable.name.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.const-statement.typespec',
       patterns: [
         {include: '#type-annotation'},
@@ -83,19 +85,20 @@ const grammar = {
         1: {name: 'entity.name.tag.tsp'},
         2: {name: 'entity.name.tag.tsp'}
       },
-      end: '(?=([_$[:alpha:]]|`))|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=([_$[:alpha:]]|`))|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.decorator.typespec',
       patterns: [{include: '#token'}, {include: '#parenthesized-expression'}]
     },
     'decorator-declaration-statement': {
       begin:
-        '(?:(extern)\\s+)?\\b(dec)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
+        '(?:(internal)\\s+)?(?:(extern)\\s+)?\\b(dec)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
       beginCaptures: {
-        1: {name: 'keyword.other.tsp'},
+        1: {name: 'storage.modifier.tsp'},
         2: {name: 'keyword.other.tsp'},
-        3: {name: 'entity.name.function.tsp'}
+        3: {name: 'keyword.other.tsp'},
+        4: {name: 'entity.name.function.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.decorator-declaration-statement.typespec',
       patterns: [{include: '#token'}, {include: '#operation-parameters'}]
     },
@@ -105,7 +108,7 @@ const grammar = {
         1: {name: 'keyword.directive.name.tsp'},
         2: {name: 'keyword.directive.name.tsp'}
       },
-      end: '$|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '$|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.directive.typespec',
       patterns: [
         {include: '#string-literal'},
@@ -175,18 +178,19 @@ const grammar = {
         1: {name: 'variable.name.tsp'},
         2: {name: 'keyword.operator.type.annotation.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.enum-member.typespec',
       patterns: [{include: '#token'}, {include: '#type-annotation'}]
     },
     'enum-statement': {
       begin:
-        '\\b(enum)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
+        '(?:(internal)\\s+)?\\b(enum)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
       beginCaptures: {
-        1: {name: 'keyword.other.tsp'},
-        2: {name: 'entity.name.type.tsp'}
+        1: {name: 'storage.modifier.tsp'},
+        2: {name: 'keyword.other.tsp'},
+        3: {name: 'entity.name.type.tsp'}
       },
-      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.enum-statement.typespec',
       patterns: [{include: '#token'}, {include: '#enum-body'}]
     },
@@ -209,13 +213,14 @@ const grammar = {
     },
     'function-declaration-statement': {
       begin:
-        '(?:(extern)\\s+)?\\b(fn)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
+        '(?:(internal)\\s+)?(?:(extern)\\s+)?\\b(fn)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
       beginCaptures: {
-        1: {name: 'keyword.other.tsp'},
+        1: {name: 'storage.modifier.tsp'},
         2: {name: 'keyword.other.tsp'},
-        3: {name: 'entity.name.function.tsp'}
+        3: {name: 'keyword.other.tsp'},
+        4: {name: 'entity.name.function.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.function-declaration-statement.typespec',
       patterns: [
         {include: '#token'},
@@ -230,7 +235,7 @@ const grammar = {
     'import-statement': {
       begin: '\\b(import)\\b',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.import-statement.typespec',
       patterns: [{include: '#token'}]
     },
@@ -251,7 +256,7 @@ const grammar = {
     'interface-heritage': {
       begin: '\\b(extends)\\b',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '((?=\\{)|(?=;|@|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b))',
+      end: '((?=\\{)|(?=;|@|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b))',
       name: 'meta.interface-heritage.typespec',
       patterns: [{include: '#expression'}, {include: '#punctuation-comma'}]
     },
@@ -262,14 +267,17 @@ const grammar = {
         1: {name: 'keyword.other.tsp'},
         2: {name: 'entity.name.function.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.interface-member.typespec',
       patterns: [{include: '#token'}, {include: '#operation-signature'}]
     },
     'interface-statement': {
-      begin: '\\b(interface)\\b',
-      beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      begin: '(?:(internal)\\s+)?\\b(interface)\\b',
+      beginCaptures: {
+        1: {name: 'storage.modifier.tsp'},
+        2: {name: 'keyword.other.tsp'}
+      },
+      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.interface-statement.typespec',
       patterns: [
         {include: '#token'},
@@ -298,7 +306,7 @@ const grammar = {
     'model-heritage': {
       begin: '\\b(extends|is)\\b',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '((?=\\{)|(?=;|@|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b))',
+      end: '((?=\\{)|(?=;|@|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b))',
       name: 'meta.model-heritage.typespec',
       patterns: [{include: '#expression'}, {include: '#punctuation-comma'}]
     },
@@ -309,7 +317,7 @@ const grammar = {
         1: {name: 'variable.name.tsp'},
         2: {name: 'string.quoted.double.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.model-property.typespec',
       patterns: [
         {include: '#token'},
@@ -319,9 +327,12 @@ const grammar = {
       ]
     },
     'model-statement': {
-      begin: '\\b(model)\\b',
-      beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      begin: '(?:(internal)\\s+)?\\b(model)\\b',
+      beginCaptures: {
+        1: {name: 'storage.modifier.tsp'},
+        2: {name: 'keyword.other.tsp'}
+      },
+      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.model-statement.typespec',
       patterns: [
         {include: '#token'},
@@ -340,7 +351,7 @@ const grammar = {
     },
     'namespace-name': {
       begin: '(?=([_$[:alpha:]]|`))',
-      end: '((?=\\{)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b))',
+      end: '((?=\\{)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b))',
       name: 'meta.namespace-name.typespec',
       patterns: [
         {include: '#identifier-expression'},
@@ -350,7 +361,7 @@ const grammar = {
     'namespace-statement': {
       begin: '\\b(namespace)\\b',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '((?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b))',
+      end: '((?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b))',
       name: 'meta.namespace-statement.typespec',
       patterns: [
         {include: '#token'},
@@ -384,14 +395,14 @@ const grammar = {
         1: {name: 'variable.name.tsp'},
         2: {name: 'keyword.operator.type.annotation.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.object-literal-property.typespec',
       patterns: [{include: '#token'}, {include: '#expression'}]
     },
     'operation-heritage': {
       begin: '\\b(is)\\b',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.operation-heritage.typespec',
       patterns: [{include: '#expression'}]
     },
@@ -419,12 +430,13 @@ const grammar = {
     },
     'operation-statement': {
       begin:
-        '\\b(op)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
+        '(?:(internal)\\s+)?\\b(op)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
       beginCaptures: {
-        1: {name: 'keyword.other.tsp'},
-        2: {name: 'entity.name.function.tsp'}
+        1: {name: 'storage.modifier.tsp'},
+        2: {name: 'keyword.other.tsp'},
+        3: {name: 'entity.name.function.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.operation-statement.typespec',
       patterns: [{include: '#token'}, {include: '#operation-signature'}]
     },
@@ -466,25 +478,26 @@ const grammar = {
         1: {name: 'keyword.other.tsp'},
         2: {name: 'entity.name.function.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.scalar-constructor.typespec',
       patterns: [{include: '#token'}, {include: '#operation-parameters'}]
     },
     'scalar-extends': {
       begin: '\\b(extends)\\b',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '(?=;|@|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=;|@|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.scalar-extends.typespec',
       patterns: [{include: '#expression'}, {include: '#punctuation-comma'}]
     },
     'scalar-statement': {
       begin:
-        '\\b(scalar)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
+        '(?:(internal)\\s+)?\\b(scalar)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
       beginCaptures: {
-        1: {name: 'keyword.other.tsp'},
-        2: {name: 'entity.name.type.tsp'}
+        1: {name: 'storage.modifier.tsp'},
+        2: {name: 'keyword.other.tsp'},
+        3: {name: 'entity.name.type.tsp'}
       },
-      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.scalar-statement.typespec',
       patterns: [
         {include: '#token'},
@@ -496,7 +509,7 @@ const grammar = {
     'spread-operator': {
       begin: '\\.\\.\\.',
       beginCaptures: {0: {name: 'keyword.operator.spread.tsp'}},
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.spread-operator.typespec',
       patterns: [{include: '#expression'}]
     },
@@ -596,7 +609,7 @@ const grammar = {
         1: {name: 'entity.name.type.tsp'},
         2: {name: 'keyword.operator.assignment.tsp'}
       },
-      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       endCaptures: {0: {name: 'keyword.operator.assignment.tsp'}},
       name: 'meta.type-argument.typespec',
       patterns: [
@@ -622,7 +635,7 @@ const grammar = {
     'type-parameter': {
       begin: '(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
       beginCaptures: {1: {name: 'entity.name.type.tsp'}},
-      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.type-parameter.typespec',
       patterns: [
         {include: '#token'},
@@ -633,14 +646,14 @@ const grammar = {
     'type-parameter-constraint': {
       begin: 'extends',
       beginCaptures: {0: {name: 'keyword.other.tsp'}},
-      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.type-parameter-constraint.typespec',
       patterns: [{include: '#expression'}]
     },
     'type-parameter-default': {
       begin: '=',
       beginCaptures: {0: {name: 'keyword.operator.assignment.tsp'}},
-      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.type-parameter-default.typespec',
       patterns: [{include: '#expression'}]
     },
@@ -657,7 +670,7 @@ const grammar = {
     typeof: {
       begin: '\\b(typeof)',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.typeof.typespec',
       patterns: [{include: '#expression'}]
     },
@@ -678,12 +691,13 @@ const grammar = {
     },
     'union-statement': {
       begin:
-        '\\b(union)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
+        '(?:(internal)\\s+)?\\b(union)\\b\\s+(\\b[_$[:alpha:]][_$[:alnum:]]*\\b|`(?:[^`\\\\]|\\\\.)*`)',
       beginCaptures: {
-        1: {name: 'keyword.other.tsp'},
-        2: {name: 'entity.name.type.tsp'}
+        1: {name: 'storage.modifier.tsp'},
+        2: {name: 'keyword.other.tsp'},
+        3: {name: 'entity.name.type.tsp'}
       },
-      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?<=\\})|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.union-statement.typespec',
       patterns: [{include: '#token'}, {include: '#union-body'}]
     },
@@ -694,14 +708,14 @@ const grammar = {
         1: {name: 'variable.name.tsp'},
         2: {name: 'keyword.operator.type.annotation.tsp'}
       },
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.union-variant.typespec',
       patterns: [{include: '#token'}, {include: '#expression'}]
     },
     'using-statement': {
       begin: '\\b(using)\\b',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.using-statement.typespec',
       patterns: [
         {include: '#token'},
@@ -712,7 +726,7 @@ const grammar = {
     valueof: {
       begin: '\\b(valueof)',
       beginCaptures: {1: {name: 'keyword.other.tsp'}},
-      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
+      end: '(?=>)|(?=,|;|@|#[a-z]|\\)|\\}|\\b(?:extern|internal)\\b|\\b(?:namespace|model|op|using|import|enum|alias|union|interface|dec|fn)\\b)',
       name: 'meta.valueof.typespec',
       patterns: [{include: '#expression'}]
     }

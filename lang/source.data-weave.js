@@ -91,7 +91,11 @@ const grammar = {
         {match: '(=)', name: 'keyword.operator.assignment.dw'},
         {match: '(:)', name: 'keyword.operator.declaration.dw'},
         {match: '(\\-|\\+|\\*|\\/)', name: 'keyword.operator.arithmetic.dw'},
-        {match: '\\?\\?\\?', name: 'keyword.operator.implement.dw'}
+        {match: '\\?\\?\\?', name: 'keyword.operator.implement.dw'},
+        {
+          match: '(?<![[:alnum:]])(?:private|internal)(?![[:alnum:]_])',
+          name: 'storage.modifier.dw'
+        }
       ]
     },
     namespace: {

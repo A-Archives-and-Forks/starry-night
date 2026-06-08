@@ -32,6 +32,7 @@ const grammar = {
     '.mxt',
     '.pat',
     '.sarif',
+    '.slnlaunch',
     '.tfstate',
     '.tfstate.backup',
     '.topojson',

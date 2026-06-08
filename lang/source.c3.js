@@ -23,7 +23,7 @@ const grammar = {
       patterns: [
         {
           begin:
-            '@(?:(?:align|allow_deprecated|benchmark|bigendian|builtin|callconv|cname|compact|const|deprecated|dynamic|export|extern|finalizer|format|if|inline|init|jump|link|littleendian|local|maydiscard|naked|noalias|nodiscard|noinit|noinline|nopadding|norecurse|noreturn|nosanitize|nostrip|obfuscate|operator|operator_r|operator_s|optional|overlap|packed|private|public|pure|reflect|safeinfer|safemacro|simd|section|structlike|tag|test|unused|used|wasm|weak|winmain)\\b|(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b))',
+            '@(?:(?:align|allow_deprecated|benchmark|bigendian|builtin|callconv|cname|compact|const|constinit|deprecated|dynamic|export|finalizer|format|if|inline|init|jump|link|littleendian|local|maydiscard|mustinit|naked|noalias|nodiscard|noinit|noinline|nopadding|norecurse|noreturn|nosanitize|nostrip|obfuscate|operator|operator_r|operator_s|optional|overlap|packed|private|public|pure|reflect|safeinfer|safemacro|simd|section|tag|test|unused|used|wasm|weak|weaklink|winmain)\\b|(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b))',
           beginCaptures: {0: {name: 'keyword.annotation.c3'}},
           end: '(?=[^ \\t(])|(?<=\\))',
           name: 'meta.annotation.c3',
@@ -136,8 +136,29 @@ const grammar = {
           begin: '(?:\\b_*[A-Z][_A-Z0-9]*\\b)',
           beginCaptures: {0: {name: 'variable.other.constant.c3'}},
           end: '(?=[^{ \\t])|(?<=\\})',
-          patterns: [{include: '#generic_params'}]
+          patterns: [{include: '#generic_args'}]
         }
+      ]
+    },
+    contract_expression: {
+      patterns: [
+        {include: '#comments'},
+        {include: '#function'},
+        {include: '#constants'},
+        {include: '#builtin'},
+        {include: '#real_literal'},
+        {include: '#integer_literal'},
+        {include: '#operators'},
+        {include: '#keywords'},
+        {include: '#type'},
+        {include: '#path'},
+        {include: '#function_call'},
+        {include: '#variable'},
+        {include: '#parens'},
+        {include: '#brackets'},
+        {include: '#block'},
+        {include: '#punctuation'},
+        {include: '#leftover_at_ident'}
       ]
     },
     control_statements: {
@@ -233,18 +254,14 @@ const grammar = {
               begin: '@(?:require\\b|ensure\\b|return\\?)',
               beginCaptures: {0: {name: 'comment.block.documentation.c3'}},
               end: '(?=:|\\*>|$)',
-              patterns: [{include: '#expression'}]
+              patterns: [{include: '#contract_expression'}]
             },
             {
               match: '@(?:\\b_*[a-z][_a-zA-Z0-9]*\\b)',
               name: 'comment.block.documentation.c3'
             },
             {match: ':', name: 'comment.block.documentation.c3'},
-            {
-              begin: '(["`])',
-              end: '\\\\1',
-              name: 'comment.block.documentation.c3'
-            }
+            {match: '`[^`]*`|"[^"]*"', name: 'comment.block.documentation.c3'}
           ]
         },
         {
@@ -273,18 +290,14 @@ const grammar = {
               begin: '^\\s*@(?:require\\b|ensure\\b|return\\?)',
               beginCaptures: {0: {name: 'comment.block.documentation.c3'}},
               end: '(?=:|\\*>|$)',
-              patterns: [{include: '#expression'}]
+              patterns: [{include: '#contract_expression'}]
             },
             {
               match: '^\\s*@(?:\\b_*[a-z][_a-zA-Z0-9]*\\b)',
               name: 'comment.block.documentation.c3'
             },
             {match: ':', name: 'comment.block.documentation.c3'},
-            {
-              begin: '(["`])',
-              end: '\\\\1',
-              name: 'comment.block.documentation.c3'
-            }
+            {match: '`[^`]*`|"[^"]*"', name: 'comment.block.documentation.c3'}
           ]
         }
       ]
@@ -337,7 +350,11 @@ const grammar = {
           begin: '(?<=\\))',
           contentName: 'meta.function.c3',
           end: '(?=[{=;])',
-          patterns: [{include: '#comments'}, {include: '#attribute'}]
+          patterns: [
+            {include: '#comments'},
+            {include: '#generic_params'},
+            {include: '#attribute'}
+          ]
         }
       ]
     },
@@ -347,7 +364,7 @@ const grammar = {
       end: '(?<=\\))',
       name: 'meta.function_call.c3',
       patterns: [
-        {include: '#generic_params'},
+        {include: '#generic_args'},
         {
           begin: '\\(',
           beginCaptures: {0: {name: 'punctuation.section.group.begin.c3'}},
@@ -388,7 +405,7 @@ const grammar = {
         }
       ]
     },
-    generic_params: {
+    generic_args: {
       patterns: [
         {
           begin: '\\{',
@@ -397,6 +414,29 @@ const grammar = {
           endCaptures: {0: {name: 'punctuation.definition.generic.end.c3'}},
           name: 'meta.generic.c3',
           patterns: [{include: '#expression'}]
+        }
+      ]
+    },
+    generic_params: {
+      patterns: [
+        {
+          begin: '<',
+          beginCaptures: {0: {name: 'punctuation.definition.generic.begin.c3'}},
+          end: '>',
+          endCaptures: {0: {name: 'punctuation.definition.generic.end.c3'}},
+          name: 'meta.generic.c3',
+          patterns: [
+            {include: '#comments'},
+            {
+              match: '(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b)',
+              name: 'support.type.c3'
+            },
+            {
+              match: '(?:\\b_*[A-Z][_A-Z0-9]*\\b)',
+              name: 'variable.other.constant.c3'
+            },
+            {match: ',', name: 'punctuation.separator.c3'}
+          ]
         }
       ]
     },
@@ -409,7 +449,7 @@ const grammar = {
       patterns: [
         {
           match:
-            '\\$(?:alignof|assert|assignable|default|defined|echo|embed|eval|error|exec|extnameof|feature|include|is_const|kindof|nameof|offsetof|qnameof|sizeof|stringify|vacount|vaconst|vaarg|vaexpr|vasplat)\\b',
+            '\\$(?:alignof|assert|assignable|default|defined|echo|embed|eval|error|exec|expand|extnameof|feature|include|reflect|is_const|kindof|nameof|offsetof|qnameof|sizeof|stringify|vacount|vaconst|vaarg|vaexpr|vasplat)\\b',
           name: 'keyword.other.ct.c3'
         },
         {
@@ -440,7 +480,7 @@ const grammar = {
           begin: '@(?:\\b_*[a-z][_a-zA-Z0-9]*\\b)',
           beginCaptures: {0: {name: 'entity.name.function.c3'}},
           end: '(?=[^{ \\t])|(?<=\\})',
-          patterns: [{include: '#generic_params'}]
+          patterns: [{include: '#generic_args'}]
         }
       ]
     },
@@ -640,6 +680,7 @@ const grammar = {
               match: '(?:\\b_*[a-z][_a-zA-Z0-9]*\\b)',
               name: 'variable.other.member.c3'
             },
+            {include: '#generic_params'},
             {include: '#attribute'},
             {
               begin: ':',
@@ -648,6 +689,7 @@ const grammar = {
               patterns: [
                 {include: '#comments'},
                 {include: '#type_no_generics'},
+                {include: '#generic_params'},
                 {include: '#attribute'}
               ]
             },
@@ -714,6 +756,7 @@ const grammar = {
             {include: '#comments'},
             {include: '#attribute'},
             {include: '#module_path'},
+            {include: '#generic_args'},
             {include: '#generic_params'}
           ]
         },
@@ -785,6 +828,7 @@ const grammar = {
               end: '(?=;)',
               patterns: [
                 {include: '#comments'},
+                {include: '#generic_params'},
                 {include: '#attribute'},
                 {include: '#assign_right_expression'}
               ]
@@ -795,6 +839,7 @@ const grammar = {
               end: '(?=;)',
               patterns: [
                 {include: '#comments'},
+                {include: '#generic_params'},
                 {include: '#attribute'},
                 {include: '#assign_right_expression'}
               ]
@@ -816,6 +861,7 @@ const grammar = {
               patterns: [
                 {include: '#comments'},
                 {include: '#parens'},
+                {include: '#generic_params'},
                 {include: '#attribute'},
                 {include: '#assign_right_expression'}
               ]
@@ -879,12 +925,15 @@ const grammar = {
         },
         {include: '#structlike'},
         {
-          begin: '(?=\\benum\\b)',
+          begin: '(?=\\b(?:enum|constdef)\\b)',
           end: '(?<=\\})',
           patterns: [
             {
-              begin: '\\benum\\b',
-              beginCaptures: {0: {name: 'keyword.declaration.enum.c3'}},
+              begin: '\\b(enum)|(constdef)\\b',
+              beginCaptures: {
+                1: {name: 'keyword.declaration.enum.c3'},
+                2: {name: 'keyword.declaration.constdef.c3'}
+              },
               end: '(?=\\{)',
               name: 'meta.enum.c3',
               patterns: [
@@ -893,6 +942,7 @@ const grammar = {
                   match: '(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b)',
                   name: 'entity.name.type.enum.c3'
                 },
+                {include: '#generic_params'},
                 {include: '#attribute'},
                 {
                   begin: ':',
@@ -917,13 +967,11 @@ const grammar = {
                       },
                       patterns: [
                         {include: '#comments'},
-                        {
-                          match: '\\b(?:inline|const)\\b',
-                          name: 'storage.modifier.c3'
-                        },
+                        {match: '\\binline\\b', name: 'storage.modifier.c3'},
                         {include: '#parameters'}
                       ]
                     },
+                    {include: '#generic_params'},
                     {include: '#attribute'}
                   ]
                 }
@@ -940,9 +988,10 @@ const grammar = {
                 {
                   begin: '=',
                   beginCaptures: {0: {name: 'keyword.operator.assignment.c3'}},
-                  end: '(?=,)',
+                  end: '(?=[,}])',
                   patterns: [{include: '#expression'}]
                 },
+                {include: '#block'},
                 {include: '#attribute'},
                 {
                   match: '(?:\\b_*[A-Z][_A-Z0-9]*\\b)',
@@ -968,6 +1017,7 @@ const grammar = {
                   match: '(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b)',
                   name: 'entity.name.type.interface.c3'
                 },
+                {include: '#generic_params'},
                 {include: '#attribute'},
                 {
                   begin: ':',
@@ -999,39 +1049,44 @@ const grammar = {
     },
     type: {
       patterns: [
-        {include: '#path'},
         {
           begin:
-            '\\b(void|bool|char|double|float|float16|bfloat|int128|ichar|int|iptr|isz|long|short|uint128|uint|ulong|uptr|ushort|usz|float128|any|fault|typeid)\\b|(\\$?\\b(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b)\\b)',
+            '\\b(void|bool|char|double|float|float16|bfloat|int128|ichar|int|iptr|isz|sz|long|short|uint128|uint|ulong|uptr|ushort|usz|float128|any|fault|typeid|untypedlist)\\b|(\\$?\\b(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b)\\b)',
           beginCaptures: {
             1: {name: 'storage.type.built-in.primitive.c3'},
             2: {name: 'support.type.c3'}
           },
-          end: '(?=\\*>|[^ \\t*\\[?{])',
+          end: '(?=\\*>|[^ \\t*\\[?{:]|:(?!:))',
           patterns: [
             {include: '#comments'},
-            {include: '#generic_params'},
-            {include: '#type_suffix'}
+            {include: '#generic_args'},
+            {include: '#type_suffix'},
+            {include: '#type_access'}
           ]
         },
-        {include: '#type_expr'}
+        {include: '#type_expr'},
+        {include: '#path'}
       ]
+    },
+    type_access: {
+      captures: {
+        1: {name: 'punctuation.accessor.c3'},
+        2: {name: 'variable.other.constant.c3'}
+      },
+      match: '(::)\\s*((?:\\b_*[a-z][_a-zA-Z0-9]*\\b))'
     },
     type_expr: {
       patterns: [
         {
-          begin: '\\$(?:typeof|typefrom|evaltype)\\b',
-          beginCaptures: {0: {name: 'storage.type.c3'}},
-          end: '(?<=\\))',
-          patterns: [{include: '#parens'}]
-        },
-        {
-          begin: '\\$vatype\\b',
-          beginCaptures: {0: {name: 'storage.type.c3'}},
-          end: '(?<=\\])',
-          patterns: [{include: '#brackets'}]
-        },
-        {include: '#type_suffix'}
+          begin: '\\$(?:Typeof|Typefrom|typeof|typefrom|evaltype|vatype)\\b',
+          beginCaptures: {0: {name: 'support.type.c3'}},
+          end: '(?=[^ \\t*\\[?(:]|:(?!:))',
+          patterns: [
+            {include: '#parens'},
+            {include: '#type_suffix'},
+            {include: '#type_access'}
+          ]
+        }
       ]
     },
     type_no_generics: {
@@ -1039,12 +1094,12 @@ const grammar = {
         {include: '#path'},
         {
           begin:
-            '\\b(void|bool|char|double|float|float16|bfloat|int128|ichar|int|iptr|isz|long|short|uint128|uint|ulong|uptr|ushort|usz|float128|any|fault|typeid)\\b|(\\$?\\b(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b)\\b)',
+            '\\b(void|bool|char|double|float|float16|bfloat|int128|ichar|int|iptr|isz|sz|long|short|uint128|uint|ulong|uptr|ushort|usz|float128|any|fault|typeid|untypedlist)\\b|(\\$?\\b(?:\\b_*[A-Z][_A-Z0-9]*[a-z][_a-zA-Z0-9]*\\b)\\b)',
           beginCaptures: {
             1: {name: 'storage.type.built-in.primitive.c3'},
             2: {name: 'support.type.c3'}
           },
-          end: '(?=[^ \\t*\\[?@])',
+          end: '(?=[^ \\t*\\[?])',
           patterns: [{include: '#comments'}, {include: '#type_suffix'}]
         },
         {include: '#type_expr'}
@@ -1061,7 +1116,7 @@ const grammar = {
       begin: '(?<!#)\\$?(?:\\b_*[a-z][_a-zA-Z0-9]*\\b)',
       beginCaptures: {0: {name: 'variable.other.c3'}},
       end: '(?=[^{ \\t])|(?<=\\})',
-      patterns: [{include: '#generic_params'}]
+      patterns: [{include: '#generic_args'}]
     }
   },
   scopeName: 'source.c3'

@@ -13,6 +13,7 @@ const grammar = {
   names: ['slint'],
   patterns: [
     {include: '#comment'},
+    {include: '#rust-attr'},
     {include: '#import-list'},
     {include: '#export-list'},
     {include: '#struct'},
@@ -73,7 +74,8 @@ const grammar = {
           match: '(?<!-)([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=>'
         },
         {
-          begin: '(?<!-)([a-zA-Z_][a-zA-Z0-9_-]*)\\s*\\(',
+          begin:
+            '(?<!-)([a-zA-Z_][a-zA-Z0-9_-]*)(?=\\s*\\([^()]*\\)\\s*=>)\\s*\\(',
           beginCaptures: {1: {name: 'entity.name.function.slint'}},
           end: '\\)\\s*=>',
           patterns: [{include: '#expression'}, {match: '\\s*,\\s*'}]
@@ -170,6 +172,7 @@ const grammar = {
         {include: '#code-block'},
         {include: '#states'},
         {include: '#callback-setup'},
+        {include: '#function-call'},
         {include: '#expression'},
         {
           match:
@@ -392,6 +395,41 @@ const grammar = {
       end: ':',
       patterns: [{include: '#expression'}]
     },
+    'rust-attr': {
+      patterns: [
+        {
+          begin: '(@rust-attr)\\s*(\\()',
+          beginCaptures: {
+            1: {name: 'support.function.macro.slint'},
+            2: {name: 'punctuation.brackets.round.slint'}
+          },
+          end: '(\\))',
+          endCaptures: {1: {name: 'punctuation.brackets.round.slint'}},
+          name: 'meta.attribute.rust-attr.slint',
+          patterns: [{include: '#rust-attr-body'}]
+        }
+      ]
+    },
+    'rust-attr-body': {
+      patterns: [
+        {
+          begin: '\\(',
+          beginCaptures: {0: {name: 'punctuation.brackets.round.slint'}},
+          end: '\\)',
+          endCaptures: {0: {name: 'punctuation.brackets.round.slint'}},
+          patterns: [{include: '#rust-attr-body'}]
+        },
+        {match: '"[^"]*"', name: 'string.quoted.double.slint'},
+        {match: '\\b([A-Z][a-zA-Z0-9_]*)\\b', name: 'entity.name.type.slint'},
+        {match: '::', name: 'punctuation.separator.namespace.slint'},
+        {match: ',', name: 'punctuation.separator.comma.slint'},
+        {match: '=', name: 'keyword.operator.assignment.slint'},
+        {
+          match: '\\b[a-z_][a-zA-Z0-9_]*\\b',
+          name: 'variable.other.rust-attr.slint'
+        }
+      ]
+    },
     states: {
       patterns: [
         {
@@ -497,7 +535,8 @@ const grammar = {
         {include: '#number'},
         {include: '#boolean'},
         {
-          begin: '(@(tr|linear-gradient|radial-gradient|image-url))\\s*(\\()',
+          begin:
+            '(@(tr|linear-gradient|radial-gradient|conic-gradient|image-url))\\s*(\\()',
           beginCaptures: {
             1: {name: 'support.function.macro.slint'},
             3: {name: 'punctuation.brackets.round.slint'}

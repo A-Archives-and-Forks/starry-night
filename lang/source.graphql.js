@@ -360,16 +360,16 @@ const grammar = {
     },
     'graphql-operation-def': {
       patterns: [
-        {include: '#graphql-query-mutation'},
+        {include: '#graphql-query-mutation-subscription'},
         {include: '#graphql-name'},
         {include: '#graphql-variable-definitions'},
         {include: '#graphql-directive'},
         {include: '#graphql-selection-set'}
       ]
     },
-    'graphql-query-mutation': {
+    'graphql-query-mutation-subscription': {
       captures: {1: {name: 'keyword.operation.graphql'}},
-      match: '\\s*\\b(query|mutation)\\b'
+      match: '\\s*\\b(query|mutation|subscription)\\b'
     },
     'graphql-scalar': {
       captures: {

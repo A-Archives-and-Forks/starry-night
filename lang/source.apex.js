@@ -655,6 +655,7 @@ const grammar = {
         {include: '#boolean-literal'},
         {include: '#null-literal'},
         {include: '#numeric-literal'},
+        {include: '#multiline-string-literal'},
         {include: '#string-literal'}
       ]
     },
@@ -783,6 +784,14 @@ const grammar = {
     'method-name-custom': {
       match: '@?[_[:alpha:]][_[:alnum:]]*',
       name: 'entity.name.function.apex'
+    },
+    'multiline-string-literal': {
+      begin: "'''(?=$)",
+      beginCaptures: {0: {name: 'punctuation.definition.string.begin.apex'}},
+      end: "'''",
+      endCaptures: {0: {name: 'punctuation.definition.string.end.apex'}},
+      name: 'string.quoted.single.apex string.quoted.single.multiline.apex',
+      patterns: [{include: '#string-character-escape'}]
     },
     'named-argument': {
       begin: '(@?[_[:alpha:]][_[:alnum:]]*)\\s*(:)',
@@ -1132,7 +1141,7 @@ const grammar = {
       name: 'constant.character.escape.apex'
     },
     'string-literal': {
-      begin: "'",
+      begin: "\\'(?!'')",
       beginCaptures: {0: {name: 'punctuation.definition.string.begin.apex'}},
       end: "(\\')|((?:[^\\\\\\n])$)",
       endCaptures: {
@@ -1140,7 +1149,27 @@ const grammar = {
         2: {name: 'invalid.illegal.newline.apex'}
       },
       name: 'string.quoted.single.apex',
-      patterns: [{include: '#string-character-escape'}]
+      patterns: [
+        {include: '#string-character-escape'},
+        {include: '#string-template-expression'}
+      ]
+    },
+    'string-template-expression': {
+      begin: '(?<!\\\\)\\$\\{',
+      beginCaptures: {
+        0: {name: 'punctuation.definition.template-expression.begin.apex'}
+      },
+      end: '\\}',
+      endCaptures: {
+        0: {name: 'punctuation.definition.template-expression.end.apex'}
+      },
+      name: 'meta.template-expression.apex',
+      patterns: [
+        {
+          match: '\\G@?[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*',
+          name: 'variable.other.readwrite.apex'
+        }
+      ]
     },
     'support-arguments': {
       begin: '<',
@@ -1529,9 +1558,19 @@ const grammar = {
       begin: "(when)\\b\\s*('[^'\\n]*')(\\s*(,)\\s*('[^'\\n]*'))*\\s*",
       beginCaptures: {
         1: {name: 'keyword.control.switch.when.apex'},
-        2: {patterns: [{include: '#string-literal'}]},
+        2: {
+          patterns: [
+            {include: '#multiline-string-literal'},
+            {include: '#string-literal'}
+          ]
+        },
         4: {patterns: [{include: '#punctuation-comma'}]},
-        5: {patterns: [{include: '#string-literal'}]}
+        5: {
+          patterns: [
+            {include: '#multiline-string-literal'},
+            {include: '#string-literal'}
+          ]
+        }
       },
       end: '(?=\\})|(?=when\\b)',
       patterns: [{include: '#block'}, {include: '#expression'}]

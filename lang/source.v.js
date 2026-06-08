@@ -399,19 +399,27 @@ const grammar = {
       ]
     },
     'string-interpolation': {
-      captures: {
-        1: {
+      patterns: [
+        {
+          begin: '(\\$\\{)',
+          beginCaptures: {
+            1: {name: 'punctuation.definition.template-expression.begin.v'}
+          },
+          end: '(\\})',
+          endCaptures: {
+            1: {name: 'punctuation.definition.template-expression.end.v'}
+          },
+          name: 'meta.string.interpolation.v',
           patterns: [
-            {match: '\\$\\d[\\.\\w]+', name: 'invalid.illegal.v'},
-            {
-              match: '\\$([\\.\\w]+|\\{.*?\\})',
-              name: 'variable.other.interpolated.v'
-            }
+            {include: '#operators'},
+            {include: '#numbers'},
+            {include: '#function-exist'},
+            {include: '#types'},
+            {include: '#constants'},
+            {match: '\\w+', name: 'variable.other.v'}
           ]
         }
-      },
-      match: '(\\$([\\w.]+|\\{.*?\\}))',
-      name: 'meta.string.interpolation.v'
+      ]
     },
     'string-placeholder': {
       match:
@@ -435,20 +443,14 @@ const grammar = {
           beginCaptures: {1: {name: 'storage.type.string.v'}},
           end: "'",
           name: 'string.quoted.raw.v',
-          patterns: [
-            {include: '#string-interpolation'},
-            {include: '#string-placeholder'}
-          ]
+          patterns: [{include: '#string-placeholder'}]
         },
         {
           begin: '(r)"',
           beginCaptures: {1: {name: 'storage.type.string.v'}},
           end: '"',
           name: 'string.quoted.raw.v',
-          patterns: [
-            {include: '#string-interpolation'},
-            {include: '#string-placeholder'}
-          ]
+          patterns: [{include: '#string-placeholder'}]
         },
         {
           begin: "(c?)'",

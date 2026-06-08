@@ -37,6 +37,8 @@ const grammar = {
     'bazel',
     'bzl',
     'easybuild',
+    'py',
+    'py3',
     'python',
     'python3',
     'rusthon',

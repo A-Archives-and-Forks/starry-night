@@ -17,8 +17,11 @@ const grammar = {
       patterns: [
         {
           begin:
-            '(?x)\\b(can|with|def|impl|sem)\\b(?=\\s*[[:alpha:]_]\\w*|\\s*({|;|\\(||\\n))',
-          beginCaptures: {1: {name: 'storage.type.function.jac'}},
+            '(?x)\\b(?:(cl|sv|na)\\s+)?(can|with|def|impl|sem)\\b(?=\\s*[[:alpha:]_]\\w*|\\s*({|;|\\(||\\n))',
+          beginCaptures: {
+            1: {name: 'storage.modifier.declaration.jac'},
+            2: {name: 'storage.type.function.jac'}
+          },
           end: '(?=\\)|{)|;',
           endCaptures: {1: {name: 'punctuation.section.function.begin.jac'}},
           name: 'meta.function.jac',
@@ -32,10 +35,30 @@ const grammar = {
             {include: '#archetype_refdef'},
             {include: '#arch-reference'},
             {include: '#arch-var-reference'},
+            {include: '#return-annotation'},
             {
               match: '(?x)\n  \\b ([[:alpha:]_]\\w*) \\b\n',
               name: 'entity.name.function.jac'
             }
+          ]
+        }
+      ]
+    },
+    accessor: {
+      patterns: [
+        {
+          begin:
+            '(?x)\\b(?<!\\.)(getter|setter|deleter)\\b(?=\\s*(\\(|->|{|;|\\n))',
+          beginCaptures: {1: {name: 'storage.type.function.jac'}},
+          end: '(?=\\)|{)|;',
+          endCaptures: {1: {name: 'punctuation.section.function.begin.jac'}},
+          name: 'meta.function.accessor.jac',
+          patterns: [
+            {include: '#comments'},
+            {include: '#parameters'},
+            {include: '#builtin-types'},
+            {include: '#statement-keyword'},
+            {include: '#string'}
           ]
         }
       ]
@@ -57,19 +80,26 @@ const grammar = {
       patterns: [
         {
           begin:
-            '(?x)\\s*(enum|obj|class|node|edge|walker|test)\\s*(?=\\s*[[:alpha:]_]\\w*|\\s*({|;|\\n))',
+            '(?x)\\s*(enum|obj|class|node|edge|walker|test)\\s*(?=\\s*[[:alpha:]_]\\w*|:(pub|priv|protect)?\\s+[[:alpha:]_]\\w*|\\s*({|;|\\n))',
           beginCaptures: {1: {name: 'storage.type.class.jac'}},
           end: '({|;)',
           endCaptures: {1: {name: 'punctuation.section.class.begin.jac'}},
           name: 'meta.class.jac',
-          patterns: [{include: '#class-name'}, {include: '#class-inheritance'}]
+          patterns: [
+            {
+              captures: {1: {name: 'storage.modifier.declaration.jac'}},
+              match: ':(pub|priv|protect)?'
+            },
+            {include: '#class-name'},
+            {include: '#class-inheritance'}
+          ]
         }
       ]
     },
     'arch-reference': {
       patterns: [
         {
-          begin: '(impl|sem)\\s*(?=\\s*[[:alpha:]_]\\w*|\\s*( |:|\\n))',
+          begin: '\\b(impl|sem)\\b\\s*(?=\\s*[[:alpha:]_]\\w*|\\s*( |:|\\n))',
           beginCaptures: {1: {name: 'storage.type.class.jac'}},
           end: '((?=:| )|;)',
           endCaptures: {1: {name: 'punctuation.section.class.begin.jac'}},
@@ -82,7 +112,7 @@ const grammar = {
       patterns: [
         {
           captures: {1: {name: 'storage.type.class.jac'}},
-          match: '(here|visitor|self|init|postinit|super|root)\\s*'
+          match: '\\b(here|visitor|self|init|postinit|super|root)\\b'
         }
       ]
     },
@@ -90,28 +120,35 @@ const grammar = {
       patterns: [
         {
           begin:
-            '(?x)\\b(enum|obj|class|node|edge|walker|test)\\b(?=\\s+[[:alpha:]_]\\w*|\\s*({|;|\\n))',
+            '(?x)\\b(enum|obj|class|node|edge|walker|test)\\b(?=\\s+[[:alpha:]_]\\w*|:(pub|priv|protect)?\\s+[[:alpha:]_]\\w*|\\s*({|;|\\n))',
           beginCaptures: {1: {name: 'storage.type.class.jac'}},
           end: '(?={)|;',
           endCaptures: {1: {name: 'punctuation.section.class.begin.jac'}},
           name: 'meta.class.jac',
-          patterns: [{include: '#class-name'}, {include: '#class-inheritance'}]
+          patterns: [
+            {
+              captures: {1: {name: 'storage.modifier.declaration.jac'}},
+              match: ':(pub|priv|protect)?'
+            },
+            {include: '#class-name'},
+            {include: '#class-inheritance'}
+          ]
         }
       ]
     },
     archetype_refdef: {
       patterns: [
         {
-          begin: '(impl|sem)',
+          begin: '\\b(impl|sem)\\b',
           beginCaptures: {1: {name: 'storage.type.class.jac'}},
-          end: '(?=:|{|\\W)',
+          end: '(?=:|{)',
           endCaptures: {1: {name: 'punctuation.section.class.begin.jac'}},
           name: 'meta.class.jac',
           patterns: [
             {include: '#comments'},
             {
               match: '\\b([[:alpha:]_]\\w*)\\b',
-              name: 'entity.name.type.class.jac'
+              name: 'entity.name.function.jac'
             }
           ]
         }
@@ -276,7 +313,6 @@ const grammar = {
     },
     'decorator-name': {
       patterns: [
-        {include: '#builtin-callables'},
         {include: '#illegal-object-name'},
         {
           captures: {2: {name: 'punctuation.separator.period.jac'}},
@@ -757,12 +793,14 @@ const grammar = {
     },
     elements: {
       patterns: [
+        {include: '#decorator'},
         {include: '#import'},
         {include: '#global'},
         {include: '#sem'},
         {include: '#archetype'},
         {include: '#archetype_refdef'},
         {include: '#has'},
+        {include: '#accessor'},
         {include: '#ability'},
         {include: '#general'}
       ]
@@ -792,6 +830,7 @@ const grammar = {
     'expression-bare': {
       patterns: [
         {include: '#jsx'},
+        {include: '#jac-graph-operator'},
         {include: '#illegal-anno'},
         {include: '#literal'},
         {include: '#regexp'},
@@ -865,7 +904,6 @@ const grammar = {
       name: 'meta.fstring.jac',
       patterns: [
         {include: '#fstring-guts'},
-        {include: '#fstring-illegal-multi-brace'},
         {include: '#fstring-multi-brace'},
         {include: '#fstring-multi-core'}
       ]
@@ -927,7 +965,6 @@ const grammar = {
         {include: '#fstring-formatting'}
       ]
     },
-    'fstring-illegal-multi-brace': {patterns: [{include: '#impossible'}]},
     'fstring-illegal-single-brace': {
       begin: '(\\{)(?=[^\\n}]*$\\n?)',
       beginCaptures: {
@@ -982,7 +1019,6 @@ const grammar = {
       name: 'meta.fstring.jac',
       patterns: [
         {include: '#fstring-guts'},
-        {include: '#fstring-illegal-multi-brace'},
         {include: '#fstring-multi-brace'},
         {include: '#fstring-multi-core'}
       ]
@@ -1044,7 +1080,6 @@ const grammar = {
       name: 'meta.fstring.jac',
       patterns: [
         {include: '#fstring-raw-guts'},
-        {include: '#fstring-illegal-multi-brace'},
         {include: '#fstring-multi-brace'},
         {include: '#fstring-raw-multi-core'}
       ]
@@ -1121,7 +1156,6 @@ const grammar = {
       },
       end: '(?=})',
       patterns: [
-        {include: '#fstring-illegal-multi-brace'},
         {include: '#fstring-multi-brace'},
         {match: '([bcdeEfFgGnosxX%])(?=})', name: 'storage.type.format.jac'},
         {match: '(\\.\\d+)', name: 'storage.type.format.jac'},
@@ -1254,6 +1288,7 @@ const grammar = {
         {include: '#statement-keyword'},
         {include: '#function-call'},
         {include: '#jsx'},
+        {include: '#jac-graph-operator'},
         {include: '#literal'},
         {include: '#operator'},
         {include: '#assignment-operator'},
@@ -1324,7 +1359,7 @@ const grammar = {
         2: {name: 'keyword.control.import.jac'}
       },
       match:
-        '(?x)\n  \\b(?:\n    (\n      and | assert | check | async | await | break | class | continue | def\n      | del | elif | else | except | finally | for | from | global\n      | if | in | is | (?<=\\.)lambda | lambda(?=\\s*[\\.=])\n      | nonlocal | not | or | pass | raise | return | try | while | with\n      | yield\n    ) | (\n      as | import\n    )\n  )\\b\n'
+        '(?x)\n  \\b(?:\n    (\n      and | assert | async | await | break | class | continue | def\n      | del | elif | else | except | finally | for | from | global\n      | if | in | is | (?<=\\.)lambda | lambda(?=\\s*[\\.=])\n      | nonlocal | not | or | pass | raise | return | try | while | with\n      | yield\n    ) | (\n      as | import\n    )\n  )\\b\n'
     },
     'illegal-object-name': {
       match: '\\b(True|False|None)\\b',
@@ -1406,6 +1441,10 @@ const grammar = {
         }
       ]
     },
+    'jac-graph-operator': {
+      match: '\\+\\+>|<\\+\\+|-->|<--|->|<-|\\+>|<\\+',
+      name: 'keyword.operator.graph.jac'
+    },
     js_style_comment: {
       begin: '(\\/\\/)',
       beginCaptures: {1: {name: 'punctuation.definition.comment.jac'}},
@@ -1448,7 +1487,6 @@ const grammar = {
         {include: '#jsx-tag-component'},
         {include: '#jsx-tag-html'},
         {include: '#jsx-evaluated-code'},
-        {include: '#comments'},
         {include: '#jsx-text'}
       ]
     },
@@ -1525,15 +1563,34 @@ const grammar = {
       ]
     },
     'jsx-tag-component': {
-      begin: '(<)([A-Z][a-zA-Z0-9_$]*)(?=\\s|/?>)',
-      beginCaptures: {
-        1: {name: 'punctuation.definition.tag.begin.jsx.jac'},
-        2: {name: 'support.class.component.jsx.jac'}
-      },
-      end: '(/?>)',
-      endCaptures: {1: {name: 'punctuation.definition.tag.end.jsx.jac'}},
-      name: 'meta.jsx.component.jac',
-      patterns: [{include: '#jsx-tag-attributes'}]
+      patterns: [
+        {
+          begin: '(<)([A-Z][a-zA-Z0-9_$]*)(?=[\\s/>])',
+          beginCaptures: {
+            1: {name: 'punctuation.definition.tag.begin.jsx.jac'},
+            2: {name: 'support.class.component.jsx.jac'}
+          },
+          end: '(/>)|(</)(\\2)(>)',
+          endCaptures: {
+            1: {name: 'punctuation.definition.tag.end.jsx.jac'},
+            2: {name: 'punctuation.definition.tag.end.jsx.jac'},
+            3: {name: 'support.class.component.jsx.jac'},
+            4: {name: 'punctuation.definition.tag.end.jsx.jac'}
+          },
+          name: 'meta.jsx.component.jac',
+          patterns: [
+            {
+              begin: '(>)',
+              beginCaptures: {
+                1: {name: 'punctuation.definition.tag.end.jsx.jac'}
+              },
+              end: '(?=</)',
+              patterns: [{include: '#jsx-children'}]
+            },
+            {include: '#jsx-tag-attributes'}
+          ]
+        }
+      ]
     },
     'jsx-tag-fragment': {
       begin: '(<>)(?=\\s|$|<)',
@@ -1544,22 +1601,41 @@ const grammar = {
       patterns: [{include: '#jsx-children'}]
     },
     'jsx-tag-html': {
-      begin: '(<)([a-z][a-zA-Z0-9_-]*)(?=\\s|/?>)',
-      beginCaptures: {
-        1: {name: 'punctuation.definition.tag.begin.jsx.jac'},
-        2: {name: 'entity.name.tag.html.jsx.jac'}
-      },
-      end: '(/?>)',
-      endCaptures: {1: {name: 'punctuation.definition.tag.end.jsx.jac'}},
-      name: 'meta.jsx.html.jac',
-      patterns: [{include: '#jsx-tag-attributes'}]
+      patterns: [
+        {
+          begin: '(<)([a-z][a-zA-Z0-9_-]*)(?=[\\s/>])',
+          beginCaptures: {
+            1: {name: 'punctuation.definition.tag.begin.jsx.jac'},
+            2: {name: 'entity.name.tag.html.jsx.jac'}
+          },
+          end: '(/>)|(</)(\\2)(>)',
+          endCaptures: {
+            1: {name: 'punctuation.definition.tag.end.jsx.jac'},
+            2: {name: 'punctuation.definition.tag.end.jsx.jac'},
+            3: {name: 'entity.name.tag.html.jsx.jac'},
+            4: {name: 'punctuation.definition.tag.end.jsx.jac'}
+          },
+          name: 'meta.jsx.html.jac',
+          patterns: [
+            {
+              begin: '(>)',
+              beginCaptures: {
+                1: {name: 'punctuation.definition.tag.end.jsx.jac'}
+              },
+              end: '(?=</)',
+              patterns: [{include: '#jsx-children'}]
+            },
+            {include: '#jsx-tag-attributes'}
+          ]
+        }
+      ]
     },
     'jsx-tag-in-expression': {
       begin: '(?:^|(?<=>))',
       end: '(?=</)',
       patterns: [{include: '#jsx-children'}]
     },
-    'jsx-text': {match: '[^<>{}\n]+', name: 'string.unquoted.jsx.jac'},
+    'jsx-text': {match: '[^<>{}]+', name: 'string.unquoted.jsx.jac'},
     'keyword-escape': {
       captures: {
         1: {name: 'punctuation.definition.keyword-escape.jac'},
@@ -1582,12 +1658,14 @@ const grammar = {
           begin: '(?x)\n  \\b (lambda) \\b',
           beginCaptures: {1: {name: 'storage.type.function.lambda.jac'}},
           contentName: 'meta.function.lambda.parameters.jac',
-          end: '(:)|(\\n)',
+          end: '({)|(\\n)|(?=[),])',
           endCaptures: {
             1: {name: 'punctuation.section.function.lambda.begin.jac'}
           },
           name: 'meta.lambda-function.jac',
           patterns: [
+            {include: '#string'},
+            {include: '#function-call'},
             {match: '/', name: 'keyword.operator.positional.parameter.jac'},
             {
               match: '(\\*\\*|\\*)',
@@ -1600,10 +1678,10 @@ const grammar = {
                 1: {name: 'variable.parameter.function.language.jac'},
                 2: {name: 'punctuation.separator.parameters.jac'}
               },
-              match: '([[:alpha:]_]\\w*)\\s*(?:(,)|(?=:|$))'
+              match: '([[:alpha:]_]\\w*)\\s*(?:(,)|(?=->|{|$))'
             },
             {include: '#comments'},
-            {include: '#illegal-anno'},
+            {include: '#return-annotation'},
             {include: '#lambda-parameter-with-default'},
             {include: '#line-continuation'},
             {include: '#illegal-operator'}
@@ -1616,7 +1694,7 @@ const grammar = {
       name: 'storage.type.function.lambda.jac'
     },
     'lambda-nested-incomplete': {
-      match: '\\blambda(?=\\s*[:,)])',
+      match: '\\blambda(?=\\s*[->,{)])',
       name: 'storage.type.function.lambda.jac'
     },
     'lambda-parameter-with-default': {
@@ -1625,7 +1703,7 @@ const grammar = {
         1: {name: 'variable.parameter.function.language.jac'},
         2: {name: 'keyword.operator.jac'}
       },
-      end: '(,)|(?=:|$)',
+      end: '(,)|(?=->|[{)}]|$)',
       endCaptures: {1: {name: 'punctuation.separator.parameters.jac'}},
       patterns: [{include: '#expression'}]
     },
@@ -1806,6 +1884,8 @@ const grammar = {
           match: '(\\*\\*|\\*)',
           name: 'keyword.operator.unpacking.parameter.jac'
         },
+        {include: '#string'},
+        {include: '#literal'},
         {include: '#lambda-incomplete'},
         {include: '#illegal-names'},
         {include: '#illegal-object-name'},
@@ -1990,7 +2070,7 @@ const grammar = {
     'return-annotation': {
       begin: '(->)',
       beginCaptures: {1: {name: 'punctuation.separator.annotation.result.jac'}},
-      end: '(?=:)',
+      end: '(?=:|{|;)',
       patterns: [{include: '#expression'}]
     },
     'round-braces': {
@@ -2005,7 +2085,7 @@ const grammar = {
         {
           begin: '(?x)\\b(sem)\\b(?=\\s*[[:alpha:]_]\\w*|\\s*\\n)',
           beginCaptures: {1: {name: 'storage.type.semstring.jac'}},
-          end: ';',
+          end: ';|(?=^\\s*(?:cl|sv|na|def|impl|with|sem|import|glob|let|enum|obj|class|node|edge|walker|test)\\b)',
           endCaptures: {1: {name: 'punctuation.terminator.statement.jac'}},
           name: 'meta.semstring.jac',
           patterns: [
@@ -2443,7 +2523,7 @@ const grammar = {
     'statement-keyword': {
       patterns: [
         {
-          match: '\\b((async\\s+)?\\s*(can|impl|sem|def))\\b',
+          match: '\\b((async\\s+)?(can|impl|sem|def))\\b',
           name: 'storage.type.function.jac'
         },
         {
@@ -2453,12 +2533,12 @@ const grammar = {
         {match: '\\b(?<!\\.)as\\b', name: 'keyword.control.import.jac'},
         {
           match:
-            '(?x)\n  \\b(?<!\\.)(\n    async | await | continue | entry | exit | del | assert | check | break | finally | for\n    | from | elif | else | if | except | pass | raise\n    | return | report | try | while | with | to | by | spawn | ignore | visit | disengage | lambda\n  )\\b\n',
+            '(?x)\n  \\b(?<!\\.)(\n    async | await | awaiting | continue | entry | exit | del | assert | break | finally | for\n    | from | elif | else | if | except | pass | raise\n    | return | report | try | while | with | to | by | spawn | ignore | visit | disengage | skip | lambda\n  )\\b\n',
           name: 'keyword.control.flow.jac'
         },
         {
           match:
-            '(?x)\n  \\b(?<!\\.)(\n    priv|protect|pub|static|override|let|abs|glob|global|nonlocal|cl\n  )\\b\n',
+            '(?x)\n  \\b(?<!\\.)(\n    priv|protect|pub|static|override|let|abs|glob|global|nonlocal|cl|sv|na\n  )\\b\n',
           name: 'storage.modifier.declaration.jac'
         },
         {

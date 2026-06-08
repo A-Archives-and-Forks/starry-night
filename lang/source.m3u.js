@@ -100,6 +100,29 @@ const grammar = {
           patterns: [{include: '#hex'}, {include: 'etc#num'}]
         },
         {
+          begin: '\\G(#)(EXTVLCOPT)(:)[ \\t]*([-\\w]+)(=)',
+          beginCaptures: {
+            1: {name: 'punctuation.definition.comment.m3u'},
+            2: {name: 'keyword.operator.field.vlc-option.m3u'},
+            3: {patterns: [{include: 'etc#kolon'}]},
+            4: {name: 'variable.assignment.option.m3u'},
+            5: {patterns: [{include: 'etc#eql'}]}
+          },
+          end: '$',
+          name: 'comment.line.number-sign.directive.vlc-option.${4:/downcase}.m3u',
+          patterns: [
+            {
+              captures: {
+                1: {patterns: [{include: 'etc#num'}]},
+                2: {patterns: [{include: 'etc#boolish'}]},
+                3: {name: 'string.unquoted.vlc-option.m3u'}
+              },
+              match:
+                '(?xi) \\G\\s* (?:\n\t([-+]?(?:\\d+(?:\\.\\d+)?|\\.\\d+)) |\n\t(true|false|yes|no|on|off) |\n\t(\\S.*?)\n)(?=\\s*$)'
+            }
+          ]
+        },
+        {
           begin: '\\G(#)(PLAYLIST|EXT(?:[A-Z]+))(?:(:)|(?=\\s*$))',
           beginCaptures: {
             1: {name: 'punctuation.definition.comment.m3u'},

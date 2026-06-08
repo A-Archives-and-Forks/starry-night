@@ -17,7 +17,7 @@ const grammar = {
       begin: '(?i)\\s*(set-size)\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       name: 'meta.function-call.abl',
       patterns: [
         {include: '#parens'},
@@ -49,7 +49,89 @@ const grammar = {
         {include: '#abl-functions-U'},
         {include: '#abl-functions-V'},
         {include: '#abl-functions-W'},
-        {include: '#abl-functions-Y'}
+        {include: '#abl-functions-Y'},
+        {
+          patterns: [
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(a(?:ccumulate?|ccumula?|ccumu?|mbiguous?|mbiguo?|mbig|vailable?|vailab?|vail))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(current-(?:changed|language?|langua?|lang))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(d(?:ataservers|bname))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(e(?:ntered|time))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(frame-(?:col|db|down|field|file|index?|line|name|row|value?|val))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(g(?:ateways?|enerate-pbe-salt|enerate-random-key|enerate-uuid|et-codepages?|o-pending?|o-pendi?|uid))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(i(?:nput|s-attr-space?|s-attr-spa?|s-attr-s?|s-attr))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(l(?:astkey|ine-counter?|ine-count|ocked))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match: '(?i)\\b(message-lines)(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(n(?:ow|um-aliases?|um-alias?|um-ali|um-dbs))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(o(?:psys|s-drives?|s-error))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(p(?:age-number?|age-numb?|age-size|roc-handle?|roc-hand?|roc-ha|roc-status?|roc-stat?|roc-st|rocess-architecture|rogress|romsgs|ropath|roversion?|roversi?))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(ret(?:ry|urn|urn-value?|urn-val))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(s(?:creen-lines|kip|uper))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match:
+                '(?i)\\b(t(?:erminal|ime|oday|ransaction?|ransacti?))(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            },
+            {
+              captures: {1: {name: 'support.function.abl'}},
+              match: '(?i)\\b(userid)(?!(\\.\\w+))(?=\\)|\\s|,|]|:|\\.)'
+            }
+          ]
+        }
       ]
     },
     'abl-functions-A': {
@@ -57,8 +139,7 @@ const grammar = {
         '(?i)\\s*(a(?:bsolute?|bsolu?|bso?|ccumulate?|ccumula?|ccumu?|dd-interval|lias|mbiguous?|mbiguo?|mbig|scending?|scendi?|scen?|sc|udit-enabled|vailable?|vailab?|vail))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-B': {
@@ -66,8 +147,7 @@ const grammar = {
         '(?i)\\s*(b(?:ase64-decode|ase64-encode|ox|uffer-group-id|uffer-group-name|uffer-partition-id|uffer-tenant-id|uffer-tenant-name))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-C': {
@@ -75,8 +155,7 @@ const grammar = {
         '(?i)\\s*(c(?:an-do|an-find|an-query|an-set|aps|ast|hr|odepage-convert|ompares?|onnected|ount-of|urrent-changed|urrent-language?|urrent-langua?|urrent-lang|urrent-result-row|urrent-value))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-D': {
@@ -84,8 +163,7 @@ const grammar = {
         '(?i)\\s*(d(?:ata-source-modified|ataservers|ate|atetime|atetime-tz|ay|b-remote-host|bcodepage|bcollation|bname|bparam|brestrictions?|brestrictio?|brestrict?|brestri?|brest|btaskid|btype|bversion?|bversi?|ecimal?|ecim?|ec|ecrypt|efined|ynamic-cast|ynamic-current-value|ynamic-enum|ynamic-function?|ynamic-functi?|ynamic-func|ynamic-invoke|ynamic-next-value|ynamic-property))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-E': {
@@ -93,8 +171,7 @@ const grammar = {
         '(?i)\\s*(e(?:ncode|ncrypt|ntered|ntry|rror|time|xp|xtent))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-F': {
@@ -102,25 +179,22 @@ const grammar = {
         '(?i)\\s*(f(?:ill|irst|irst-of|rame-col|rame-db|rame-down|rame-field|rame-file|rame-index?|rame-line|rame-name|rame-row|rame-value?|rame-val))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-G': {
       begin:
-        '(?i)\\s*(g(?:ateways?|enerate-pbe-key|enerate-pbe-salt|enerate-random-key|enerate-uuid|et-bits|et-byte|et-byte-order|et-bytes|et-class|et-codepages?|et-codepages?|et-collations??|et-collation?|et-collati?|et-colla?|et-db-client|et-double|et-effective-tenant-id|et-effective-tenant-name|et-float|et-int64|et-long|et-pointer-value|et-short|et-size|et-string|et-unsigned-long|et-unsigned-short|o-pending?|o-pendi?|uid))\\s*(?=\\()',
+        '(?i)\\s*(g(?:ateways?|enerate-password-hash|enerate-pbe-key|enerate-pbe-salt|enerate-random-key|enerate-salt|enerate-uuid|et-bits|et-byte|et-byte-order|et-bytes|et-class|et-codepages?|et-codepages?|et-collations??|et-collation?|et-collati?|et-colla?|et-db-client|et-double|et-effective-tenant-id|et-effective-tenant-name|et-float|et-int64|et-long|et-pointer-value|et-short|et-size|et-string|et-unsigned-long|et-unsigned-short|o-pending?|o-pendi?|uid))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-H': {
       begin: '(?i)\\s*(h(?:andle|ash-code|ex-decode|ex-encode))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-I': {
@@ -128,8 +202,7 @@ const grammar = {
         '(?i)\\s*(i(?:ndex|nput|nt64|nteger?|nteg?|nt|nterval|s-attr-space?|s-attr-spa?|s-attr-s?|s-attr|s-codepage-fixed|s-column-codepage|s-db-multi-tenant|s-lead-byte|so-date))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-K': {
@@ -137,8 +210,7 @@ const grammar = {
         '(?i)\\s*(k(?:blabel|eycode|eyfunction?|eyfuncti?|eyfunc|eylabel|eyword|eyword-all))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-L': {
@@ -146,8 +218,7 @@ const grammar = {
         '(?i)\\s*(l(?:ast|ast-of|astkey|c|dbname|eft-trim|ength|ibrary|ine-counter?|ine-count|ist-events|ist-query-attrs|ist-set-attrs|ist-widgets|ocked|og|ogical?|ogic?|og?|ookup|ower))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-M': {
@@ -155,25 +226,22 @@ const grammar = {
         '(?i)\\s*(m(?:aximum|d5-digest|ember|essage-digest|essage-lines|inimum?|inim?|in|onth|time))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-N': {
       begin:
-        '(?i)\\s*(n(?:ew|ext-value|ormalize|ot|ow|um-aliases?|um-alias?|um-ali|um-dbs|um-entries|um-results))\\s*(?=\\()',
+        '(?i)\\s*(n(?:ew|ext-value|ormalize|ow|um-aliases?|um-alias?|um-ali|um-dbs|um-entries|um-results))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-O': {
       begin: '(?i)\\s*(o(?:psys|s-dir|s-drives?|s-error|s-getenv))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-P': {
@@ -181,16 +249,14 @@ const grammar = {
         '(?i)\\s*(p(?:age-number?|age-numb?|age-size|dbname|roc-handle?|roc-hand?|roc-ha|roc-status?|roc-stat?|roc-st|rocess-architecture|rogram-name|rogress|romsgs|ropath|roversion?|roversi?))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-Q': {
       begin: '(?i)\\s*(qu(?:ery-off-end|oter))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-R': {
@@ -198,8 +264,7 @@ const grammar = {
         '(?i)\\s*(r(?:-index|andom|aw|ecid|ecord-length?|ecord-leng?|ejected|elation-fields?|elation-fiel?|elation-fi|eplace|etry|eturn|eturn-value?|eturn-val|gb-value?|gb-val?|gb-v|ight-trim|ound|ow-state|owid))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-S': {
@@ -207,8 +272,7 @@ const grammar = {
         '(?i)\\s*(s(?:creen-lines|dbname|earch|eek|et-db-client|et-effective-tenant|et-size|etuserid?|etuser|ha1-digest|kip|pace|qrt|sl-server-name|tring|ubstitute?|ubstitu?|ubsti?|ubstring?|ubstri?|uper))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-T': {
@@ -216,24 +280,21 @@ const grammar = {
         '(?i)\\s*(t(?:enant-id|enant-name|enant-name-to-id|erminal|his-object|ime|imezone|o-rowid|oday|ransaction?|ransacti?|rim|runcate?|runca?|ype-of))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-U': {
       begin: '(?i)\\s*(u(?:nbox|serid))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-V': {
       begin: '(?i)\\s*(val(?:id-event|id-handle|id-object|ue))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-W': {
@@ -241,25 +302,23 @@ const grammar = {
         '(?i)\\s*(w(?:eekday|idget-handle?|idget-hand?|idget-ha?))\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-functions-Y': {
       begin: '(?i)\\s*(year)\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function-call.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'abl-system-handles': {
       captures: {
         1: {name: 'variable.language.abl'},
-        2: {name: 'punctuation.separator.colon.abl'}
+        2: {name: 'punctuation.accessor.abl'}
       },
       match:
-        '(?i)\\b(active-window|audit-control|audit-policy|clipboard|codebase-locator|color-table|compiler|current-window|debugger|default-window|dslog-manager|(error-stat(?:us|u)?)|(file-info(?:rmation|rmatio|rmati|rmat|rma|rm|r)?)|font-table|(last-even(?:t)?)|log-manager|profiler|(rcode-info(?:rmation|rmatio|rmati|rmat|rma|rm|r)?)|security-policy|self|session|source-procedure|super|target-procedure|this-object|this-procedure|web-context)\\b(?![#$\\-_%&])'
+        '(?i)\\b(active-window|audit-control|audit-policy|clipboard|codebase-locator|color-table|com-self|compiler|current-window|debugger|default-window|dslog-manager|(error-stat(?:us|u)?)|(file-info(?:rmation|rmatio|rmati|rmat|rma|rm|r)?)|focus|font-table|last-event|log-manager|profiler|(rcode-info(?:rmation|rmatio|rmati|rmat|rma|rm|r)?)|sax-attributes|sax-reader|sax-writer|security-policy|self|session|source-procedure|super|target-procedure|this-object|this-procedure|transaction|web-context)\\b(?![#$\\-_%&\\(])'
     },
     'access-modifier': {
       captures: {1: {name: 'keyword.other.abl'}},
@@ -273,12 +332,12 @@ const grammar = {
     },
     annotation: {
       patterns: [
-        {include: '#annotation-simple'},
-        {include: '#annotation-attributes'}
+        {include: '#annotation-attributes'},
+        {include: '#annotation-simple'}
       ]
     },
     'annotation-attributes': {
-      begin: '(^|\\s+)(\\@[a-zA-Z_][a-zA-Z0-9_#$\\-%&]*)\\s*(?=\\()',
+      begin: '(^|\\s+)(\\@[a-zA-Z_][a-zA-Z0-9_#$\\-%&\\.]*)\\s*(?=\\()',
       beginCaptures: {2: {name: 'entity.name.tag.abl'}},
       end: '(?=\\.)',
       name: 'meta.declaration.annotation.abl',
@@ -295,7 +354,7 @@ const grammar = {
     },
     'annotation-simple': {
       captures: {2: {name: 'entity.name.tag.abl'}},
-      match: '(^|\\s*)(\\@[a-zA-Z_][a-zA-Z0-9_#$\\-%&]*)\\s*(?=\\.)',
+      match: '(^|\\s*)(\\@[a-zA-Z_][a-zA-Z0-9_#$\\-%&\\.]+)\\s*(?=\\.)',
       name: 'meta.declaration.annotation.abl'
     },
     'argument-reference': {
@@ -347,8 +406,9 @@ const grammar = {
     },
     'assign-statment': {
       patterns: [
+        {include: '#record-buffer-functions'},
+        {include: '#new-class'},
         {include: '#abl-functions'},
-        {include: '#language-functions'},
         {include: '#string'},
         {include: '#expression'},
         {include: '#argument-reference'},
@@ -402,11 +462,11 @@ const grammar = {
         },
         {include: '#numeric'},
         {include: '#type-member-call'},
-        {include: '#language-functions'},
+        {include: '#branch-options'},
+        {include: '#dynamic-buffer-field-access'},
         {include: '#abl-functions'},
         {include: '#punctuation-comma'},
-        {include: '#punctuation-colon'},
-        {include: '#branch-options'}
+        {include: '#punctuation-colon'}
       ]
     },
     'block-undo-leave-next-retry': {
@@ -460,15 +520,12 @@ const grammar = {
       match: '(?i)\\s*(return)\\s+(no-apply)\\s*'
     },
     'branch-return-value-double': {
-      begin: '(?i)\\s*(return)(\\s+(error))?\\s+(")',
-      beginCaptures: {
+      captures: {
         1: {name: 'keyword.other.abl'},
-        2: {name: 'keyword.other.abl'},
-        3: {name: 'punctuation.definition.string.begin.abl'}
+        3: {name: 'keyword.other.abl'},
+        4: {name: 'punctuation.definition.string.begin.abl'}
       },
-      end: '(")',
-      endCaptures: {1: {name: 'punctuation.definition.string.end.abl'}},
-      patterns: [{include: '#escape-char'}]
+      match: '(?i)\\s*(return)(\\s+(error))?\\s+(?=")'
     },
     'branch-return-value-single': {
       begin: "(?i)\\s*(return)(\\s+(error))?\\s+(')",
@@ -494,41 +551,27 @@ const grammar = {
     'break-group': {
       captures: {
         1: {name: 'keyword.other.abl'},
-        2: {name: 'meta.brace.round.js'},
+        2: {name: 'meta.brace.round.abl'},
         3: {name: 'storage.data.table.abl'},
-        4: {name: 'meta.brace.round.js'}
+        4: {name: 'meta.brace.round.abl'}
       },
       match:
         '(?i)\\s*(first-of|first|last-of|last)\\s*(\\()\\s*([a-zA-Z][a-zA-Z#$\\-_%&]*\\.[a-zA-Z_][a-zA-Z#$\\-_%&]*(\\.[a-zA-Z_][a-zA-Z#$\\-_%&]*)?)\\s*(\\))\\s*'
     },
     'buffer-copy': {
-      begin:
-        '(?i)\\b(buffer-copy)\\s+([a-zA-Z_][a-zA-Z0-9_\\-#$%]+(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?)',
-      beginCaptures: {
-        1: {name: 'keyword.other.abl'},
-        2: {name: 'storage.data.table.abl'}
-      },
-      end: '(?=\\.)',
+      begin: '(?i)\\s*(buffer-copy)\\s*(?!\\()',
+      beginCaptures: {1: {name: 'keyword.other.abl'}},
+      end: '(?=\\s*[Aa][Ss][Ss][Ii][Gg][Nn]|\\.)',
       patterns: [
-        {
-          captures: {
-            1: {name: 'keyword.other.abl'},
-            2: {name: 'storage.data.table.abl'}
-          },
-          match:
-            '\\b([Tt][Oo])\\s+([a-zA-Z_][a-zA-Z0-9_\\-#$%]+(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?)'
-        },
-        {include: '#using-except'},
         {include: '#comment'},
         {include: '#preprocessors'},
         {
           captures: {1: {name: 'keyword.other.abl'}},
-          match: '(?i)\\b(assign|no-lobs|no-error)\\b'
+          match: '(?i)\\s*(using|except|to|no-lobs|no-error)\\s*'
         },
         {include: '#db-dot-table-dot-field'},
-        {include: '#assign-statment'},
-        {include: '#keywords'},
-        {include: '#expression'}
+        {include: '#db-dot-table'},
+        {include: '#field-name'}
       ]
     },
     'buffer-for-table': {
@@ -552,7 +595,7 @@ const grammar = {
     'cache-value': {
       captures: {
         1: {name: 'keyword.other.abl'},
-        3: {name: 'constant.numeric.source.abl'}
+        3: {name: 'constant.numeric.abl'}
       },
       match:
         '\\b([Cc][Aa][Cc][Hh][Ee])\\s+(0[xX][[:xdigit:]]+)?|(\\-?[0-9]+(\\.[0-9]+)?)\\b'
@@ -561,7 +604,7 @@ const grammar = {
       begin: '(?i)\\s*(can-find)\\s*(\\()',
       beginCaptures: {
         1: {name: 'support.function.abl'},
-        2: {name: 'meta.brace.round.js'}
+        2: {name: 'meta.brace.round.abl'}
       },
       end: '(?i)\\b(?=\\)|where|no-lock|(share(?:-lock|-loc|-lo|-l|-)?)|using|(no-prefe(?:tch|tc|t)?)|no-wait)\\s*',
       patterns: [
@@ -581,6 +624,9 @@ const grammar = {
     },
     'code-block': {
       patterns: [
+        {include: '#parens'},
+        {include: '#array-literal'},
+        {include: '#type-member-call'},
         {include: '#create-statement'},
         {include: '#record-buffer-functions'},
         {include: '#can-find'},
@@ -589,7 +635,6 @@ const grammar = {
         {include: '#block-undo-leave-next-retry'},
         {include: '#operator'},
         {include: '#string'},
-        {include: '#language-functions'},
         {include: '#numeric'},
         {include: '#constant'},
         {include: '#operator'},
@@ -601,10 +646,9 @@ const grammar = {
         {include: '#property-call'},
         {include: '#new-record'},
         {include: '#type-reference'},
-        {include: '#abl-functions'},
         {include: '#abl-system-handles'},
-        {include: '#handle-methods'},
-        {include: '#handle-attributes'},
+        {include: '#abl-functions'},
+        {include: '#handle-attributes-and-methods'},
         {include: '#keywords'},
         {include: '#variable-name'},
         {include: '#static-object-property-call'},
@@ -620,7 +664,7 @@ const grammar = {
     },
     constant: {
       match:
-        '(?i)(?<=^|\\b|\\s|\\()(true|false|yes|no|\\?)(?![a-zA-Z0-9_\\-#$%])',
+        '(?i)(?<=^|\\b|\\s|\\()(true|false|yes|no|\\?)(?![a-zA-Z0-9_\\-#$%:])',
       name: 'constant.language.abl'
     },
     'copy-lob': {
@@ -647,26 +691,27 @@ const grammar = {
       ]
     },
     'create-buffer': {
-      begin: '(?i)(create)\\s+(buffer)\\b',
+      begin: '\\s*([Cc][Rr][Ee][Aa][Tt][Ee])\\s+([Bb][Uu][Ff][Ff][Ee][Rr])\\b',
       beginCaptures: {
         1: {name: 'keyword.other.abl'},
         2: {name: 'keyword.other.abl'}
       },
-      end: '(?i)(\\b((buffer-n(?:ame|am|a)?)|in)\\b)|(?=\\.)',
+      end: '(?i)(((buffer-n(?:ame|am|a)?)|in)\\b)|(?=\\.)',
       endCaptures: {1: {name: 'keyword.other.abl'}},
       patterns: [
         {
           captures: {1: {name: 'keyword.other.abl'}},
-          match: '(?i)\\s*(for|table)\\s*'
+          match: '(?i)\\s*(for|table|no-error)\\s*'
         },
         {include: '#define-table'},
         {include: '#buffer-name'},
         {include: '#temp-table-name'},
         {include: '#expression'},
-        {include: '#keywords'},
         {include: '#string'},
         {include: '#comment'},
-        {include: '#handle-attributes'},
+        {include: '#preprocessor-reference'},
+        {include: '#handle-attributes-and-methods'},
+        {include: '#db-dot-table-dot-field'},
         {include: '#variable-name'}
       ]
     },
@@ -721,12 +766,12 @@ const grammar = {
     'db-dot-table-dot-field': {
       captures: {1: {name: 'storage.data.table.abl'}},
       match:
-        '(?i)(?<=^|\\s|\\(|,)(([a-zA-Z][a-zA-Z0-9#$\\-_%&]*\\.)?([a-zA-Z_][a-zA-Z0-9#$\\-_%&]*\\.)([a-zA-Z_][a-zA-Z0-9#$\\-_%&]*)(\\[\\d+\\])?)'
+        '(?i)(?<=^|\\s|\\(|,)(([a-zA-Z][a-zA-Z0-9#$\\-_%&]*\\.)?([a-zA-Z_][a-zA-Z0-9#$\\-_%&]*\\.)([a-zA-Z_][a-zA-Z0-9#$\\-_%&]*))'
     },
     decimals: {
       captures: {
         1: {name: 'keyword.other.abl'},
-        2: {name: 'constant.numeric.source.abl'}
+        2: {name: 'constant.numeric.abl'}
       },
       match: '(?i)\\s*(decimals)\\s((0x)?[[:xdigit:]]+)?'
     },
@@ -779,9 +824,7 @@ const grammar = {
         {include: '#dll-type'},
         {include: '#abl-system-handles'},
         {include: '#property-call'},
-        {include: '#handle-attributes'},
-        {include: '#handle-methods'},
-        {include: '#abl-functions'},
+        {include: '#handle-attributes-and-methods'},
         {include: '#function-parameter-definition'},
         {include: '#keywords'},
         {include: '#comment'},
@@ -854,7 +897,7 @@ const grammar = {
         {
           captures: {1: {name: 'keyword.other.abl'}},
           match:
-            '(?i)\\s*(serializable|abstract|final|use-widget-pool|inherits|implements)\\s*'
+            '(?i)\\b(serializable|abstract|final|use-widget-pool|inherits|implements)\\b'
         },
         {include: '#type-names'},
         {include: '#punctuation-comma'},
@@ -1126,10 +1169,6 @@ const grammar = {
       match:
         '(?i)\\b(byte|unsigned-short|short|unsigned-long|long|int64|float)\\b'
     },
-    'double-colon-field-name': {
-      captures: {1: {name: 'storage.data.table.abl'}},
-      match: '\\s*::([a-zA-Z_\\-#$%]+)\\s*'
-    },
     doublequotedstring: {
       begin: '(")',
       beginCaptures: {1: {name: 'punctuation.definition.string.begin.abl'}},
@@ -1141,13 +1180,20 @@ const grammar = {
       name: 'string.quoted.double.abl',
       patterns: [{include: '#escape-char'}]
     },
+    'dynamic-buffer-field-access': {
+      captures: {
+        1: {name: 'punctuation.accessor.abl'},
+        2: {name: 'storage.data.table.abl'}
+      },
+      match: '(::)([a-zA-Z_][a-zA-Z0-9#$\\-_%&]*)'
+    },
     'end-block': {
       captures: {
         1: {name: 'keyword.other.abl'},
         2: {name: 'keyword.other.abl'}
       },
       match:
-        '(?i)\\s*(end)\\s+(CASE|CATCH|CLASS|CONSTRUCTOR|DESTRUCTOR|ENUM|FINALLY|FUNCTION|GET|INTERFACE|METHOD|PROCEDURE|SET|TRIGGERS)\\s*'
+        '(?i)\\s*(end)\\s+(case|catch|class|constructor|destructor|enum|finally|function|get|interface|method|procedure|set|triggers)\\s*'
     },
     'end-function-procedure-method-block': {
       captures: {
@@ -1158,23 +1204,24 @@ const grammar = {
     },
     'escape-char': {match: '~.', name: 'constant.character.escape.abl'},
     'escape-endline': {
-      captures: {1: {name: 'punctuation.separator.continuation'}},
+      captures: {1: {name: 'punctuation.separator.continuation.abl'}},
       match: '(~)\\s*$'
     },
     'event-un-subscribe': {
-      begin: '(?i)(:)(unsubscribe|subscribe)\\s*(\\()',
+      begin: '(?i)((\\?:)|(:))(unsubscribe|subscribe)\\s*(\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
-        2: {name: 'entity.name.function.abl'},
-        3: {name: 'meta.brace.round.js'}
+        2: {name: 'keyword.operator.abl'},
+        3: {name: 'punctuation.accessor.abl'},
+        4: {name: 'entity.name.function.abl'},
+        5: {name: 'meta.brace.round.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [
         {
           captures: {
             1: {name: 'entity.name.type.abl'},
-            3: {name: 'punctuation.separator.colon.abl'}
+            3: {name: 'punctuation.accessor.abl'}
           },
           match: '\\s*([\\w#$%\\-]+(\\.[\\w#$%\\-]+)+)\\s*(:)'
         },
@@ -1182,7 +1229,7 @@ const grammar = {
           captures: {
             1: {name: 'variable.other.abl'},
             3: {name: 'punctuation.separator.comma.abl'},
-            4: {name: 'punctuation.separator.colon.abl'}
+            4: {name: 'punctuation.accessor.abl'}
           },
           match: '\\s*([a-zA-Z_][a-zA-Z0-9_#$\\-%&]*)\\s*((,)|(:))\\s*'
         },
@@ -1200,13 +1247,13 @@ const grammar = {
         {include: '#constant'},
         {include: '#numeric'},
         {include: '#variable-name'},
-        {include: '#double-colon-field-name'}
+        {include: '#dynamic-buffer-field-access'}
       ]
     },
     extent: {
       captures: {
         1: {name: 'keyword.other.abl'},
-        2: {name: 'constant.numeric.source.abl'}
+        2: {name: 'constant.numeric.abl'}
       },
       match: '(?i)\\s*(extent)\\s*((0x)?[[:xdigit:]]+\\b)?'
     },
@@ -1219,11 +1266,6 @@ const grammar = {
         {
           captures: {1: {name: 'storage.data.table.abl'}},
           match:
-            '\\s*([a-zA-Z][a-zA-Z0-9_\\-#$%]*(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?\\s*(\\[\\d+\\]))\\s*'
-        },
-        {
-          captures: {1: {name: 'storage.data.table.abl'}},
-          match:
             '\\s*([a-zA-Z][a-zA-Z0-9_\\-#$%]*(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?)\\s*'
         }
       ]
@@ -1232,13 +1274,14 @@ const grammar = {
       begin: '(?i)\\s*(fields|except)\\s*(\\()',
       beginCaptures: {
         1: {name: 'keyword.other.abl'},
-        2: {name: 'meta.brace.round.js'}
+        2: {name: 'meta.brace.round.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [
         {include: '#db-dot-table-dot-field'},
         {include: '#field-name'},
+        {include: '#array-literal'},
         {include: '#punctuation-comma'}
       ]
     },
@@ -1252,7 +1295,7 @@ const grammar = {
         '(?i)\\s*(find)\\s+(first|last|next|prev|current)?\\s*([a-zA-Z_][a-zA-Z0-9#$\\-_%&]+(\\.[a-zA-Z_][a-zA-Z0-9#$\\-_%&]*)?)\\s*'
     },
     'for-each-join': {
-      begin: '(?i)\\b(each|first|last)\\b(?<!\\()',
+      begin: '(?i)\\b(each|first|last)\\s(?<!\\()',
       beginCaptures: {
         1: {name: 'keyword.other.abl'},
         3: {name: 'storage.data.table.abl'}
@@ -1277,6 +1320,7 @@ const grammar = {
       ]
     },
     'for-each-table': {
+      begin: '(?i)(?<=\\s|\\b|^)(for|(presel(?:ect|ec|e)?))[\\s+|$]',
       beginCaptures: {1: {name: 'keyword.other.abl'}},
       end: '(?i)\\s*(?=where|no-lock|(exclusive-l(?:ock|oc|o)?)|(share(?:-lock|-loc|-lo|-l|-)?)|tenant-where|use-index|table-scan|using|(no-prefe(?:tch|tc|t)?)|left|outer-join|break|by|(transact(?:ion|io|i)?)|,|:|on)\\s*',
       patterns: [
@@ -1314,7 +1358,7 @@ const grammar = {
         9: {name: 'punctuation.separator.comma.abl'}
       },
       match:
-        '(?i)\\s*(for)\\s+([a-zA-Z_\\-#$%]*)\\s*(,)?\\s*([a-zA-Z_\\-#$%]*)?\\s*(,)?\\s*([a-zA-Z_\\-#$%]*)?\\s*(,)?\\s*([a-zA-Z_\\-#$%]*)?\\s*(,)?\\s*([a-zA-Z_\\-#$%]*)?\\s*(,)?\\s*([a-zA-Z_\\-#$%]*)?'
+        '(?i)\\s*(for)\\s+([a-zA-Z_\\-#$%0-9]*)\\s*(,)?\\s*([a-zA-Z_\\-#$%0-9]*)?\\s*(,)?\\s*([a-zA-Z_\\-#$%0-9]*)?\\s*(,)?\\s*([a-zA-Z_\\-#$%0-9]*)?\\s*(,)?\\s*([a-zA-Z_\\-#$%0-9]*)?\\s*(,)?\\s*([a-zA-Z_\\-#$%0-9]*)?'
     },
     'for-table': {
       captures: {
@@ -1327,7 +1371,7 @@ const grammar = {
     'format-constant': {
       captures: {
         1: {name: 'keyword.other.abl'},
-        2: {name: 'constant.language.source.abl'}
+        2: {name: 'constant.language.abl'}
       },
       match: '(?i)\\b((?:form(?:at|a)?))\\s+(9+/9+/9+)\\b'
     },
@@ -1335,7 +1379,7 @@ const grammar = {
       begin: '\\s*([a-zA-Z0-9_\\-#$%$\\-_%&]+)\\s+(=)\\s*',
       beginCaptures: {
         1: {name: 'variable.other.abl'},
-        2: {name: 'keyword.operator.source.abl'}
+        2: {name: 'keyword.operator.abl'}
       },
       end: '(?i)(?=(transact(?:ion|io|i)?)|on|:|with|while)',
       patterns: [
@@ -1353,9 +1397,9 @@ const grammar = {
     'from-x-and-y': {
       captures: {
         1: {name: 'keyword.other.abl'},
-        12: {name: 'constant.numeric.source.abl'},
+        12: {name: 'constant.numeric.abl'},
         2: {name: 'keyword.other.abl'},
-        6: {name: 'constant.numeric.source.abl'},
+        6: {name: 'constant.numeric.abl'},
         8: {name: 'keyword.other.abl'}
       },
       match:
@@ -1363,17 +1407,15 @@ const grammar = {
     },
     'function-arguments': {
       begin: '(?=\\()',
-      beginCaptures: {1: {name: 'meta.brace.round.js'}},
+      beginCaptures: {1: {name: 'meta.brace.round.abl'}},
       end: '(?=\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function.arguments.abl',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [
         {include: '#parens'},
         {include: '#function-arguments-no-parens'}
       ]
     },
     'function-arguments-no-parens': {
-      name: 'meta.function.arguments.abl',
       patterns: [
         {
           captures: {1: {name: 'keyword.other.abl'}},
@@ -1397,12 +1439,14 @@ const grammar = {
             '(?i)\\b(temp-table|table|buffer)\\s+([a-zA-Z_\\-#$%]+(\\.[a-zA-Z_\\-#$%]+)?)\\b'
         },
         {include: '#function-arguments'},
+        {include: '#include-file'},
+        {include: '#comment'},
+        {include: '#operator'},
+        {include: '#array-literal'},
         {include: '#constant'},
-        {include: '#timestamp-constant'},
         {include: '#type-reference'},
         {include: '#abl-system-handles'},
         {include: '#can-find'},
-        {include: '#language-functions'},
         {include: '#abl-functions'},
         {include: '#type-member-call'},
         {include: '#db-dot-table-dot-field'},
@@ -1410,9 +1454,8 @@ const grammar = {
         {include: '#handle-methods'},
         {include: '#keywords'},
         {include: '#expression'},
-        {include: '#comment'},
-        {include: '#array-literal'},
         {include: '#punctuation-comma'},
+        {include: '#argument-reference'},
         {include: '#preprocessors'}
       ]
     },
@@ -1469,22 +1512,34 @@ const grammar = {
     },
     'function-parameter-definition': {
       begin: '(\\()',
-      beginCaptures: {1: {name: 'meta.brace.round.js'}},
+      beginCaptures: {1: {name: 'meta.brace.round.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
-      name: 'meta.function.parameters',
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#parameter-definition'}]
     },
     'get-class': {
       begin: '(?i)\\s*(get-class)\\s*(\\()',
       beginCaptures: {
         1: {name: 'support.function.abl'},
-        2: {name: 'meta.brace.round.js'}
+        2: {name: 'meta.brace.round.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       name: 'meta.function-call.abl',
       patterns: [{include: '#string'}, {include: '#type-names'}]
+    },
+    'get-query': {
+      begin: '(?i)\\b(get)\\s+(first|next|prev|last|current)\\b',
+      beginCaptures: {
+        1: {name: 'keyword.other.abl'},
+        2: {name: 'keyword.other.abl'}
+      },
+      end: '(?i)\\s*(?=share-lock|exclusive-lock|no-lock|\\.)',
+      patterns: [
+        {include: '#variable-name'},
+        {include: '#preprocessors'},
+        {include: '#comment'}
+      ]
     },
     'global-scoped-define': {
       patterns: [
@@ -1559,7 +1614,7 @@ const grammar = {
     },
     'handle-attributes-A': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1567,7 +1622,7 @@ const grammar = {
     },
     'handle-attributes-B': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1575,7 +1630,7 @@ const grammar = {
     },
     'handle-attributes-C': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1583,7 +1638,7 @@ const grammar = {
     },
     'handle-attributes-D': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1591,7 +1646,7 @@ const grammar = {
     },
     'handle-attributes-E': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1599,15 +1654,15 @@ const grammar = {
     },
     'handle-attributes-F': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
-        '(?i)(:)(f(?:gcolor?|gcol?|gc|ile-create-date?|ile-create-da?|ile-create-time?|ile-create-ti?|ile-mod-date?|ile-mod-da?|ile-mod-time?|ile-mod-ti?|ile-name|ile-offset?|ile-offs?|ile-size|ile-type|ill-mode|ill-where-string|illed|irst-async-request?|irst-async-reque?|irst-async-req?|irst-async-r?|irst-async|irst-buffer|irst-child|irst-column|irst-data-source|irst-dataset|irst-form|irst-object|irst-procedure?|irst-procedu?|irst-proce?|irst-query|irst-server-socket|irst-server?|irst-serv|irst-socket|irst-tab-item?|irst-tab-it?|it-last-column|lat-button|ocused-row|ocused-row-selected|ont|oreground?|oregrou?|oregr?|ore|oreign-key-hidden|orm-input|orm-long-input|ormatted?|ormat?|orm|orward-only|ragment?|rame-col|rame-name|rame-row|rame-spacing?|rame-spaci?|rame-spa|rame-x|rame-y|rame?|requency|ull-height-chars?|ull-height-cha?|ull-height-c|ull-height-pixels?|ull-height-pixe?|ull-height-pi?|ull-pathname?|ull-pathna?|ull-width-chars?|ull-width-cha?|ull-width-c?|ull-width|ull-width-pixels?|ull-width-pixe?|ull-width-pi?|unction))\\b(?![#$\\-_%&])'
+        '(?i)(:)(f(?:gcolor?|gcol?|gc|ile-create-date?|ile-create-da?|ile-create-time?|ile-create-ti?|ile-mod-date?|ile-mod-da?|ile-mod-time?|ile-mod-ti?|ile-name|ile-offset?|ile-offs?|ile-size|ile-type|ill-mode|ill-where-string|illed|ips-mode|irst-async-request?|irst-async-reque?|irst-async-req?|irst-async-r?|irst-async|irst-buffer|irst-child|irst-column|irst-data-source|irst-dataset|irst-form|irst-object|irst-procedure?|irst-procedu?|irst-proce?|irst-query|irst-server-socket|irst-server?|irst-serv|irst-socket|irst-tab-item?|irst-tab-it?|it-last-column|lat-button|ocused-row|ocused-row-selected|ont|oreground?|oregrou?|oregr?|ore|oreign-key-hidden|orm-input|orm-long-input|ormatted?|ormat?|orm|orward-only|ragment?|rame-col|rame-name|rame-row|rame-spacing?|rame-spaci?|rame-spa|rame-x|rame-y|rame?|requency|ull-height-chars?|ull-height-cha?|ull-height-c|ull-height-pixels?|ull-height-pixe?|ull-height-pi?|ull-pathname?|ull-pathna?|ull-width-chars?|ull-width-cha?|ull-width-c?|ull-width|ull-width-pixels?|ull-width-pixe?|ull-width-pi?|unction))\\b(?![#$\\-_%&])'
     },
     'handle-attributes-G': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1615,7 +1670,7 @@ const grammar = {
     },
     'handle-attributes-H': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1623,7 +1678,7 @@ const grammar = {
     },
     'handle-attributes-I': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1631,7 +1686,7 @@ const grammar = {
     },
     'handle-attributes-K': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1639,7 +1694,7 @@ const grammar = {
     },
     'handle-attributes-L': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1647,7 +1702,7 @@ const grammar = {
     },
     'handle-attributes-M': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1655,7 +1710,7 @@ const grammar = {
     },
     'handle-attributes-N': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1663,7 +1718,7 @@ const grammar = {
     },
     'handle-attributes-O': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1671,15 +1726,15 @@ const grammar = {
     },
     'handle-attributes-P': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
-        '(?i)(:)(p(?:age-bottom?|age-bott?|age-top|arameter?|aramet?|aram|arent|arent-buffer|arent-fields-after|arent-fields-before|arent-id-relation|arent-relation?|arent-relati?|arent-rela?|arse-status|assword-field|athname|be-hash-algorithm?|be-hash-algorit?|be-hash-algor?|be-hash-alg|be-key-rounds|ersistent-cache-disabled|ersistent-procedure|ersistent?|ersiste?|fcolor?|fcol?|fc|ixels-per-column?|ixels-per-colu?|ixels-per-row|opup-menu?|opup-me?|opup-only?|opup-on?|osition|refer-dataset|repare-string|repared|rev-column?|rev-colu?|rev-sibling|rev-tab-item?|rev-tab-it?|rimary|rimary-passphrase|rinter-control-handle|rinter-hdc|rinter-name|rinter-port|rivate-data?|rivate-da?|rocedure-name|rocedure-type|rofiling|rogress-source?|rogress-sour?|rogress-so?|roxy|roxy-password|roxy-userid|ublic-id|ublished-events))\\b(?![#$\\-_%&])'
+        '(?i)(:)(p(?:age-bottom?|age-bott?|age-top|arameter?|aramet?|aram|arent|arent-buffer|arent-fields-after|arent-fields-before|arent-id-relation|arent-relation?|arent-relati?|arent-rela?|arse-status|assword-field|assword-hash-algorithm|assword-hash-rounds|assword-hash-salt|athname|be-algorithm|be-hash-algorithm?|be-hash-algorit?|be-hash-algor?|be-hash-alg|be-key-rounds|ersistent-cache-disabled|ersistent-procedure|ersistent?|ersiste?|fcolor?|fcol?|fc|ixels-per-column?|ixels-per-colu?|ixels-per-row|opup-menu?|opup-me?|opup-only?|opup-on?|osition|refer-dataset|repare-string|repared|rev-column?|rev-colu?|rev-sibling|rev-tab-item?|rev-tab-it?|rimary|rimary-passphrase|rinter-control-handle|rinter-hdc|rinter-name|rinter-port|rivate-data?|rivate-da?|rocedure-name|rocedure-type|rofiling|rogress-source?|rogress-sour?|rogress-so?|roxy|roxy-password|roxy-userid|ublic-id|ublished-events))\\b(?![#$\\-_%&])'
     },
     'handle-attributes-Q': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1687,7 +1742,7 @@ const grammar = {
     },
     'handle-attributes-R': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1695,7 +1750,7 @@ const grammar = {
     },
     'handle-attributes-S': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1703,7 +1758,7 @@ const grammar = {
     },
     'handle-attributes-T': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1711,7 +1766,7 @@ const grammar = {
     },
     'handle-attributes-U': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1719,7 +1774,7 @@ const grammar = {
     },
     'handle-attributes-V': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1727,7 +1782,7 @@ const grammar = {
     },
     'handle-attributes-W': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1735,7 +1790,7 @@ const grammar = {
     },
     'handle-attributes-X': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match:
@@ -1743,10 +1798,13 @@ const grammar = {
     },
     'handle-attributes-Y': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'entity.name.function.abl'}
       },
       match: '(?i)(:)(y(?:|ear-offset))\\b(?![#$\\-_%&])'
+    },
+    'handle-attributes-and-methods': {
+      patterns: [{include: '#handle-attributes'}, {include: '#handle-methods'}]
     },
     'handle-methods': {
       patterns: [
@@ -1774,195 +1832,196 @@ const grammar = {
       begin:
         '(?i)(:)(a(?:ccept-changes|ccept-row-changes|dd-buffer|dd-calc-column?|dd-calc-colu?|dd-columns-from|dd-events-procedure?|dd-events-procedu?|dd-events-proce?|dd-fields-from|dd-first|dd-header-entry|dd-index-field|dd-last|dd-like-column?|dd-like-colu?|dd-like-field|dd-like-index|dd-new-field|dd-new-index|dd-parent-id-relation|dd-relation?|dd-relati?|dd-rela?|dd-schema-location|dd-source-buffer|dd-super-procedure?|dd-super-procedu?|dd-super-proce?|ppend-child|pply-callback|ttach-data-source|uthentication-failed))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-B': {
       begin:
         '(?i)(:)(b(?:egin-event-group|uffer-compare?|uffer-compa?|uffer-copy|uffer-create|uffer-delete|uffer-export|uffer-export-fields|uffer-field|uffer-import|uffer-import-fields|uffer-release?|uffer-validate|uffer-value))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-C': {
       begin:
         '(?i)(:)(c(?:ancel-break|ancel-requests|ancel-requests-after|lear|lear-appl-context|lear-log|lear-selection?|lear-selecti?|lear-sort-arrows?|lone-node|lose-log|onnect|onnected|onvert-to-offset?|onvert-to-offs|opy-dataset|opy-sax-attributes|opy-temp-table|reate-like|reate-like-sequential|reate-node|reate-node-namespace|reate-result-list-entry|urrent-query))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-D': {
       begin:
         '(?i)(:)(d(?:ebug?|eclare-namespace|elete|elete-char|elete-current-row|elete-header-entry|elete-line|elete-node|elete-result-list-entry|elete-selected-rows??|eselect-focused-row|eselect-rows|eselect-selected-row|etach-data-source|isable|isable-connections|isable-dump-triggers|isable-load-triggers|isconnect?|isconne?|iscon|isplay-message|ump-logging-now))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-E': {
       begin:
-        '(?i)(:)(e(?:dit-clear|dit-copy|dit-cut|dit-paste|dit-undo|mpty-dataset|mpty-temp-table|nable|nable-connections|ncode-domain-access-code|ncrypt-audit-mac-key|nd-document|nd-element|nd-event-group|nd-file-drop|ntry|xport|xport-principal))\\s*(?=\\()',
+        '(?i)(:)(e(?:dit-clear|dit-copy|dit-cut|dit-paste|dit-undo|mpty-dataset|mpty-temp-table|nable|nable-connections|ncode-domain-access-code|ncode-password|ncrypt-audit-mac-key|nd-document|nd-element|nd-event-group|nd-file-drop|ntry|xport|xport-principal))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-F': {
       begin:
         '(?i)(:)(f(?:etch-selected-row|ill|ind-by-rowid|ind-current|ind-first|ind-last|ind-unique|irst-of))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-G': {
       begin:
         '(?i)(:)(get-(?:attribute|attribute-node|binary-data|blue-value?|blue-val?|blue-v?|blue|browse-column?|browse-colu?|buffer-handle|bytes-available|callback-proc-context|callback-proc-name|cgi-list|cgi-long-value|cgi-value|changes|child|child-relation?|child-relati?|child-rela?|client|column|config-value|current?|curre?|dataset-buffer|document-element|dropped-file|dynamic|error-column|error-row|file-name|file-offset?|first?|green-value?|green-val?|green-v?|green|header-entry?|index-by-namespace-name|index-by-qname|iteration|last|localname-by-index|message|message-type|next|node|number|parent|prev|printers|property|qname-by-index|red-value?|red-val?|red-v?|red|relation?|relati?|rela?|repositioned-row|rgb-value?|rgb-val?|rgb-v?|rgb|row|safe-user|selected-widget?|selected-widg?|selected-wi?|selected-?|serialized|signature|socket-option|source-buffer|tab-item|text-height-chars?|text-height-cha?|text-height-c|text-height-pixels?|text-height-pixe?|text-height-pi?|text-width-chars?|text-width-cha?|text-width-c|text-width-pixels?|text-width-pixe?|text-width-pi?|top-buffer|type-by-index|type-by-namespace-name|type-by-qname|uri-by-index|value-by-index|value-by-namespace-name|value-by-qname|wait-state?|wait-sta?|wait-s?|wait))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-I': {
       begin:
         '(?i)(:)(i(?:mport-node|mport-principal|ncrement-exclusive-id|ndex-information?|ndex-informati?|ndex-informa?|ndex-infor?|nitialize|nitialize-document-type|nitiate|nsert|nsert-attribute|nsert-backtab?|nsert-backt?|nsert-bac?|nsert-b|nsert-before|nsert-file|nsert-row|nsert-string|nsert-tab?|nsert-t|nvoke|s-row-selected|s-selected))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-L': {
       begin:
         '(?i)(:)(l(?:ast-of|ist-property-names|oad|oad-domains|oad-icon|oad-image|oad-image-down|oad-image-insensitive|oad-image-up|oad-mouse-pointer?|oad-mouse-point?|oad-mouse-poi?|oad-mouse-p|oad-small-icon|ock-registration|og-audit-event|ogout|ongchar-to-node-value|ookup))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-M': {
       begin:
         '(?i)(:)(m(?:ark-new|ark-row-state|emptr-to-node-value|erge-changes|erge-row-changes|ove-after-tab-item?|ove-after-tab-it?|ove-after-tab-?|ove-after-ta?|ove-after-?|ove-before-tab-item?|ove-before-tab-it?|ove-before-tab-?|ove-before-ta?|ove-before-?|ove-befor|ove-column?|ove-colu?|ove-to-bottom?|ove-to-bott?|ove-to-bo?|ove-to-eof|ove-to-top?|ove-to-t))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-N': {
       begin:
         '(?i)(:)(no(?:de-value-to-longchar|de-value-to-memptr|rmalize))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-Q': {
       begin: '(?i)(:)(query-(?:close|open|prepare))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-R': {
       begin:
         '(?i)(:)(r(?:aw-transfer|ead|ead-file|ead-json|ead-xml|ead-xmlschema|efresh|efresh-audit-policy|egister-domain|eject-changes|eject-row-changes|emove-attribute|emove-child|emove-events-procedure?|emove-events-procedu?|emove-events-proce?|emove-super-procedure?|emove-super-procedu?|emove-super-proce?|eplace|eplace-child|eplace-selection-text|eposition-to-row|eposition-to-rowid|eset))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-S': {
       begin:
         '(?i)(:)(s(?:ave|ave-file|ave-row-changes|ax-parse|ax-parse-first|ax-parse-next|croll-to-current-row|croll-to-item?|croll-to-it?|croll-to-selected-row|eal|earch|elect-all|elect-focused-row|elect-next-row|elect-prev-row|elect-row|erialize-row|et-actor|et-appl-context|et-attribute|et-attribute-node|et-blue-value?|et-blue-val?|et-blue-v?|et-blue|et-break|et-buffers|et-callback|et-callback-procedure|et-client|et-commit|et-connect-procedure|et-dynamic|et-green-value?|et-green-val?|et-green-v?|et-green|et-input-source|et-must-understand|et-node|et-numeric-format?|et-numeric-form|et-output-destination|et-parameter|et-property|et-read-response-procedure|et-red-value?|et-red-val?|et-red-v?|et-red|et-repositioned-row|et-rgb-value?|et-rgb-val?|et-rgb-v?|et-rgb|et-role|et-rollback|et-safe-user|et-selection|et-serialized|et-socket-option|et-sort-arrow|et-wait-state?|et-wait-sta?|et-wait-s?|et-wait|tart-document|tart-element|top-parsing|tring-value|ynchronize))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-T': {
       begin: '(?i)(:)(te(?:mp-table-prepare?|nant-id|nant-name))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-U': {
       begin:
         '(?i)(:)(u(?:pdate-attribute|rl-decode|rl-encode|ser-data))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-V': {
-      begin: '(?i)(:)(validate(?:|-domain-access-code|-seal))\\s*(?=\\()',
+      begin:
+        '(?i)(:)(validate(?:|-domain-access-code|-password|-seal))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'handle-methods-W': {
       begin:
         '(?i)(:)(write(?:|-cdata|-characters|-comment|-data|-data-element|-empty-element|-entity-ref|-external-dtd|-fragment|-json|-message|-processing-instruction|-xml|-xmlschema))\\s*(?=\\()',
       beginCaptures: {
-        1: {name: 'punctuation.separator.colon.abl'},
+        1: {name: 'punctuation.accessor.abl'},
         2: {name: 'support.function.abl'}
       },
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [{include: '#function-arguments'}]
     },
     'if-then': {
@@ -1972,12 +2031,14 @@ const grammar = {
       patterns: [{include: '#logical-expression'}]
     },
     'include-file': {
-      begin: '({)\\s*([\'"]?([\\\\\\/\\w$\\-\\.]+)(\\.\\w+[\'"]?)?)',
+      begin: '({)\\s*(?!&)((["]?)([\\\\/\\w$\\-\\.]+)(["]?))',
       beginCaptures: {
         1: {name: 'punctuation.section.abl'},
-        2: {name: 'entity.name.include.abl'}
+        3: {name: 'punctuation.definition.string.begin.abl'},
+        4: {name: 'entity.name.include.abl'},
+        5: {name: 'punctuation.definition.string.end.abl'}
       },
-      end: '\\s*(})\\s*',
+      end: '\\s*(\\s*})\\s*',
       endCaptures: {1: {name: 'punctuation.section.abl'}},
       name: 'meta.include.abl',
       patterns: [
@@ -1986,7 +2047,7 @@ const grammar = {
         {
           captures: {
             1: {name: 'support.other.argument.abl'},
-            2: {name: 'keyword.operator.source.abl'}
+            2: {name: 'keyword.operator.abl'}
           },
           match: '(?<=\\s)(&[a-zA-Z0-9][a-zA-Z0-9_\\-#$%#$\\-%\\.]+)\\s*(=)?',
           name: 'meta.include.argument.abl'
@@ -2071,7 +2132,7 @@ const grammar = {
     'keywords-A': {
       captures: {1: {name: 'keyword.other.abl'}},
       match:
-        '(?i)\\b(a(?:bort|bstract|ccumulate?|ccumula?|ccumu?|cross|ctive-form|ctive-window|dd|dvise|ggregate|lert-box|ll|llow-replication|lter|lternate-key|mbiguous?|mbiguo?|mbig|nd|nsi-only|ny|ny-key|ny-printable|nywhere|ppend|ppend-line|pplication|pply|rray-message?|rray-messa?|rray-mes?|rray-m|s|s-cursor|scending?|scendi?|scen?|sc|sk-overwrite|ssembly|ssign|t|ttach|ttachment|ttribute-type|udit-control|udit-policy|uthorization|uto-endkey|uto-go|utomatic|vailable?|vailab?|vail|verage?|vera?|ve|vg))\\b(?![#$\\-_%&])'
+        '(?i)\\b(a(?:bort|bstract|ccumulate?|ccumula?|ccumu?|cross|ctive-form|ctive-window|dd|dvise|ggregate|lert-box|ll|llow-replication|lter|lternate-key|mbiguous?|mbiguo?|mbig|nd|nsi-only|ny|ny-key|ny-printable|nywhere|ppend|ppend-line|pplication|pply|rray-message?|rray-messa?|rray-mes?|rray-m|s|s-cursor|scending?|scendi?|scen?|sc|sk-overwrite|ssembly|ssign|synchronous|t|ttach|ttachment|ttribute-type|udit-control|udit-policy|uthorization|uto-endkey|uto-go|utomatic|vailable?|vailab?|vail|verage?|vera?|ve|vg))\\b(?![#$\\-_%&])'
     },
     'keywords-B': {
       captures: {1: {name: 'keyword.other.abl'}},
@@ -2091,7 +2152,7 @@ const grammar = {
     'keywords-E': {
       captures: {1: {name: 'keyword.other.abl'}},
       match:
-        '(?i)\\b(e(?:ach|cho|dge|dge-pixels?|dge-pixe?|dge-pi?|diting|ditor|ditor-backtab|ditor-tab|lse|mpty|mpty-selection|nable|nd|nd-box-selection|nd-error|nd-key|nd-move|nd-resize|nd-row-resize|nd-search|ndkey|nter-menubar|ntry|num|q|rror|rror-status?|rror-stat|scape|vent|vent-handler-context|vents|xcept|xclusive|xclusive-lock?|xclusive-lo?|xclusive-web-user?|xclusive-web-us?|xclusive-web-?|xecute|xists|xit|xpire|xplicit|xport|xtended|xtent|xternal|xtract))\\b(?![#$\\-_%&])'
+        '(?i)\\b(e(?:ach|cho|dge|dge-pixels?|dge-pixe?|dge-pi?|diting|ditor|ditor-backtab|ditor-tab|lse|mpty|mpty-selection|nable|nd|nd-box-selection|nd-error|nd-key|nd-move|nd-resize|nd-row-resize|nd-search|ndkey|nter-menubar|ntry|num|q|rror|rror-status?|rror-stat|scape|vent|vent-handler|vent-handler-context|vent-procedure|vents|xcept|xclusive|xclusive-lock?|xclusive-lo?|xclusive-web-user?|xclusive-web-us?|xclusive-web-?|xecute|xists|xit|xpire|xplicit|xport|xtended|xtent|xternal|xtract))\\b(?![#$\\-_%&])'
     },
     'keywords-F': {
       captures: {1: {name: 'keyword.other.abl'}},
@@ -2135,7 +2196,7 @@ const grammar = {
     'keywords-N': {
       captures: {1: {name: 'keyword.other.abl'}},
       match:
-        '(?i)\\b(n(?:amespace-prefix|amespace-uri|ative|e|ested|ew|ew-instance|ew-line|ext|ext-error|ext-frame|ext-prompt|ext-word|o|o-apply|o-array-message?|o-array-messa?|o-array-mes?|o-array-m|o-assign|o-attr|o-attr-list?|o-attr-li?|o-attr-space?|o-attr-spa?|o-attr-s|o-auto-trim?|o-auto-validate|o-bind-where|o-box|o-column-scrolling?|o-column-scrolli?|o-column-scrol?|o-column-scr?|o-console|o-convert|o-convert-3d-colors?|o-convert-3d-colo?|o-convert-3d-co?|o-convert-3d-?|o-debug|o-drag|o-echo|o-error|o-fill?|o-fi?|o-firehose-cursor|o-focus|o-help|o-hide|o-index-hint|o-inherit-bgcolor?|o-inherit-bgcol?|o-inherit-bgc|o-inherit-fgcolor?|o-inherit-fgcol?|o-inherit-fgc|o-join-by-sqldb|o-keycache-join|o-labels?|o-lobs|o-lock|o-lookahead|o-map|o-message?|o-messa?|o-mes|o-pause|o-prefetch?|o-prefet?|o-query-order-added?|o-query-order-add?|o-query-order-a?|o-query-order?|o-query-ord?|o-query-o|o-query-unique-added?|o-query-unique-add?|o-query-unique-a?|o-query-unique?|o-query-uniq?|o-query-un?|o-return-value?|o-return-val|o-row-markers|o-schema-marshall?|o-scrollbar-vertical?|o-scrollbar-vertic?|o-scrollbar-vert?|o-scrollbar-ve?|o-scrolling|o-separate-connection|o-separators|o-tab-stop?|o-tab-st?|o-tab-?|o-underline?|o-underli?|o-under?|o-undo??|o-wait|o-word-wrap|ode-type|on-serializable|one|ot-active|ull|um-copies|um-selected|umeric))\\b(?![#$\\-_%&])'
+        '(?i)\\b(n(?:amespace-prefix|amespace-uri|ative|e|ested|ew|ew-instance|ew-line|ext|ext-error|ext-frame|ext-prompt|ext-word|o|o-apply|o-array-message?|o-array-messa?|o-array-mes?|o-array-m|o-assign|o-attr|o-attr-list?|o-attr-li?|o-attr-space?|o-attr-spa?|o-attr-s|o-auto-trim?|o-auto-validate|o-bind-where|o-box|o-column-scrolling?|o-column-scrolli?|o-column-scrol?|o-column-scr?|o-console|o-convert|o-convert-3d-colors?|o-convert-3d-colo?|o-convert-3d-co?|o-convert-3d-?|o-debug|o-drag|o-echo|o-error|o-fill?|o-fi?|o-firehose-cursor|o-focus|o-help|o-hide|o-index-hint|o-inherit-bgcolor?|o-inherit-bgcol?|o-inherit-bgc|o-inherit-fgcolor?|o-inherit-fgcol?|o-inherit-fgc|o-join-by-sqldb|o-keycache-join|o-labels?|o-lobs|o-lock|o-lookahead|o-map|o-message?|o-messa?|o-mes|o-pause|o-prefetch?|o-prefet?|o-query-order-added?|o-query-order-add?|o-query-order-a?|o-query-order?|o-query-ord?|o-query-o|o-query-unique-added?|o-query-unique-add?|o-query-unique-a?|o-query-unique?|o-query-uniq?|o-query-un?|o-return-value?|o-return-val|o-row-markers|o-schema-marshall?|o-scrollbar-vertical?|o-scrollbar-vertic?|o-scrollbar-vert?|o-scrollbar-ve?|o-scrolling|o-separate-connection|o-separators|o-tab-stop?|o-tab-st?|o-tab-?|o-underline?|o-underli?|o-under?|o-undo??|o-wait|o-word-wrap|ode-type|on-serializable|one|ot|ot-active|ull|um-copies|um-selected|umeric))\\b(?![#$\\-_%&])'
     },
     'keywords-O': {
       captures: {1: {name: 'keyword.other.abl'}},
@@ -2145,7 +2206,7 @@ const grammar = {
     'keywords-P': {
       captures: {1: {name: 'keyword.other.abl'}},
       match:
-        '(?i)\\b(p(?:ackage-private|ackage-protected|age|age-bottom?|age-bott?|age-down|age-left|age-right|age-right-text|age-up|age-width?|age-wid|aged|arameter?|aramet?|aram|arent-id-field|arent-window-close|artial-key|ascal|aste|ause|erformance?|erforman?|erform?|erfo?|fcolor?|fcol?|fc|ick|ick-area|ick-both|ixels|ortrait|recision|reprocess?|reproce?|reselect?|resele?|rev|rev-frame|rev-word|rinter|rinter-setup|rivate|rivileges|rocedure-call-type|rocedure-complete|rocedure?|rocedu?|roce|rocess|rofile-file|rofiler|rompt|rompt-for?|rompt-f|romsgs|ropath|roperty|rotected|ublic|ublish|ut|ut-bits|ut-bytes??|ut-double|ut-float|ut-int64|ut-key-value?|ut-key-val|ut-long|ut-short|ut-string|ut-unsigned-long|ut-unsigned-short|utbyte))\\b(?![#$\\-_%&])'
+        '(?i)\\b(p(?:ackage-private|ackage-protected|age|age-bottom?|age-bott?|age-down|age-left|age-right|age-right-text|age-up|age-width?|age-wid|aged|arameter?|aramet?|aram|arent-id-field|arent-window-close|artial-key|ascal|aste|ause|erformance?|erforman?|erform?|erfo?|ersistent?|ersiste?|fcolor?|fcol?|fc|ick|ick-area|ick-both|ixels|ortrait|recision|reprocess?|reproce?|reselect?|resele?|rev|rev-frame|rev-word|rinter|rinter-setup|rivate|rivileges|rocedure-call-type|rocedure-complete|rocedure?|rocedu?|roce|rocess|rofile-file|rofiler|rompt|rompt-for?|rompt-f|romsgs|ropath|roperty|rotected|ublic|ublish|ut|ut-bits|ut-bytes??|ut-double|ut-float|ut-int64|ut-key-value?|ut-key-val|ut-long|ut-short|ut-string|ut-unsigned-long|ut-unsigned-short|utbyte))\\b(?![#$\\-_%&])'
     },
     'keywords-Q': {
       captures: {1: {name: 'keyword.other.abl'}},
@@ -2159,7 +2220,7 @@ const grammar = {
     'keywords-S': {
       captures: {1: {name: 'keyword.other.abl'}},
       match:
-        '(?i)\\b(s(?:ave|ave-as|ax-attributes|ax-complete?|ax-comple|ax-parser-error|ax-reader|ax-running|ax-uninitialized|ax-write-begin|ax-write-complete|ax-write-content|ax-write-element|ax-write-error|ax-write-idle|ax-write-tag|ax-writer|ax-xml|chema|creen|creen-io|croll|croll-bars|croll-horizontal|croll-left|croll-mode|croll-notify|croll-right|croll-vertical|crollable|crollbar-drag|crolled-row-position?|crolled-row-positi?|crolled-row-posi?|crolling|earch-self|earch-target|ection|ecurity-policy|eek|elect|elect-extend|elect-on-join|elect-repositioned-row|elected-items|election|election-extend|election-list|elf|end|ensitive|eparate-connection|eparators|erializable|erialize-hidden|erialize-name|erver|erver-socket|ession|et|et-attr-call-type|et-byte-order|et-cell-focus|et-contents|et-db-logging|et-event-manager-option|et-option|et-pointer-value?|et-pointer-val|et-state|ettings|hare-lock?|hare-lo?|hare-?|hared|hort|how-in-taskbar?|how-in-taskb?|how-stats?|ide-labels?|ide-labe?|ignature|ilent|imple|ingle|ingle-character|ingle-run|ize|ize-chars?|ize-cha?|ize-c|ize-pixels?|ize-pixe?|ize-pi?|kip|kip-group-duplicates|kip-schema-check|lider|mallint|oap-fault|oap-header|oap-header-entryref|ocket|ome|ource|ource-procedure|pace|ql|tart|tart-box-selection|tart-extend-box-selection|tart-mem-check|tart-move|tart-resize|tart-row-resize|tart-search|tarting|tatic|tatus|tatus-area|tatus-area-msg|tdcall|tomp-detection|tomp-frequency|top|top-after|top-display|top-mem-check|tored-procedure?|tored-procedu?|tored-proce?|tream|tream-handle|tream-io|tring-xref|ub-average?|ub-avera?|ub-ave|ub-count|ub-maximum?|ub-maxim?|ub-max|ub-menu|ub-menu-help|ub-minimum?|ub-minim?|ub-min|ub-total|ubscribe|ubstring?|ubstri?|um|ummary|uper|uspend|ystem-dialog|ystem-help))\\b(?![#$\\-_%&])'
+        '(?i)\\b(s(?:ave|ave-as|ax-attributes|ax-complete?|ax-comple|ax-parser-error|ax-reader|ax-running|ax-uninitialized|ax-write-begin|ax-write-complete|ax-write-content|ax-write-element|ax-write-error|ax-write-idle|ax-write-tag|ax-writer|ax-xml|chema|creen|creen-io|croll|croll-bars|croll-horizontal|croll-left|croll-mode|croll-notify|croll-right|croll-vertical|crollable|crollbar-drag|crolled-row-position?|crolled-row-positi?|crolled-row-posi?|crolling|earch-self|earch-target|ection|ecurity-policy|eek|elect|elect-extend|elect-on-join|elect-repositioned-row|elected-items|election|election-extend|election-list|elf|end|ensitive|eparate-connection|eparators|erializable|erialize-hidden|erialize-name|erver|erver-socket|ession|et|et-attr-call-type|et-byte-order|et-cell-focus|et-contents|et-db-logging|et-event-manager-option|et-option|et-pointer-value?|et-pointer-val|et-state|ettings|hare-lock?|hare-lo?|hare-?|hared|hort|how-in-taskbar?|how-in-taskb?|how-stats?|ide-labels?|ide-labe?|ignature|ilent|imple|ingle|ingle-character|ingle-run|ingleton|ize|ize-chars?|ize-cha?|ize-c|ize-pixels?|ize-pixe?|ize-pi?|kip-group-duplicates|kip-schema-check|lider|mallint|oap-fault|oap-header|oap-header-entryref|ocket|ome|ource|ource-procedure|pace|ql|tart|tart-box-selection|tart-extend-box-selection|tart-mem-check|tart-move|tart-resize|tart-row-resize|tart-search|tarting|tatic|tatus|tatus-area|tatus-area-msg|tdcall|tomp-detection|tomp-frequency|top|top-after|top-display|top-mem-check|tored-procedure?|tored-procedu?|tored-proce?|tream|tream-handle|tream-io|tring-xref|ub-average?|ub-avera?|ub-ave|ub-count|ub-maximum?|ub-maxim?|ub-max|ub-menu|ub-menu-help|ub-minimum?|ub-minim?|ub-min|ub-total|ubscribe|ubstring?|ubstri?|um|ummary|uper|uspend|ystem-dialog|ystem-help))\\b(?![#$\\-_%&])'
     },
     'keywords-T': {
       captures: {1: {name: 'keyword.other.abl'}},
@@ -2198,10 +2259,6 @@ const grammar = {
       },
       match: '(?i)\\s*([a-zA-Z0-9_\\-#$%]+)\\s+(label)\\s*'
     },
-    'language-functions': {
-      captures: {1: {name: 'support.function.abl'}},
-      match: '(?i)\\b(opsys|(provers(?:ion|io|i)?)|guid|generate-uuid)\\b'
-    },
     'logical-expression': {
       patterns: [
         {
@@ -2210,6 +2267,12 @@ const grammar = {
         },
         {include: '#parens'},
         {include: '#function-arguments'},
+        {include: '#abl-system-handles'},
+        {include: '#new-record'},
+        {include: '#record-buffer-functions'},
+        {include: '#can-find'},
+        {include: '#type-argument-function'},
+        {include: '#abl-functions'},
         {include: '#type-member-call'},
         {include: '#db-dot-table-dot-field'},
         {include: '#comment'},
@@ -2217,9 +2280,6 @@ const grammar = {
         {include: '#code-block'},
         {include: '#handle-attributes'},
         {include: '#preprocessors'},
-        {include: '#language-functions'},
-        {include: '#abl-functions'},
-        {include: '#abl-system-handles'},
         {include: '#keywords'}
       ]
     },
@@ -2238,10 +2298,10 @@ const grammar = {
           begin: '(?i)\\s*([a-zA-Z0-9_]+[a-zA-Z0-9_\\-{}#$%&]*)?\\s*(\\()\\s*',
           beginCaptures: {
             1: {name: 'entity.name.function.abl'},
-            2: {name: 'meta.brace.round.js'}
+            2: {name: 'meta.brace.round.abl'}
           },
           end: '(\\))',
-          endCaptures: {1: {name: 'meta.brace.round.js'}},
+          endCaptures: {1: {name: 'meta.brace.round.abl'}},
           patterns: [{include: '#parameter-definition'}]
         },
         {include: '#parameter-as'},
@@ -2261,14 +2321,12 @@ const grammar = {
       begin: '/\\*',
       contentName: 'comment',
       end: '\\*/',
-      name: 'comment.block.source.abl',
-      patterns: [
-        {include: '#multilinecomment', name: 'comment.block.source.abl'}
-      ]
+      name: 'comment.block.abl',
+      patterns: [{include: '#multilinecomment', name: 'comment.block.abl'}]
     },
     'new-class': {
       begin: '(?i)\\b(new)\\b(?!\\-)',
-      beginCaptures: {1: {name: 'keyword.other.abl'}},
+      beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(?=\\()',
       patterns: [{include: '#type-names'}, {include: '#string'}]
     },
@@ -2277,12 +2335,12 @@ const grammar = {
         {
           captures: {
             1: {name: 'support.function.abl'},
-            2: {name: 'meta.brace.round.js'},
+            2: {name: 'meta.brace.round.abl'},
             3: {name: 'storage.data.table.abl'},
-            5: {name: 'meta.brace.round.js'}
+            5: {name: 'meta.brace.round.abl'}
           },
           match:
-            '(?i)\\s*(new)\\s+(\\()\\s*([a-zA-Z_][a-zA-Z0-9_\\-#$%]*(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?)\\s*(\\))'
+            '\\s*([Nn][Ee][Ww])\\s+(\\()\\s*([a-zA-Z_][a-zA-Z0-9_\\-#$%]*(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?)\\s*(\\))'
         },
         {
           captures: {
@@ -2290,14 +2348,14 @@ const grammar = {
             3: {name: 'storage.data.table.abl'}
           },
           match:
-            '(?i)\\s*((new)\\s+(?!.*\\()([a-zA-Z_{][a-zA-Z0-9_\\-#$%\\.{&}]*))'
+            '\\s*(([Nn][Ee][Ww])\\s+(?!.*\\()([a-zA-Z_{][a-zA-Z0-9_\\-#$%\\.{&}]*))'
         }
       ]
     },
     numeric: {
       match:
         '(?<![a-zA-Z0-9_\\-#$%-])(0[xX][[:xdigit:]]+)|([+\\-]?\\.?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+\\-]?[0-9]+)?)',
-      name: 'constant.numeric.source.abl'
+      name: 'constant.numeric.abl'
     },
     'of-phrase': {
       patterns: [
@@ -2338,16 +2396,16 @@ const grammar = {
       ]
     },
     'operator-no-space': {
-      captures: {1: {name: 'keyword.operator.source.abl'}},
-      match: '(\\+=|-=|\\\\=|\\*=|<=|<>|>=|=|\\+|-|/|<|>|\\*)'
+      captures: {1: {name: 'keyword.operator.abl'}},
+      match: '(\\+=|-=|\\\\=|\\*=|<=|<>|>=|=|<|>)'
     },
     'operator-with-space': {
-      captures: {1: {name: 'keyword.operator.source.abl'}},
+      captures: {1: {name: 'keyword.operator.abl'}},
       match:
-        '(?i)(?<=\\s)(contains|begins|matches|eq|le|lt|ge|gt|ne)(?=\\s|\\()'
+        '(?i)(?<=\\s)(contains|begins|matches|eq|le|lt|ge|gt|ne|\\+|-|\\*|/)(?=\\s|\\()'
     },
     'operator-with-trailing-space': {
-      captures: {1: {name: 'keyword.operator.source.abl'}},
+      captures: {1: {name: 'keyword.operator.abl'}},
       match: '\\b([Nn][Oo][Tt])(?=\\s|\\()'
     },
     'opsys-device-name': {
@@ -2357,7 +2415,7 @@ const grammar = {
     ordinal: {
       captures: {
         1: {name: 'keyword.other.abl'},
-        2: {name: 'constant.numeric.source.abl'}
+        2: {name: 'constant.numeric.abl'}
       },
       match: '(?i)\\s*(ordinal)\\s((0x)?[[:xdigit:]]+)?'
     },
@@ -2371,7 +2429,7 @@ const grammar = {
       patterns: [
         {
           captures: {1: {name: 'keyword.other.abl'}},
-          match: '\\s*([Cc][Ll][Aa][Ss]{2})\\s*'
+          match: '\\b([Cc][Ll][Aa][Ss]{2})\\b'
         },
         {include: '#primitive-type'},
         {include: '#dll-type'},
@@ -2428,14 +2486,13 @@ const grammar = {
         {include: '#buffer-for-table'},
         {include: '#extent'},
         {include: '#property-call'},
+        {include: '#abl-system-handles'},
         {include: '#abl-functions'},
         {include: '#array-literal'},
         {include: '#decimals'},
         {include: '#constant'},
-        {include: '#abl-system-handles'},
         {include: '#keywords'},
-        {include: '#handle-attributes'},
-        {include: '#handle-methods'},
+        {include: '#handle-attributes-and-methods'},
         {include: '#type-names'},
         {include: '#string'},
         {include: '#comment'},
@@ -2446,7 +2503,7 @@ const grammar = {
       match: '(?<=^|\\s)(a-zA-Z0-9_\\-#$%|-)+(?=\\s)',
       name: 'variable.parameter.abl'
     },
-    parens: {match: '\\(|\\)', name: 'meta.brace.round.js'},
+    parens: {match: '\\(|\\)', name: 'meta.brace.round.abl'},
     'preprocessor-directives': {
       patterns: [
         {
@@ -2469,7 +2526,7 @@ const grammar = {
       begin: '\\s*([Dd][Ee][Ff][Ii][Nn][Ee][Dd])\\b',
       beginCaptures: {1: {name: 'storage.type.function.abl'}},
       end: '(\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       patterns: [
         {include: '#parens'},
         {include: '#comment'},
@@ -2519,7 +2576,7 @@ const grammar = {
         '(?i)(?<=^|\\s)(blob|(ch(?:aracter|aracte|aract|arac|ara|ar|a)?)|c|clob|com-handle|(da(?:tetime-tz|tetime|te|t)?)|(de(?:cimal|cima|cim|ci|c)?)|handle|int64|(int(?:eger|ege|eg|e)?)|in|i|(log(?:ical|ica|ic|i)?)|lo|l|(longch(?:ar|a)?)|memptr|raw|recid|rowid|widget-handle)(?![=a-zA-Z0-9_\\-#$%\\-])'
     },
     'procedure-definition': {
-      begin: '(?i)\\s*(proce(?:dure|dur|du|d)?)\\s+(?=[a-zA-Z_])',
+      begin: '(?i)^\\s*(proce(?:dure|dur|du|d)?)\\s+(?=[a-zA-Z_])',
       beginCaptures: {1: {name: 'keyword.other.abl'}},
       end: '(?=:|\\.)',
       endCaptures: {1: {name: 'punctuation.terminator.abl'}},
@@ -2561,13 +2618,15 @@ const grammar = {
     },
     'property-call': {
       captures: {
-        1: {name: 'punctuation.separator.colon.abl'},
-        2: {name: 'entity.name.function.abl'}
+        2: {name: 'keyword.operator.abl'},
+        3: {name: 'punctuation.accessor.abl'},
+        4: {name: 'entity.name.function.abl'}
       },
-      match: '(:)([a-zA-Z_][a-zA-Z0-9_#$\\-%&]*)\\b'
+      match: '((\\?:)|(:))([a-zA-Z_][a-zA-Z0-9_#$\\-%&]*)\\b'
     },
     'property-get-set-block': {
-      begin: '\\s*(?<!:)\\s*([Gg][Ee][Tt]|[Ss][Ee][Tt])\\b(?![#$\\-_%&])',
+      begin:
+        '\\s*(?<!:)\\s*([Gg][Ee][Tt]|[Ss][Ee][Tt])\\b(?![#$\\-_%&])(?=\\(|:)',
       beginCaptures: {1: {name: 'keyword.other.abl'}},
       end: '\\s*([Ee][Nn][Dd])\\s*([Gg][Ee][Tt]|[Ss][Ee][Tt])?\\s*(?=\\.)\\s*',
       endCaptures: {
@@ -2608,10 +2667,7 @@ const grammar = {
       name: 'punctuation.separator.abl',
       patterns: [
         {include: '#punctuation-comma'},
-        {
-          captures: {1: {name: 'punctuation.separator.colon.abl'}},
-          match: '(:)'
-        },
+        {captures: {1: {name: 'punctuation.accessor.abl'}}, match: '(:)'},
         {
           captures: {1: {name: 'punctuation.separator.period.abl'}},
           match: '(\\.)'
@@ -2619,14 +2675,26 @@ const grammar = {
       ]
     },
     'record-buffer-functions': {
-      captures: {
-        1: {name: 'support.function.abl'},
-        2: {name: 'meta.brace.round.js'},
-        3: {name: 'storage.data.table.abl'},
-        5: {name: 'meta.brace.round.js'}
-      },
-      match:
-        '(?i)\\b((?:avail(?:able|abl|ab|a)?)|locked|ambiguous)\\s*(\\()?\\s*([a-zA-Z][a-zA-Z0-9_\\-#$%]*(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?)\\s*(\\))?'
+      patterns: [
+        {
+          captures: {
+            1: {name: 'support.function.abl'},
+            2: {name: 'meta.brace.round.abl'},
+            3: {name: 'storage.data.table.abl'},
+            5: {name: 'meta.brace.round.abl'}
+          },
+          match:
+            '\\s*([Aa][Vv][Aa][Ii][Ll][Aa][Bb][Ll][Ee]|[Aa][Mm][Bb][Ii][Gg][Uu][Oo][Uu][Ss]|[Ll][Oo][Cc][Kk][Ee][Dd])\\s+(\\()?\\s*([a-zA-Z_][a-zA-Z0-9_\\-#$%]*(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]+)?)\\s*(\\))?'
+        },
+        {
+          captures: {
+            2: {name: 'support.function.abl'},
+            3: {name: 'storage.data.table.abl'}
+          },
+          match:
+            '\\s*([Aa][Vv][Aa][Ii][Ll][Aa][Bb][Ll][Ee]|[Aa][Mm][Bb][Ii][Gg][Uu][Oo][Uu][Ss]|[Ll][Oo][Cc][Kk][Ee][Dd])\\s+([a-zA-Z_][a-zA-Z0-9_\\-#$%]*(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?)\\s*(\\))?'
+        }
+      ]
     },
     release: {
       begin: '(?i)\\s*(release)\\s*',
@@ -2649,17 +2717,29 @@ const grammar = {
     'rowid-function': {
       captures: {
         1: {name: 'support.function.abl'},
-        2: {name: 'meta.brace.round.js'},
+        2: {name: 'meta.brace.round.abl'},
         3: {name: 'storage.data.table.abl'},
-        5: {name: 'meta.brace.round.js'}
+        5: {name: 'meta.brace.round.abl'}
       },
       match:
         '(?i)\\s*(rowid)\\s*(\\()\\s*([a-zA-Z_][a-zA-Z0-9_\\-#$%]*(\\.[a-zA-Z][a-zA-Z0-9_\\-#$%]*)?)\\s*(\\))'
     },
+    'run-options': {
+      patterns: [
+        {
+          captures: {
+            1: {name: 'keyword.other.abl'},
+            4: {name: 'variable.other.abl'}
+          },
+          match:
+            '\\b(([Ss][Ee][Tt])|([Ii][Nn]))\\s+([a-zA-Z_][a-zA-Z0-9_#$\\-%&]*)\\b'
+        }
+      ]
+    },
     'run-statement': {
       begin: '\\b([Rr][Uu][Nn])\\b',
       beginCaptures: {1: {name: 'keyword.other.abl'}},
-      end: '(?i)(?=\\.|value|set|persistent|single-run|singleton|on|no-error|in|asynchronous|\\()',
+      end: '(?i)(?=\\.|value|set|persistent|single-run|singleton|on|no-error|in|asynchronous|event-procedure|\\()',
       patterns: [
         {include: '#string'},
         {include: '#preprocessor-reference'},
@@ -2688,8 +2768,10 @@ const grammar = {
       name: 'meta.statements.abl',
       patterns: [
         {include: '#comment'},
+        {include: '#run-options'},
         {include: '#buffer-copy'},
         {include: '#preprocessors'},
+        {include: '#dynamic-buffer-field-access'},
         {include: '#argument-reference'},
         {include: '#trigger-procedure'},
         {include: '#abl-function-variable-arg'},
@@ -2709,6 +2791,7 @@ const grammar = {
         {include: '#temp-table-name'},
         {include: '#annotation'},
         {include: '#undo-statement'},
+        {include: '#transaction-distinct'},
         {include: '#block-statement'},
         {include: '#block-label'},
         {include: '#end-block'},
@@ -2718,12 +2801,17 @@ const grammar = {
         {include: '#get-class'},
         {include: '#if-then'},
         {include: '#string'},
-        {include: '#translation-attribute'},
         {include: '#break-group'},
         {include: '#event-un-subscribe'},
+        {include: '#handle-attributes-and-methods'},
         {include: '#property-call'},
-        {include: '#handle-attributes'},
-        {include: '#handle-methods'},
+        {include: '#get-query'},
+        {include: '#for-each-table'},
+        {include: '#for-each-join'},
+        {include: '#record-buffer-functions'},
+        {include: '#type-reference'},
+        {include: '#branch-options'},
+        {include: '#abl-system-handles'},
         {include: '#abl-functions'},
         {include: '#unqualified-method-call'},
         {include: '#function-arguments'},
@@ -2738,10 +2826,7 @@ const grammar = {
         {include: '#decimals'},
         {include: '#numeric'},
         {include: '#constant'},
-        {include: '#timestamp-constant'},
         {include: '#break-by'},
-        {include: '#new-record'},
-        {include: '#type-reference'},
         {include: '#procedure-definition'},
         {include: '#for-join'},
         {include: '#operator'},
@@ -2755,12 +2840,9 @@ const grammar = {
         {include: '#buffer-for-table'},
         {include: '#primitive-type'},
         {include: '#property-accessor'},
-        {include: '#for-each-table'},
-        {include: '#for-each-join'},
         {include: '#of-phrase'},
         {include: '#db-dot-table-dot-field'},
         {include: '#code-block'},
-        {include: '#language-functions'},
         {include: '#comment'},
         {include: '#array-literal'},
         {include: '#punctuation-semicolon'},
@@ -2776,11 +2858,11 @@ const grammar = {
     'static-object-property-call': {
       captures: {
         1: {name: 'entity.name.type.abl'},
-        4: {name: 'punctuation.separator.colon.abl'},
-        5: {name: 'entity.name.function.abl'}
+        4: {name: 'punctuation.accessor.abl'},
+        7: {name: 'entity.name.function.abl'}
       },
       match:
-        '(?i)\\s*(([\\w#$%\\-]+|progress)(\\.[\\w#$%\\-]+)+)\\s*(:)([\\w\\-]+)\\s*'
+        '(?i)\\s*(([\\w#$%\\-]+|progress)(\\.[\\w#$%\\-]+)+)\\s*((\\?:)|(:))([\\w\\-]+)\\s*'
     },
     string: {
       patterns: [
@@ -2796,7 +2878,17 @@ const grammar = {
       },
       match: '(?i)\\b(temp-table)\\s+([a-zA-Z][a-zA-Z0-9_\\-#$%]*)'
     },
-    'timestamp-constant': {name: 'constant.language.abl'},
+    'timestamp-constant': {
+      match: '(?i)(?<=^|\\s|\\b)(today|now)(?!a-zA-Z0-9_\\-#$%|-)',
+      name: 'support.function.abl'
+    },
+    'transaction-distinct': {
+      captures: {
+        1: {name: 'keyword.other.abl'},
+        2: {name: 'keyword.other.abl'}
+      },
+      match: '(?i)\\b(transaction)\\s+(distinct)\\b'
+    },
     'translation-attribute': {
       captures: {1: {name: 'support.other.abl'}},
       match: '(:[LlRrTtCcUu]\\d*)\\b'
@@ -2821,10 +2913,10 @@ const grammar = {
       ]
     },
     'type-argument-function': {
-      begin: '(?i)\\s*(cast|type-of)\\s*(?=\\()',
+      begin: '\\s*([Cc][Aa][Ss][Tt]|[Tt][Yy][Pp][Ee]-[Oo][Ff])\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.abl'}},
       end: '(?<=\\))',
-      endCaptures: {1: {name: 'meta.brace.round.js'}},
+      endCaptures: {1: {name: 'meta.brace.round.abl'}},
       name: 'meta.function-call.abl',
       patterns: [
         {
@@ -2922,7 +3014,7 @@ const grammar = {
       match: '(?i)\\b(use-index)\\s+([a-zA-Z_][a-zA-Z0-9_\\-$]*)\\b'
     },
     using: {
-      begin: '(?i)\\s*(using)\\s*',
+      begin: '\\s*([Uu][Ss][Ii][Nn][Gg])\\s*',
       beginCaptures: {1: {name: 'keyword.other.abl'}},
       end: '(\\.)',
       endCaptures: {1: {name: 'punctuation.terminator.abl'}},
@@ -2934,9 +3026,11 @@ const grammar = {
         },
         {
           captures: {1: {name: 'keyword.other.abl'}},
-          match: '(?i)\\s*(from|propath|assembly)\\s*'
+          match:
+            '\\s*([Ff][Rr][Oo][Mm]|[Pp][Rr][Oo][Pp][Aa][Tt][Hh]|[Aa][Ss][Ss][Ee][Mm][Bb][Ll][Yy])\\s*'
         },
-        {include: '#type-name'}
+        {include: '#type-name'},
+        {include: '#comment'}
       ]
     },
     'using-except': {
@@ -2952,8 +3046,11 @@ const grammar = {
     'var-statement': {
       begin: '^\\s*(var)\\s+',
       beginCaptures: {1: {name: 'keyword.other.abl'}},
-      end: '(\\s([a-zA-Z][a-zA-Z0-9_\\-#$%]*))',
-      endCaptures: {2: {name: 'variable.other.abl'}},
+      end: '(\\s([a-zA-Z][a-zA-Z0-9_\\-#$%]*)|(=))',
+      endCaptures: {
+        2: {name: 'variable.other.abl'},
+        3: {name: 'keyword.operator.abl'}
+      },
       name: 'meta.define.abl',
       patterns: [
         {include: '#access-modifier'},
@@ -2964,7 +3061,7 @@ const grammar = {
             2: {name: 'entity.name.type.abl'}
           },
           match:
-            '(?i)\\s*(class)\\s*(blob|character|char|clob|com-handle|date|datetime|datetime-tz|decimal|handle|int64|integer|int|logical|longchar|memptr|raw|recid|rowid|widget-handle)?'
+            '(?i)\\s*(class)\\s+(blob|character|char|clob|com-handle|date|datetime|datetime-tz|decimal|handle|int64|integer|int|logical|longchar|memptr|raw|recid|rowid|widget-handle)?'
         },
         {include: '#primitive-type'},
         {include: '#type-names'},
@@ -2987,7 +3084,7 @@ const grammar = {
     },
     'variable-name': {
       match:
-        '(?<=^|\\s|\\[|\\(|,)([a-zA-Z_][a-zA-Z0-9_#$\\-%&]*)(?=\\.\\s|\\.$|,|:|\\s|\\)|\\]|\\[|$)',
+        '(?<=^|\\s|\\[|\\(|,)([a-zA-Z_][a-zA-Z0-9_#$\\-%&]*)(?=\\.\\s|\\.$|,|:|\\?:|\\s|\\)|\\]|\\[|$)',
       name: 'variable.other.abl'
     },
     'while-expression': {

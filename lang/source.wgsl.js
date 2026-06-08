@@ -36,11 +36,8 @@ const grammar = {
     attributes: {
       patterns: [
         {
-          captures: {
-            1: {name: 'punctuation.attribute.wgsl'},
-            2: {name: 'entity.other.attribute.wgsl'}
-          },
-          match: '(@)\\s*([_$[:alpha:]][_$[:alnum:]]*)\\b'
+          match: '@\\s*[_$[:alpha:]][_$[:alnum:]]*\\b',
+          name: 'entity.other.attribute.wgsl'
         }
       ]
     },

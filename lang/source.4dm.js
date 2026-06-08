@@ -1,5 +1,7 @@
 // This is a TextMate grammar distributed by `starry-night`.
-// This grammar is licensed `mit`.
+// This grammar is developed at
+// <https://github.com/4d/language-4d>
+// and licensed `mit`.
 // See <https://github.com/wooorm/starry-night> for more info.
 /**
  * @import {Grammar} from '@wooorm/starry-night'
@@ -170,7 +172,7 @@ const grammar = {
         {
           begin: '/\\*\\*',
           beginCaptures: {0: {name: 'punctuation.definition.comment.begin.4d'}},
-          end: '\\*\\*/',
+          end: '\\*/',
           endCaptures: {0: {name: 'punctuation.definition.comment.end.4d'}},
           name: 'comment.block.4d'
         },
@@ -221,6 +223,7 @@ const grammar = {
     },
     'function-call-innards': {
       patterns: [
+        {include: '#strings'},
         {include: '#comments'},
         {include: '#storage_types'},
         {include: '#operators'},

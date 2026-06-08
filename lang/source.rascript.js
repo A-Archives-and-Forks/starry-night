@@ -144,7 +144,28 @@ const grammar = {
       ]
     },
     strings: {
-      patterns: [{match: '(?:".*?")', name: 'string.quoted.double.rascript'}]
+      patterns: [
+        {
+          begin: '"',
+          end: '"',
+          name: 'string.quoted.double.rascript',
+          patterns: [
+            {match: '\\\\.', name: 'constant.character.escape.rascript'},
+            {
+              captures: {
+                1: {
+                  name: 'punctuation.definition.template-expression.begin.rascript'
+                },
+                2: {name: 'variable.other.rascript'},
+                3: {
+                  name: 'punctuation.definition.template-expression.end.rascript'
+                }
+              },
+              match: '({)([0-9]+)(})'
+            }
+          ]
+        }
+      ]
     },
     'variable-assignment': {
       patterns: [

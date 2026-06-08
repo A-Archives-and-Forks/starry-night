@@ -18,14 +18,20 @@ const grammar = {
       beginCaptures: {0: {name: 'punctuation.section.array.begin.ron'}},
       end: '\\]',
       endCaptures: {0: {name: 'punctuation.section.array.end.ron'}},
-      patterns: [{include: '#value'}, {include: '#object-name'}]
+      patterns: [{include: '#value'}, {include: '#struct-name'}]
     },
-    block_comment: {begin: '/\\*', end: '\\*/', name: 'comment.block.ron'},
+    block_comment: {
+      begin: '/\\*',
+      end: '\\*/',
+      name: 'comment.block.ron',
+      patterns: [{include: '#block_comment'}]
+    },
     character: {
       begin: "'",
       contentName: 'constant.character.ron',
       end: "'",
-      name: 'string.quoted.single'
+      name: 'string.quoted.single',
+      patterns: [{include: '#escapes'}]
     },
     constant: {match: '\\b(true|false)\\b', name: 'constant.language.ron'},
     dictionary: {
@@ -35,13 +41,14 @@ const grammar = {
       endCaptures: {0: {name: 'punctuation.section.dictionary.end.ron'}},
       patterns: [
         {include: '#value'},
-        {include: '#object-name'},
+        {include: '#struct-name'},
         {include: '#object'},
-        {include: '#tag-name'},
+        {include: '#enum-variant'},
         {match: ',', name: 'punctuation.separator.dictionary.ron'},
         {match: ':', name: 'punctuation.separator.dictionary.key-value.ron'}
       ]
     },
+    'enum-variant': {match: '[a-z_][A-Za-z_0-9]*', name: 'entity.name.tag.ron'},
     escapes: {
       captures: {
         1: {name: 'constant.character.escape.backslash.ron'},
@@ -62,11 +69,13 @@ const grammar = {
         {include: '#dictionary'},
         {include: '#line_comment'},
         {include: '#number'},
-        {include: '#object-name'},
+        {include: '#raw_string'},
+        {include: '#struct-field'},
+        {include: '#struct-name'},
         {include: '#object'},
         {include: '#string'},
         {include: '#character'},
-        {include: '#tag-name'}
+        {include: '#enum-variant'}
       ]
     },
     line_comment: {
@@ -75,25 +84,40 @@ const grammar = {
       name: 'comment.line.double-slash.ron'
     },
     number: {
-      match: '(?x:-?(?:0|[1-9]\\d*)(?:(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)?)',
-      name: 'constant.numeric.ron'
+      patterns: [
+        {match: '-?\\b0x[0-9a-fA-F_]+\\b', name: 'constant.numeric.hex.ron'},
+        {match: '-?\\b0b[01_]+\\b', name: 'constant.numeric.binary.ron'},
+        {match: '-?\\b0o[0-7_]+\\b', name: 'constant.numeric.octal.ron'},
+        {
+          match:
+            '-?\\b[0-9][0-9_]*(?:\\.[0-9][0-9_]*)?(?:[eE][+-]?[0-9_]+)?\\b',
+          name: 'constant.numeric.ron'
+        }
+      ]
     },
     object: {
       begin: '\\(',
-      beginCaptures: {0: {name: 'punctuation.section.dictionary.begin.ron'}},
+      beginCaptures: {0: {name: 'punctuation.section.parens.begin.ron'}},
       end: '\\)',
-      endCaptures: {0: {name: 'punctuation.section.dictionary.end.ron'}},
+      endCaptures: {0: {name: 'punctuation.section.parens.end.ron'}},
       patterns: [
         {include: '#value'},
         {include: '#dictionary'},
-        {include: '#tag-name'},
-        {include: '#object-name'},
+        {include: '#struct-field'},
+        {include: '#struct-name'},
+        {include: '#enum-variant'},
         {include: '#object'}
       ]
     },
-    'object-name': {
-      match: '[A-Za-z_][A-Za-z_0-9]*',
-      name: 'entity.name.class.ron'
+    raw_string: {
+      patterns: [
+        {begin: 'r#{5}"', end: '"#{5}', name: 'string.quoted.other.raw.ron'},
+        {begin: 'r#{4}"', end: '"#{4}', name: 'string.quoted.other.raw.ron'},
+        {begin: 'r#{3}"', end: '"#{3}', name: 'string.quoted.other.raw.ron'},
+        {begin: 'r#{2}"', end: '"#{2}', name: 'string.quoted.other.raw.ron'},
+        {begin: 'r#"', end: '"#', name: 'string.quoted.other.raw.ron'},
+        {begin: 'r"', end: '"', name: 'string.quoted.other.raw.ron'}
+      ]
     },
     string: {
       begin: '(b?)(")',
@@ -101,7 +125,14 @@ const grammar = {
       name: 'string.quoted.double',
       patterns: [{include: '#escapes'}]
     },
-    'tag-name': {match: '[a-z_][A-Za-z_0-9]*', name: 'entity.name.tag.ron'},
+    'struct-field': {
+      captures: {
+        1: {name: 'variable.other.member.ron'},
+        2: {name: 'punctuation.separator.key-value.ron'}
+      },
+      match: '([a-z_][A-Za-z_0-9]*)\\s*(:)'
+    },
+    'struct-name': {match: '[A-Z][A-Za-z_0-9]*', name: 'entity.name.type.ron'},
     value: {
       patterns: [
         {include: '#array'},
@@ -111,6 +142,7 @@ const grammar = {
         {include: '#line_comment'},
         {include: '#number'},
         {include: '#object'},
+        {include: '#raw_string'},
         {include: '#string'},
         {include: '#character'}
       ]

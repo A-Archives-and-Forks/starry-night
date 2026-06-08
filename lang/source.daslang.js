@@ -20,6 +20,7 @@ const grammar = {
     {include: '#keywords'},
     {include: '#strings'},
     {include: '#literals'},
+    {include: '#reader_macro'},
     {include: '#builtin_types'},
     {include: '#builtin_functions_call'},
     {include: '#function_call'},
@@ -31,37 +32,51 @@ const grammar = {
     annotations: {
       patterns: [
         {
-          begin:
-            '((?<!\\[)\\[(?!\\[))\\s*([[:alpha:]_][[:alnum:]_]+)\\s*(\\()?',
+          begin: '(?<!\\[)\\[(?!\\[)',
           beginCaptures: {
-            1: {
+            0: {
               name: 'punctuation.definition.annotation.begin.bracket.square.daslang'
-            },
-            2: {name: 'storage.type.annotation.daslang'},
-            3: {
-              name: 'punctuation.definition.annotation-arguments.begin.bracket.round.daslang'
             }
           },
-          end: '(\\))?(\\])',
+          end: '\\]',
           endCaptures: {
-            1: {
-              name: 'punctuation.definition.annotation-arguments.end.bracket.round.daslang'
-            },
-            2: {
+            0: {
               name: 'punctuation.definition.annotation.end.bracket.square.daslang'
             }
           },
           name: 'meta.declaration.annotation.daslang',
           patterns: [
             {
-              captures: {
-                0: {name: 'keyword.operator.assignment.daslang'},
-                1: {name: 'constant.other.annotation-key.daslang'}
+              begin: '\\b([[:alpha:]_][[:alnum:]_]*)\\s*(\\()',
+              beginCaptures: {
+                1: {name: 'storage.type.annotation.daslang'},
+                2: {
+                  name: 'punctuation.definition.annotation-arguments.begin.bracket.round.daslang'
+                }
               },
-              match: '\\b([[:alpha:]_][[:alnum:]_]*)\\b\\s*='
+              end: '\\)',
+              endCaptures: {
+                0: {
+                  name: 'punctuation.definition.annotation-arguments.end.bracket.round.daslang'
+                }
+              },
+              patterns: [
+                {
+                  captures: {
+                    1: {name: 'constant.other.annotation-key.daslang'},
+                    2: {name: 'keyword.operator.assignment.daslang'}
+                  },
+                  match: '\\b([[:alpha:]_][[:alnum:]_]*)\\b\\s*(=)'
+                },
+                {include: '#strings'},
+                {include: '#literals'},
+                {match: ',', name: 'punctuation.separator.arguments.daslang'}
+              ]
             },
-            {include: '#strings'},
-            {include: '#literals'},
+            {
+              match: '\\b([[:alpha:]_][[:alnum:]_]*)\\b',
+              name: 'storage.type.annotation.daslang'
+            },
             {match: ',', name: 'punctuation.separator.arguments.daslang'}
           ]
         }
@@ -86,7 +101,7 @@ const grammar = {
     },
     builtin_functions_call: {
       begin:
-        '\\b(print|terminate|stackwalk|breakpoint|assert|verify|static_assert|concept_assert|debug|memzero|invoke|push|push_clone|emplace|reserve|resize|erase|length|clear|capacity|key_exists|get|find|find_index|find_index_if|empty|keys|values|to_table_move|to_array_move|subarray)\\b\\s*(?=\\()',
+        '\\b(panic|print|terminate|stackwalk|breakpoint|assert|verify|static_assert|concept_assert|debug|memzero|invoke|push|push_clone|emplace|reserve|resize|erase|length|clear|capacity|key_exists|get|find|find_index|find_index_if|empty|keys|values|to_table_move|to_array_move|subarray)\\b\\s*(?=\\()',
       beginCaptures: {1: {name: 'support.function.builtin.daslang'}},
       end: '\\)',
       endCaptures: {0: {name: 'punctuation.definition.arguments.end.daslang'}},
@@ -105,7 +120,7 @@ const grammar = {
     },
     builtin_types: {
       match:
-        '\\b(bool|void|string|das_string|auto|int|int2|int3|int4|uint|bitfield|uint2|uint3|uint4|float|float2|float3|float4|range|urange|block|int64|uint64|double|function|lambda|int8|uint8|int16|uint16|tuple|variant|iterator|generator|yield|fixed_array|table|array|option|Type)\\b',
+        '\\b(bool|void|string|auto|int|int2|int3|int4|uint|bitfield|uint2|uint3|uint4|float|float2|float3|float4|range|urange|range64|urange64|block|int64|uint64|double|function|lambda|int8|uint8|int16|uint16|tuple|variant|iterator|generator|yield|fixed_array|table|array|smart_ptr)\\b',
       name: 'support.type.builtin.daslang'
     },
     comments: {
@@ -128,6 +143,7 @@ const grammar = {
       patterns: [
         {include: '#strings'},
         {include: '#literals'},
+        {include: '#reader_macro'},
         {include: '#builtin_functions_call'},
         {include: '#function_call'},
         {include: '#member_access'},
@@ -145,52 +161,31 @@ const grammar = {
       patterns: [
         {
           begin:
-            '\\b(def)\\b\\s*((?:private|public|abstract|override|static)\\s+)?([[:alpha:]_][[:alnum:]_:]*)\\s*(\\()',
+            '\\b(def)\\b\\s*((?:private|public|abstract|override|static)\\s+)?([[:alpha:]_][[:alnum:]_:]*)',
           beginCaptures: {
             1: {name: 'storage.type.function.daslang'},
             2: {name: 'storage.modifier.daslang'},
-            3: {name: 'entity.name.function.daslang'},
-            4: {name: 'punctuation.definition.parameters.begin.daslang'}
+            3: {name: 'entity.name.function.daslang'}
           },
-          end: '(\\{|\\n(?![[:space:]]))',
-          endCaptures: {
-            1: {name: 'punctuation.definition.block.begin.daslang'}
-          },
+          end: '(?=\\{|\\n(?![[:space:]]))',
           name: 'meta.function.declaration.daslang',
           patterns: [
             {
-              begin: '(?=\\))',
-              end: '(?=\\s*[:\\{]|\\s*=>|\\s*\\n(?![[:space:]]))',
+              begin: '\\(',
+              beginCaptures: {
+                0: {name: 'punctuation.definition.parameters.begin.daslang'}
+              },
+              end: '\\)',
+              endCaptures: {
+                0: {name: 'punctuation.definition.parameters.end.daslang'}
+              },
+              name: 'meta.function.parameters.daslang',
               patterns: [
                 {
-                  begin: '\\(',
-                  beginCaptures: {
-                    0: {name: 'punctuation.definition.parameters.begin.daslang'}
-                  },
-                  end: '\\)',
-                  endCaptures: {
-                    0: {name: 'punctuation.definition.parameters.end.daslang'}
-                  },
-                  name: 'meta.function.parameters.daslang',
+                  begin: '\\b(var|let)\\b',
+                  beginCaptures: {0: {name: 'storage.modifier.daslang'}},
+                  end: '(?=,|;|\\))',
                   patterns: [
-                    {
-                      begin: '\\b(var|let)\\b',
-                      beginCaptures: {0: {name: 'storage.modifier.daslang'}},
-                      end: '(?=,|;|\\))',
-                      patterns: [
-                        {
-                          match: '\\b([[:alpha:]_][[:alnum:]_]*)\\b',
-                          name: 'variable.parameter.function.daslang'
-                        },
-                        {
-                          match: ':',
-                          name: 'punctuation.separator.annotation.daslang'
-                        },
-                        {include: '#builtin_types'},
-                        {include: '#user_defined_types'},
-                        {include: '#expression'}
-                      ]
-                    },
                     {
                       match: '\\b([[:alpha:]_][[:alnum:]_]*)\\b',
                       name: 'variable.parameter.function.daslang'
@@ -201,18 +196,23 @@ const grammar = {
                     },
                     {include: '#builtin_types'},
                     {include: '#user_defined_types'},
-                    {include: '#expression'},
-                    {
-                      match: ',|;',
-                      name: 'punctuation.separator.parameters.daslang'
-                    }
+                    {include: '#expression'}
                   ]
                 },
-                {match: ':', name: 'punctuation.separator.return-type.daslang'},
+                {
+                  match: '\\b([[:alpha:]_][[:alnum:]_]*)\\b',
+                  name: 'variable.parameter.function.daslang'
+                },
+                {match: ':', name: 'punctuation.separator.annotation.daslang'},
                 {include: '#builtin_types'},
-                {include: '#user_defined_types'}
+                {include: '#user_defined_types'},
+                {include: '#expression'},
+                {match: ',|;', name: 'punctuation.separator.parameters.daslang'}
               ]
             },
+            {match: ':', name: 'punctuation.separator.return-type.daslang'},
+            {include: '#builtin_types'},
+            {include: '#user_defined_types'},
             {include: '#annotations'}
           ]
         },
@@ -266,20 +266,7 @@ const grammar = {
             }
           ]
         },
-        {
-          begin: '%([[:alpha:]_][[:alnum:]_]*)~',
-          beginCaptures: {
-            0: {name: 'keyword.operator.reader-macro.daslang'},
-            1: {name: 'entity.name.function.reader-macro.daslang'}
-          },
-          end: '([[:alpha:]_][[:alnum:]_]*)%',
-          endCaptures: {
-            0: {name: 'keyword.operator.reader-macro-terminator.daslang'},
-            1: {name: 'entity.name.function.reader-macro.daslang'}
-          },
-          name: 'meta.reader-macro.daslang',
-          patterns: [{include: '$self'}]
-        },
+        {include: '#reader_macro'},
         {
           begin: '\\$',
           beginCaptures: {0: {name: 'keyword.operator.block-decl.daslang'}},
@@ -325,7 +312,7 @@ const grammar = {
     },
     function_call: {
       begin:
-        '(?<!\\.)\\b([[:alpha:]_][[:alnum:]_\\:]*)\\b\\s*(?=\\()|(?<=\\)|\\])\\s*(\\()',
+        '\\b([[:alpha:]_][[:alnum:]_\\:]*)\\b\\s*(?=\\()|(?<=\\)|\\])\\s*(\\()',
       beginCaptures: {
         1: {name: 'entity.name.function.daslang'},
         2: {name: 'punctuation.definition.arguments.begin.daslang'}
@@ -348,7 +335,7 @@ const grammar = {
     identifiers: {
       patterns: [
         {
-          match: '\\b([_A-Za-z][A-Za-z0-9_]*)\\b',
+          match: '\\b([_A-Za-z][A-Za-z0-9_`]*)\\b',
           name: 'variable.other.daslang'
         }
       ]
@@ -436,7 +423,7 @@ const grammar = {
       patterns: [
         {
           match:
-            '\\b(if|else|elif|while|for|break|continue|return|yield|try|recover|panic|finally|in|is|as)\\b',
+            '\\b(if|else|elif|static_if|static_elif|while|for|break|continue|return|yield|try|recover|panic|finally|in|is|as|defer|defer_delete)\\b',
           name: 'keyword.control.daslang'
         },
         {
@@ -444,17 +431,18 @@ const grammar = {
           name: 'keyword.control.operator-overload.daslang'
         },
         {
-          match: '\\b(struct|class|enum|variant|tuple|bitfield|typedef|def)\\b',
+          match:
+            '\\b(struct|class|enum|variant|tuple|bitfield|typedef|typedecl|def)\\b',
           name: 'storage.type.declaration.daslang'
         },
         {
           match:
-            '\\b(let|var|static|public|private|shared|inscope|explicit|implicit|abstract|override|sealed|const)\\b',
+            '\\b(let|var|static|public|private|shared|inscope|explicit|implicit|abstract|override|sealed|const|template)\\b',
           name: 'storage.modifier.daslang'
         },
         {
           match:
-            '\\b(new|typeinfo|type|addr|deref|reinterpret|assume|with|cast|pass|goto|label|aka)\\b',
+            '\\b(new|delete|typeinfo|type|addr|deref|reinterpret|assume|with|cast|upcast|pass|goto|label|aka|uninitialized|capture|default|expect|include|unsafe)\\b',
           name: 'keyword.other.daslang'
         },
         {match: '\\b(options)\\b', name: 'keyword.control.options.daslang'},
@@ -469,68 +457,74 @@ const grammar = {
     literals: {
       patterns: [
         {match: '\\b(true|false|null)\\b', name: 'constant.language.daslang'},
-        {match: "'[[:print:]]'", name: 'constant.character.daslang'},
         {
-          match: '\\b0x[\\dA-Fa-f]+u\\b',
+          match: "'(\\\\.|[^\\\\'])'(u8|U8|u|U)?",
+          name: 'constant.character.daslang'
+        },
+        {
+          match: '\\b0[xX][\\dA-Fa-f_]+[uU]\\b',
           name: 'constant.numeric.integer.hexadecimal.unsigned.daslang'
         },
         {
-          match: '\\b0x[\\dA-Fa-f]+L\\b',
+          match: '\\b0[xX][\\dA-Fa-f_]+[lL]\\b',
           name: 'constant.numeric.integer.hexadecimal.long.daslang'
         },
         {
-          match: '\\b0x[\\dA-Fa-f]+\\b',
+          match: '\\b0[xX][\\dA-Fa-f_]+\\b',
           name: 'constant.numeric.integer.hexadecimal.daslang'
         },
         {
-          match: '\\b0[0-7]+u\\b',
+          match: '\\b0[0-7_]+[uU]\\b',
           name: 'constant.numeric.integer.octal.unsigned.daslang'
         },
         {
-          match: '\\b0[0-7]+L\\b',
+          match: '\\b0[0-7_]+[lL]\\b',
           name: 'constant.numeric.integer.octal.long.daslang'
         },
         {
-          match: '\\b0[0-7]+\\b',
+          match: '\\b0[0-7_]+\\b',
           name: 'constant.numeric.integer.octal.daslang'
         },
         {
-          match: '\\b\\d+u\\b',
+          match: '\\b\\d[\\d_]*[uU]\\b',
           name: 'constant.numeric.integer.decimal.unsigned.daslang'
         },
         {
-          match: '\\b\\d+L\\b',
+          match: '\\b\\d[\\d_]*[lL]\\b',
           name: 'constant.numeric.integer.decimal.long.daslang'
         },
         {
-          match: '\\b\\d+\\.\\d*([eE][\\+\\-]?\\d+)?d\\b',
+          match: '\\b\\d[\\d_]*\\.[\\d_]*([eE][\\+\\-]?\\d[\\d_]*)?[dD]\\b',
           name: 'constant.numeric.float.double.daslang'
         },
         {
-          match: '\\b\\d+([eE][\\+\\-]?\\d+)?d\\b',
+          match: '\\b\\d[\\d_]*([eE][\\+\\-]?\\d[\\d_]*)?[dD]\\b',
           name: 'constant.numeric.float.double.daslang'
         },
         {
-          match: '\\b\\.\\d+([eE][\\+\\-]?\\d+)?d\\b',
+          match: '\\b\\.[\\d_]+([eE][\\+\\-]?\\d[\\d_]*)?[dD]\\b',
           name: 'constant.numeric.float.double.daslang'
         },
         {
-          match: '\\b\\d+\\.\\d*([eE][\\+\\-]?\\d+)?f\\b',
+          match: '\\b\\d[\\d_]*\\.[\\d_]*([eE][\\+\\-]?\\d[\\d_]*)?[fF]\\b',
           name: 'constant.numeric.float.daslang'
         },
         {
-          match: '\\b\\d+([eE][\\+\\-]?\\d+)?f\\b',
+          match: '\\b\\d[\\d_]*([eE][\\+\\-]?\\d[\\d_]*)?[fF]\\b',
           name: 'constant.numeric.float.daslang'
         },
         {
-          match: '\\b\\.\\d+([eE][\\+\\-]?\\d+)?f\\b',
+          match: '\\b\\.[\\d_]+([eE][\\+\\-]?\\d[\\d_]*)?[fF]\\b',
           name: 'constant.numeric.float.daslang'
         },
         {
-          match: '\\b\\d+\\.\\d*([eE][\\+\\-]?\\d+)?\\b',
+          match: '\\b\\d[\\d_]*\\.[\\d_]*([eE][\\+\\-]?\\d[\\d_]*)?\\b',
           name: 'constant.numeric.float.daslang'
         },
-        {match: '\\b\\d+\\b', name: 'constant.numeric.integer.decimal.daslang'}
+        {
+          match: '\\b\\d[\\d_]*\\b',
+          name: 'constant.numeric.integer.decimal.daslang'
+        }
       ]
     },
     member_access: {
@@ -586,6 +580,23 @@ const grammar = {
         {
           match: '\\s*=>\\s*',
           name: 'keyword.operator.lambda-expression.daslang'
+        }
+      ]
+    },
+    reader_macro: {
+      patterns: [
+        {
+          begin: '%([[:alpha:]_][[:alnum:]_]*)[~!]',
+          beginCaptures: {
+            0: {name: 'keyword.operator.reader-macro.daslang'},
+            1: {name: 'entity.name.function.reader-macro.daslang'}
+          },
+          end: '%%',
+          endCaptures: {
+            0: {name: 'keyword.operator.reader-macro-terminator.daslang'}
+          },
+          name: 'meta.reader-macro.daslang',
+          patterns: [{include: '$self'}]
         }
       ]
     },
@@ -650,7 +661,7 @@ const grammar = {
       ]
     },
     user_defined_types: {
-      match: '\\b([[:alpha:]_][[:alnum:]_:]*)\\b',
+      match: '\\b([[:alpha:]_][[:alnum:]_:`]*)\\b',
       name: 'entity.name.type.daslang'
     },
     variable_access: {

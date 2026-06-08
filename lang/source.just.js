@@ -101,34 +101,46 @@ const grammar = {
     'embedded-languages': {
       patterns: [
         {
-          begin: '^\\s+(#!/usr/bin/env\\s+node.*)$',
+          begin: '^\\s+(#!/usr/bin/env\\s+(?:-S\\s+)?node.*)$',
           beginCaptures: {1: {name: 'comment.line.number-sign.shebang.just'}},
           contentName: 'source.js',
-          patterns: [{include: 'source.js'}]
+          patterns: [{include: 'source.js'}],
+          while: '^(?=\\s*$|\\s)'
         },
         {
-          begin: '^\\s+(#!/usr/bin/env\\s+perl.*)$',
+          begin: '^\\s+(#!/usr/bin/env\\s+(?:-S\\s+)?deno.*)$',
+          beginCaptures: {1: {name: 'comment.line.number-sign.shebang.just'}},
+          contentName: 'source.ts',
+          patterns: [{include: 'source.ts'}],
+          while: '^(?=\\s*$|\\s)'
+        },
+        {
+          begin: '^\\s+(#!/usr/bin/env\\s+(?:-S\\s+)?perl.*)$',
           beginCaptures: {1: {name: 'comment.line.number-sign.shebang.just'}},
           contentName: 'source.perl',
-          patterns: [{include: 'source.perl'}]
+          patterns: [{include: 'source.perl'}],
+          while: '^(?=\\s*$|\\s)'
         },
         {
-          begin: '^\\s+(#!/usr/bin/env\\s+python.*)$',
+          begin: '^\\s+(#!/usr/bin/env\\s+(?:-S\\s+)?python.*)$',
           beginCaptures: {1: {name: 'comment.line.number-sign.shebang.just'}},
           contentName: 'source.python',
-          patterns: [{include: 'source.python'}]
+          patterns: [{include: 'source.python'}],
+          while: '^(?=\\s*$|\\s)'
         },
         {
-          begin: '^\\s+(#!/usr/bin/env\\s+ruby.*)$',
+          begin: '^\\s+(#!/usr/bin/env\\s+(?:-S\\s+)?ruby.*)$',
           beginCaptures: {1: {name: 'comment.line.number-sign.shebang.just'}},
           contentName: 'source.ruby',
-          patterns: [{include: 'source.ruby'}]
+          patterns: [{include: 'source.ruby'}],
+          while: '^(?=\\s*$|\\s)'
         },
         {
-          begin: '^\\s+(#!/usr/bin/env\\s+(?:sh|bash|zsh|fish).*)$',
+          begin: '^\\s+(#!/usr/bin/env\\s+(?:-S\\s+)?(?:sh|bash|zsh|fish).*)$',
           beginCaptures: {1: {name: 'comment.line.number-sign.shebang.just'}},
           contentName: 'source.shell',
-          patterns: [{include: 'source.shell'}]
+          patterns: [{include: 'source.shell'}],
+          while: '^(?=\\s*$|\\s)'
         }
       ]
     },
@@ -324,7 +336,7 @@ const grammar = {
           name: 'string.quoted.double.indented.just'
         },
         {
-          begin: '(x)?(""")',
+          begin: '(f|x)?(""")',
           beginCaptures: {
             1: {name: 'constant.character.expanded.just'},
             2: {name: 'string.quoted.double.indented.just'}
@@ -340,7 +352,7 @@ const grammar = {
           ]
         },
         {
-          begin: '(x)?(")',
+          begin: '(f|x)?(")',
           beginCaptures: {
             1: {name: 'constant.character.expanded.just'},
             2: {name: 'string.quoted.double.just'}
@@ -356,7 +368,7 @@ const grammar = {
           ]
         },
         {
-          begin: "(x)?(''')",
+          begin: "(f|x)?(''')",
           beginCaptures: {
             1: {name: 'constant.character.expanded.just'},
             2: {name: 'string.quoted.single.indented.just'}
@@ -366,7 +378,7 @@ const grammar = {
           patterns: [{include: '#escaping'}]
         },
         {
-          begin: "(x)?(')",
+          begin: "(f|x)?(')",
           beginCaptures: {
             1: {name: 'constant.character.expanded.just'},
             2: {name: 'string.quoted.single.just'}

@@ -156,7 +156,7 @@ const grammar = {
       patterns: [
         {
           match:
-            '\\b(?<![:_\\.])(?:function|mutable\\s+struct|struct|macro|quote|abstract\\s+type|primitive\\s+type|module|baremodule|where)\\b',
+            '\\b(?<![:_\\.])(?:function|mutable\\s+struct|struct|macro|quote|abstract\\s+type|primitive\\s+type|typegroup|module|baremodule|where)\\b',
           name: 'keyword.other.julia'
         },
         {

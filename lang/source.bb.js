@@ -81,12 +81,18 @@ const grammar = {
     keywords: {
       patterns: [
         {
+          captures: {
+            1: {name: 'keyword.control.bb'},
+            2: {name: 'storage.type.function.python.bb'}
+          },
+          match: '^(fakeroot +)?(python|def)\\b'
+        },
+        {
           captures: {1: {name: 'keyword.control.bb'}},
           match:
             '(?<![[:punct:]])\\b(include|require|inherit|inherit_defer|addtask|deltask|after|before|export|echo|if|fi|unset|print|fakeroot|EXPORT_FUNCTIONS|INHERIT)\\b(?![[:punct:]])'
         },
-        {include: '#python-keywords'},
-        {captures: {1: {name: 'storage.type.function.python.bb'}}}
+        {include: '#python-keywords'}
       ]
     },
     numeric: {match: '(-|\\.)?[0-9]+(\\.[0-9]+)?', name: 'constant.numeric.bb'},

@@ -7,7 +7,7 @@
 
 /** @type {Grammar} */
 const grammar = {
-  extensions: ['.desktop', '.desktop.in', '.service'],
+  extensions: ['.desktop', '.desktop.in'],
   names: ['desktop'],
   patterns: [
     {

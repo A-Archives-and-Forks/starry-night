@@ -14,22 +14,30 @@ const grammar = {
   patterns: [
     {include: '#version'},
     {include: '#circuit'},
+    {include: '#annotations'},
     {include: '#declaration'},
     {include: '#statement'},
     {include: '#comment'},
     {include: '#file_info'}
   ],
   repository: {
+    annotations: {
+      begin: '%\\[',
+      end: '\\]',
+      name: 'meta.annotation.firrtl',
+      patterns: [{include: '#comment'}]
+    },
     circuit: {
       captures: {
         1: {name: 'storage.type.class.firrtl'},
         2: {name: 'entity.name.type.firrtl'}
       },
-      match: '^(circuit)\\s+(\\w+)\\s*:'
+      match: '^(circuit)\\s+(\\w+|`[\\w]+`)\\s*:'
     },
     comment: {match: ';.*$', name: 'comment.line.character.firrtl'},
     declaration: {
       patterns: [
+        {include: '#formal'},
         {include: '#module'},
         {include: '#extmodule'},
         {include: '#layer'},
@@ -43,119 +51,205 @@ const grammar = {
     },
     expression: {
       patterns: [
-        {include: '#expression_literal'},
+        {include: '#expression_mux'},
+        {include: '#expression_enum'},
+        {include: '#expression_intrinsic'},
         {include: '#expression_primop'},
         {include: '#expression_primop_deprecated'},
-        {include: '#property_literal'},
-        {include: '#format_string'}
+        {include: '#expression_probe'},
+        {include: '#expression_literal'},
+        {include: '#expression_radix_literal'},
+        {include: '#expression_reference'}
+      ]
+    },
+    expression_enum: {
+      begin: '\\{\\|',
+      end: '\\|\\}\\s*\\(\\s*(\\w+|`[\\w]+`)(?:\\s*,\\s*)?',
+      endCaptures: {1: {name: 'variable.other.firrtl'}},
+      patterns: [{include: '#type_enum_variant'}, {include: '#type'}]
+    },
+    expression_intrinsic: {
+      begin: '\\b(intrinsic)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+      end: '\\)',
+      patterns: [
+        {include: '#intrinsic_spec'},
+        {include: '#expression'},
+        {include: '#comment'}
       ]
     },
     expression_literal: {
-      captures: {1: {name: 'constant.numeric.firrtl'}},
-      match: '(([US]Int|Analog)(<(\\d+)>)?\\(.+\\))'
+      captures: {
+        1: {name: 'storage.type.firrtl'},
+        2: {name: 'constant.numeric.firrtl'},
+        3: {name: 'constant.numeric.firrtl'}
+      },
+      match: '\\b([US]Int|Analog)(?:<(\\d+)>)?\\s*\\(\\s*([+-]?\\d+)\\s*\\)'
+    },
+    expression_mux: {
+      begin: '\\b(mux)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.operator.firrtl'}},
+      end: '\\)',
+      patterns: [{include: '#expression'}, {include: '#comment'}]
     },
     expression_primop: {
       begin:
-        '(add|sub|mul|div|rem|lt|leq|gt|geq|eq|neq|pad|asAsyncReset|asUInt|asSInt|asClock|shl|shr|dshl|dshr|cvt|neg|not|and|or|xor|andr|orr|xorr|cat|bits|head|tail|mux|probe|rwprobe|read)\\(',
+        '\\b(add|sub|mul|div|rem|lt|leq|gt|geq|eq|neq|pad|asAsyncReset|asReset|asUInt|asSInt|asClock|shl|shr|dshl|dshr|cvt|neg|not|and|or|xor|andr|orr|xorr|cat|bits|head|tail)\\s*\\(',
       beginCaptures: {1: {name: 'keyword.operator.firrtl'}},
       end: '\\)',
-      patterns: [{include: '#expression'}]
-    },
-    expression_primop_deprecated: {
-      begin: '(asFixedPoint|bpshl|bpshr|bpset|validif)\\(',
-      beginCaptures: {1: {name: 'invalid.deprecated.firrtl'}},
-      end: '\\)',
-      patterns: [{include: '#expression'}]
-    },
-    extmodule: {
-      captures: {
-        1: {name: 'storage.modifier.firrtl'},
-        2: {name: 'storage.type.class.firrtl'},
-        3: {name: 'entity.name.type.firrtl'}
-      },
-      match: '(extmodule)\\s+(\\w+)\\s*:'
-    },
-    file_info: {match: '(@\\[.*\\])', name: 'comment.line.character.firrtl'},
-    format_string: {
-      begin: '"',
-      end: '"',
-      name: 'string.quoted.double.firrtl',
       patterns: [
-        {match: '%[bdx%]', name: 'variable.other.firrtl'},
-        {match: '\\\\[nt\\\\"\']', name: 'variable.other.firrtl'}
+        {include: '#expression'},
+        {match: '\\d+', name: 'constant.numeric.firrtl'},
+        {include: '#comment'}
       ]
     },
-    instance: {
-      captures: {1: {name: 'entity.name.type.firrtl'}},
-      match: 'inst\\s+(\\w+)\\s+of\\s+',
-      name: 'keyword.other.firrtl'
+    expression_primop_deprecated: {
+      begin: '\\b(asFixedPoint|bpshl|bpshr|bpset|validif)\\s*\\(',
+      beginCaptures: {1: {name: 'invalid.deprecated.firrtl'}},
+      end: '\\)',
+      patterns: [{include: '#expression'}, {include: '#comment'}]
     },
-    layer: {
+    expression_probe: {
+      begin: '\\b(probe|rwprobe|read)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.operator.firrtl'}},
+      end: '\\)',
+      patterns: [{include: '#expression'}, {include: '#comment'}]
+    },
+    expression_radix_literal: {
+      captures: {
+        1: {name: 'storage.type.firrtl'},
+        2: {name: 'constant.numeric.firrtl'},
+        3: {name: 'constant.numeric.firrtl'}
+      },
+      match:
+        '\\b([US]Int|Analog)(?:<(\\d+)>)?\\s*\\(\\s*([+-]?0[bodh][0-9a-fA-F_]+)\\s*\\)'
+    },
+    expression_reference: {
+      match: '\\b(\\w+|`[\\w]+`)\\b',
+      name: 'variable.other.firrtl'
+    },
+    extmodule: {
+      begin: '^\\s*(extmodule)\\s+(\\w+|`[\\w]+`)',
+      beginCaptures: {
+        1: {name: 'storage.type.class.firrtl'},
+        2: {name: 'entity.name.type.firrtl'}
+      },
+      end: ':',
+      patterns: [
+        {
+          captures: {
+            1: {name: 'keyword.control.firrtl'},
+            2: {name: 'entity.name.class.firrtl'}
+          },
+          match: '\\b(enablelayer)\\s+([\\w.]+)'
+        },
+        {
+          captures: {
+            1: {name: 'keyword.control.firrtl'},
+            2: {name: 'entity.name.class.firrtl'}
+          },
+          match: '\\b(knownlayer)\\s+([\\w.]+(?:\\s*,\\s*[\\w.]+)*)'
+        }
+      ]
+    },
+    file_info: {match: '@\\[[^\\]]+\\]', name: 'comment.line.character.firrtl'},
+    formal: {
       captures: {
         1: {name: 'storage.type.class.firrtl'},
         2: {name: 'entity.name.type.firrtl'},
+        3: {name: 'keyword.other.firrtl'},
+        4: {name: 'entity.name.type.firrtl'}
+      },
+      match: '^\\s*(formal)\\s+(\\w+|`[\\w]+`)\\s+(of)\\s+(\\w+|`[\\w]+`)\\s*:'
+    },
+    format_string: {
+      patterns: [
+        {
+          begin: '"',
+          end: '"',
+          name: 'string.quoted.double.firrtl',
+          patterns: [
+            {match: '%[bdx%]', name: 'constant.character.escape.firrtl'},
+            {match: '\\\\[nt\\\\"\']', name: 'constant.character.escape.firrtl'}
+          ]
+        },
+        {
+          begin: "'",
+          end: "'",
+          name: 'string.quoted.single.firrtl',
+          patterns: [
+            {match: '\\\\[nt\\\\"\']', name: 'constant.character.escape.firrtl'}
+          ]
+        }
+      ]
+    },
+    instance: {
+      captures: {
+        1: {name: 'keyword.other.firrtl'},
+        2: {name: 'entity.name.type.firrtl'},
+        3: {name: 'keyword.other.firrtl'},
+        4: {name: 'entity.name.type.firrtl'}
+      },
+      match: '^\\s*(inst)\\s+(\\w+|`[\\w]+`)\\s+(of)\\s+(\\w+|`[\\w]+`)'
+    },
+    intrinsic_spec: {
+      begin: '(\\w+)\\s*(?:<([^>]+)>)?(?:\\s*:\\s*)?',
+      beginCaptures: {
+        1: {name: 'entity.name.function.firrtl'},
+        2: {
+          patterns: [
+            {
+              captures: {
+                1: {name: 'variable.parameter.firrtl'},
+                2: {name: 'constant.other.firrtl'}
+              },
+              match: '(\\w+)\\s*=\\s*(\\d+|"[^"]*")'
+            }
+          ]
+        }
+      },
+      end: '(?=,|\\))',
+      patterns: [{include: '#type'}]
+    },
+    layer: {
+      captures: {
+        1: {name: 'keyword.declaration.firrtl'},
+        2: {name: 'entity.name.class.firrtl'},
         3: {name: 'storage.modifier.firrtl'}
       },
-      match: '(layer)\\s+(\\w+)\\s*,?\\s*(\\w*)'
+      match: '^\\s*(layer)\\s+(\\w+|`[\\w]+`)\\s*,\\s*(bind|inline)\\s*:'
     },
     memory: {
       captures: {
         1: {name: 'storage.type.class.firrtl'},
         2: {name: 'entity.name.type.firrtl'}
       },
-      match: '(mem)\\s+(\\w+)'
+      match: '^\\s*(mem)\\s+(\\w+|`[\\w]+`)\\s*:'
     },
     module: {
-      captures: {
+      begin: '^\\s*(public\\s+)?(module)\\s+(\\w+|`[\\w]+`)',
+      beginCaptures: {
         1: {name: 'storage.modifier.firrtl'},
         2: {name: 'storage.type.class.firrtl'},
         3: {name: 'entity.name.type.firrtl'}
       },
-      match: '^\\s*(public\\s+)?(module)\\s+(\\w+)\\s*:'
-    },
-    node: {
-      captures: {
-        1: {name: 'storage.type.firrtl'},
-        2: {name: 'entity.name.type.firrtl'}
-      },
-      match: '(node)\\s+(\\w+)\\s*'
-    },
-    port: {
-      begin: '(input|output)\\s+(\\w+)\\s*:',
-      beginCaptures: {
-        1: {name: 'storage.type.port.firrtl'},
-        2: {name: 'entity.name.type.firrtl'}
-      },
-      end: '$',
-      patterns: [
-        {include: '#type'},
-        {include: '#comment'},
-        {include: '#file_info'}
-      ]
-    },
-    property_literal: {
-      match: 'Integer\\((\\d+)\\)',
-      name: 'constant.numeric.firrtl'
-    },
-    statement: {
-      patterns: [
-        {include: '#statement_generic'},
-        {include: '#statement_memory_config'},
-        {include: '#statement_extmodule_config'}
-      ]
-    },
-    statement_extmodule_config: {
+      end: ':',
       patterns: [
         {
-          captures: {1: {name: 'keyword.other.firrtl'}},
-          match: '(parameter)\\s+(\\w+)'
+          captures: {
+            1: {name: 'keyword.control.firrtl'},
+            2: {name: 'entity.name.class.firrtl'}
+          },
+          match: '\\b(enablelayer)\\s+([\\w.]+)'
         }
       ]
     },
-    statement_generic: {
-      begin:
-        '(connect|invalidate|attach\\(|propassign|skip|when|else(\\s+when)?|stop|printf|assert|assume|cover|layerblock|define|force(_initial)?|release(_initial)?)',
-      beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+    node: {
+      begin: '^\\s*(node)\\s+(\\w+|`[\\w]+`)\\s*=',
+      beginCaptures: {
+        1: {name: 'storage.type.firrtl'},
+        2: {name: 'entity.name.type.firrtl'}
+      },
       end: '$',
       patterns: [
         {include: '#expression'},
@@ -163,93 +257,405 @@ const grammar = {
         {include: '#file_info'}
       ]
     },
+    port: {
+      begin: '^\\s*(input|output)\\s+(\\w+|`[\\w]+`)\\s*:',
+      beginCaptures: {
+        1: {name: 'storage.type.port.firrtl'},
+        2: {name: 'entity.name.type.firrtl'}
+      },
+      end: '$',
+      patterns: [
+        {include: '#type'},
+        {include: '#comment'},
+        {include: '#file_info'}
+      ]
+    },
+    property_expression: {
+      patterns: [
+        {include: '#property_literal'},
+        {include: '#property_primop'},
+        {include: '#expression_reference'}
+      ]
+    },
+    property_literal: {
+      captures: {
+        1: {name: 'storage.type.firrtl'},
+        2: {name: 'constant.numeric.firrtl'}
+      },
+      match: '\\b(Integer)\\s*\\(\\s*([+-]?\\d+)\\s*\\)'
+    },
+    property_primop: {
+      begin:
+        '\\b(integer_add|integer_mul|integer_shl|integer_shr|list_concat|List)\\s*(?:<([^>]+)>)?\\s*\\(',
+      beginCaptures: {
+        1: {name: 'keyword.operator.firrtl'},
+        2: {patterns: [{include: '#type_property'}]}
+      },
+      end: '\\)',
+      patterns: [{include: '#property_expression'}, {include: '#comment'}]
+    },
+    statement: {
+      patterns: [
+        {include: '#statement_when'},
+        {include: '#statement_else'},
+        {include: '#statement_match'},
+        {include: '#statement_match_case'},
+        {include: '#statement_printf'},
+        {include: '#statement_fprintf'},
+        {include: '#statement_fflush'},
+        {include: '#statement_verification'},
+        {include: '#statement_stop'},
+        {include: '#statement_force'},
+        {include: '#statement_layerblock'},
+        {include: '#statement_intrinsic'},
+        {include: '#statement_connectlike'},
+        {include: '#statement_memory_config'},
+        {include: '#statement_extmodule_config'},
+        {include: '#statement_skip'}
+      ]
+    },
+    statement_connectlike: {
+      patterns: [
+        {
+          begin: '^\\s*(connect|invalidate|propassign)\\s+',
+          beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+          end: '$',
+          patterns: [
+            {include: '#expression'},
+            {include: '#property_expression'},
+            {include: '#comment'},
+            {include: '#file_info'}
+          ]
+        },
+        {
+          begin: '^\\s*(attach)\\s*\\(',
+          beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+          end: '\\)',
+          patterns: [{include: '#expression'}, {include: '#comment'}]
+        },
+        {
+          begin: '^\\s*(define)\\s+',
+          beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+          end: '$',
+          patterns: [
+            {include: '#expression'},
+            {include: '#comment'},
+            {include: '#file_info'}
+          ]
+        },
+        {
+          begin: '^\\s*',
+          end: '$',
+          patterns: [
+            {match: '(<=)', name: 'keyword.operator.legacy.firrtl'},
+            {include: '#expression'},
+            {include: '#comment'},
+            {include: '#file_info'}
+          ]
+        },
+        {
+          begin: '^\\s*',
+          end: '$',
+          patterns: [
+            {match: '(<-)', name: 'keyword.operator.legacy.firrtl'},
+            {include: '#expression'},
+            {include: '#comment'},
+            {include: '#file_info'}
+          ]
+        },
+        {
+          captures: {
+            1: {patterns: [{include: '#expression'}]},
+            2: {name: 'keyword.operator.legacy.firrtl'},
+            3: {name: 'keyword.operator.legacy.firrtl'}
+          },
+          match: '^\\s*(.+?)\\s+(is)\\s+(invalid)\\b'
+        }
+      ]
+    },
+    statement_else: {
+      patterns: [
+        {
+          begin: '^\\s*(else)\\s+(when)\\s+',
+          beginCaptures: {
+            1: {name: 'keyword.control.firrtl'},
+            2: {name: 'keyword.control.firrtl'}
+          },
+          end: '$',
+          patterns: [
+            {include: '#expression'},
+            {include: '#comment'},
+            {include: '#file_info'}
+          ]
+        },
+        {
+          captures: {1: {name: 'keyword.control.firrtl'}},
+          match: '^\\s*(else)\\s*:'
+        }
+      ]
+    },
+    statement_extmodule_config: {
+      patterns: [
+        {
+          captures: {
+            1: {name: 'keyword.other.firrtl'},
+            2: {name: 'entity.name.type.firrtl'}
+          },
+          match: '^\\s*(defname)\\s*=\\s*(\\w+|`[\\w]+`)'
+        },
+        {
+          begin: '^\\s*(parameter)\\s+(\\w+|`[\\w]+`)\\s*=',
+          beginCaptures: {
+            1: {name: 'keyword.other.firrtl'},
+            2: {name: 'variable.parameter.firrtl'}
+          },
+          end: '$',
+          patterns: [
+            {include: '#format_string'},
+            {match: '\\d+', name: 'constant.numeric.firrtl'},
+            {include: '#comment'}
+          ]
+        }
+      ]
+    },
+    statement_fflush: {
+      begin: '^\\s*(fflush)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+      end: '\\)(?:\\s*:\\s*(\\w+|`[\\w]+`))?',
+      endCaptures: {1: {name: 'entity.name.type.firrtl'}},
+      patterns: [
+        {include: '#expression'},
+        {include: '#format_string'},
+        {include: '#comment'}
+      ]
+    },
+    statement_force: {
+      begin: '^\\s*(force|force_initial|release|release_initial)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+      end: '\\)',
+      patterns: [{include: '#expression'}, {include: '#comment'}]
+    },
+    statement_fprintf: {
+      begin: '^\\s*(fprintf)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+      end: '\\)(?:\\s*:\\s*(\\w+|`[\\w]+`))?',
+      endCaptures: {1: {name: 'entity.name.type.firrtl'}},
+      patterns: [
+        {include: '#expression'},
+        {include: '#format_string'},
+        {include: '#comment'}
+      ]
+    },
+    statement_intrinsic: {
+      begin: '^\\s*intrinsic\\s*\\(',
+      end: '\\)',
+      name: 'meta.intrinsic.firrtl',
+      patterns: [
+        {include: '#intrinsic_spec'},
+        {include: '#expression'},
+        {include: '#comment'}
+      ]
+    },
+    statement_layerblock: {
+      captures: {
+        1: {name: 'keyword.declaration.firrtl'},
+        2: {name: 'entity.name.class.firrtl'}
+      },
+      match: '^\\s*(layerblock)\\s+([\\w.]+|`[\\w]+`)\\s*:'
+    },
+    statement_match: {
+      begin: '^\\s*(match)\\s+',
+      beginCaptures: {1: {name: 'keyword.control.firrtl'}},
+      end: '$',
+      patterns: [
+        {include: '#expression'},
+        {include: '#comment'},
+        {include: '#file_info'}
+      ]
+    },
+    statement_match_case: {
+      captures: {
+        1: {name: 'variable.other.firrtl'},
+        2: {name: 'variable.parameter.firrtl'}
+      },
+      match: '^\\s*(\\w+|`[\\w]+`)(?:\\s*\\(\\s*(\\w+|`[\\w]+`)\\s*\\))?\\s*:'
+    },
     statement_memory_config: {
       patterns: [
         {
-          begin: '(data-type)\\s*=>',
+          begin: '^\\s*(data-type)\\s*=>',
           beginCaptures: {1: {name: 'keyword.other.firrtl'}},
           end: '$',
-          patterns: [{include: '#type'}]
+          patterns: [{include: '#type'}, {include: '#comment'}]
         },
         {
-          captures: {1: {name: 'keyword.other.firrtl'}},
+          captures: {
+            1: {name: 'keyword.other.firrtl'},
+            2: {name: 'constant.numeric.firrtl'}
+          },
           match:
-            '(depth|reader|writer|read-latency|write-latency)\\s*=>\\s*\\w+'
+            '^\\s*(depth|reader|writer|readwriter|read-latency|write-latency)\\s*=>\\s*(\\w+|`[\\w]+`)'
         },
         {
           captures: {
             1: {name: 'keyword.other.firrtl'},
             2: {name: 'keyword.other.firrtl'}
           },
-          match: '(read-under-write)\\s*=>\\s*(old|new|undefined)'
+          match: '^\\s*(read-under-write)\\s*=>\\s*(old|new|undefined)'
         }
+      ]
+    },
+    statement_printf: {
+      begin: '^\\s*(printf)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+      end: '\\)(?:\\s*:\\s*(\\w+|`[\\w]+`))?',
+      endCaptures: {1: {name: 'entity.name.type.firrtl'}},
+      patterns: [
+        {include: '#expression'},
+        {include: '#format_string'},
+        {include: '#comment'}
+      ]
+    },
+    statement_skip: {
+      captures: {1: {name: 'keyword.other.firrtl'}},
+      match: '^\\s*(skip)\\b'
+    },
+    statement_stop: {
+      begin: '^\\s*(stop)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+      end: '\\)',
+      patterns: [{include: '#expression'}, {include: '#comment'}]
+    },
+    statement_verification: {
+      begin: '^\\s*(assert|assume|cover)\\s*\\(',
+      beginCaptures: {1: {name: 'keyword.other.firrtl'}},
+      end: '\\)(?:\\s*:\\s*(\\w+|`[\\w]+`))?',
+      endCaptures: {1: {name: 'entity.name.type.firrtl'}},
+      patterns: [
+        {include: '#expression'},
+        {include: '#format_string'},
+        {include: '#comment'}
+      ]
+    },
+    statement_when: {
+      begin: '^\\s*(when)\\s+',
+      beginCaptures: {1: {name: 'keyword.control.firrtl'}},
+      end: '$',
+      patterns: [
+        {include: '#expression'},
+        {include: '#comment'},
+        {include: '#file_info'}
       ]
     },
     type: {
       patterns: [
-        {include: '#type_ground_nowidth'},
-        {include: '#type_ground_width'},
-        {include: '#type_bundle'},
+        {include: '#type_property'},
         {include: '#type_probe'},
         {include: '#type_enum'},
-        {include: '#type_property'}
+        {include: '#type_bundle'},
+        {include: '#type_ground_nowidth'},
+        {include: '#type_ground_width'},
+        {include: '#type_alias_ref'}
       ]
     },
+    type_alias_ref: {
+      match: '\\b(\\w+|`[\\w]+`)\\b',
+      name: 'entity.name.type.firrtl'
+    },
     type_bundle: {
-      begin: '(const\\s+)?{',
-      captures: {1: {name: 'storage.modifier.firrtl'}},
-      end: '}',
+      begin: '(const\\s+)?\\{(?!\\|)',
+      beginCaptures: {1: {name: 'storage.modifier.firrtl'}},
+      end: '\\}',
       name: 'meta.type.bundle.firrtl',
-      patterns: [{include: '#type_bundle_field'}, {include: '#type'}]
+      patterns: [
+        {include: '#type_bundle_field'},
+        {include: '#type'},
+        {include: '#comment'}
+      ]
     },
     type_bundle_field: {
       captures: {
         1: {name: 'storage.modifier.firrtl'},
-        2: {name: 'entity.name.type.firrtl'}
+        2: {name: 'variable.other.firrtl'}
       },
-      match: '(flip\\s+)?(\\w+)\\s*:'
+      match: '(flip\\s+)?(\\w+|`[\\w]+`)\\s*:'
     },
     type_decl: {
-      begin: '(type)\\s+(\\w+)\\s*=',
+      begin: '^\\s*(type)\\s+(\\w+|`[\\w]+`)\\s*=',
       beginCaptures: {
-        1: {name: 'storage.type.port.firrtl'},
+        1: {name: 'keyword.other.firrtl'},
         2: {name: 'entity.name.type.firrtl'}
       },
       end: '$',
-      patterns: [{include: '#type'}, {include: '#comment'}]
+      patterns: [
+        {include: '#type'},
+        {include: '#comment'},
+        {include: '#file_info'}
+      ]
     },
     type_enum: {
-      begin: '({\\|)',
-      captures: {1: {name: 'storage.type.firrtl'}},
-      end: '(\\|})',
-      patterns: [{include: '#type'}]
+      begin: '\\{\\|',
+      end: '\\|\\}',
+      name: 'meta.type.enum.firrtl',
+      patterns: [
+        {include: '#type_enum_variant'},
+        {include: '#type'},
+        {include: '#comment'}
+      ]
+    },
+    type_enum_variant: {
+      captures: {
+        1: {name: 'variable.other.firrtl'},
+        2: {name: 'punctuation.separator.firrtl'}
+      },
+      match: '(\\w+|`[\\w]+`)\\s*(:)?'
     },
     type_ground_nowidth: {
-      captures: {1: {name: 'storage.modifier.firrtl'}},
-      match: '(const\\s+)?(Clock|Reset|AsyncReset)',
-      name: 'storage.type.firrtl'
+      captures: {
+        1: {name: 'storage.modifier.firrtl'},
+        2: {name: 'storage.type.firrtl'},
+        3: {name: 'constant.numeric.firrtl'}
+      },
+      match: '(const\\s+)?(Clock|Reset|AsyncReset)(?:\\[(\\d+)\\])?'
     },
     type_ground_width: {
       captures: {
         1: {name: 'storage.modifier.firrtl'},
+        2: {name: 'storage.type.firrtl'},
+        3: {name: 'constant.numeric.firrtl'},
         4: {name: 'constant.numeric.firrtl'}
       },
-      match: '(const\\s+)?([US]Int|Analog)(<(\\d+)>)?',
-      name: 'storage.type.firrtl'
+      match: '(const\\s+)?([US]Int|Analog)(?:<(\\d+)>)?(?:\\[(\\d+)\\])?'
     },
     type_probe: {
-      begin: '((RW)?Probe<)',
-      captures: {1: {name: 'storage.type.firrtl'}},
-      end: '(>)',
-      patterns: [{include: '#type'}]
+      begin: '((RW)?Probe)\\s*<',
+      beginCaptures: {1: {name: 'storage.type.firrtl'}},
+      end: '>',
+      patterns: [
+        {
+          captures: {1: {name: 'entity.name.type.firrtl'}},
+          match: ',\\s*([\\w.]+)'
+        },
+        {include: '#type'}
+      ]
     },
-    type_property: {match: 'Integer', name: 'storage.type.firrtl'},
+    type_property: {
+      patterns: [
+        {match: '\\b(Integer)\\b', name: 'storage.type.firrtl'},
+        {
+          begin: '\\b(List)\\s*<',
+          beginCaptures: {1: {name: 'storage.type.firrtl'}},
+          end: '>',
+          patterns: [{include: '#type_property'}]
+        }
+      ]
+    },
     version: {
-      match: '^FIRRTL version \\d+\\.\\d+\\.\\d+$',
+      match: 'FIRRTL\\s+version\\s+\\d+\\.\\d+\\.\\d+',
       name: 'comment.line.character.firrtl'
     },
     wire_or_register: {
-      begin: '(wire|reg|regreset)\\s+(\\w+)\\s*:',
+      begin: '^\\s*(wire|reg|regreset)\\s+(\\w+|`[\\w]+`)\\s*:',
       beginCaptures: {
         1: {name: 'storage.type.firrtl'},
         2: {name: 'entity.name.type.firrtl'}
@@ -257,6 +663,7 @@ const grammar = {
       end: '$',
       patterns: [
         {include: '#type'},
+        {include: '#expression'},
         {include: '#comment'},
         {include: '#file_info'}
       ]

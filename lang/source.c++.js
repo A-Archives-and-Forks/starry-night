@@ -68,6 +68,10 @@ const grammar = {
       },
       match: '(::)\\s*(template)\\b'
     },
+    {
+      match: '\\[\\[=[A-Za-z_]\\w*\\]\\]',
+      name: 'storage.modifier.annotation.c++'
+    },
     {include: 'source.c'},
     {match: '\\b(friend|explicit|virtual)\\b', name: 'storage.modifier.$1.c++'},
     {match: '\\b(private|protected|public):', name: 'storage.modifier.$1.c++'},

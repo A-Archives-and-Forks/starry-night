@@ -375,7 +375,7 @@ const grammar = {
         },
         {
           captures: {
-            1: {name: 'punctuation.definition.comment.jai'},
+            1: {name: 'comment.line.double-slash.jai'},
             2: {
               name: 'comment.line.double-slash.jai',
               patterns: [{include: '#comments-line'}]

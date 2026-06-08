@@ -11,7 +11,14 @@
 const grammar = {
   extensions: ['.csv'],
   names: ['csv'],
-  patterns: [{include: '#main'}],
+  patterns: [
+    {
+      begin: '\\A(?=[^\\s"]+(?:\\t[^\\s"]+)++\\s*$)',
+      end: '(?=A)B',
+      patterns: [{include: 'source.tsv'}]
+    },
+    {include: '#main'}
+  ],
   repository: {
     escape: {match: '""', name: 'constant.character.escape.quote.csv'},
     header: {

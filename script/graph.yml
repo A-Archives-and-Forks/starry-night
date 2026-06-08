@@ -40,6 +40,10 @@ source.astro:
   source.tsx: true
 source.awk:
   source.regexp: false
+source.baml:
+  source.baml-jinja: true
+  source.python: false
+  source.ts: false
 source.bdf:
   source.xlfd: true
 source.bru:
@@ -109,6 +113,8 @@ source.css.less:
 source.css.scss:
   source.css: true
   source.sassdoc: false
+source.csv:
+  source.tsv: false
 source.cuda-c++:
   source.c++: true
 source.curlrc:
@@ -215,6 +221,9 @@ source.gjs:
   source.js: true
   source.ts: false
   text.html.basic: false
+source.gtkrc:
+  etc: true
+  source.xlfd: false
 source.gts:
   source.css: false
   source.js: false
@@ -237,6 +246,7 @@ source.haskell:
   annotation.liquidhaskell.haskell: false
 source.hosts:
   etc: true
+  source.shell: false
 source.httpspec:
   source.json: true
 source.hurl:
@@ -315,6 +325,7 @@ source.just:
   source.python: false
   source.ruby: false
   source.shell: false
+  source.ts: false
 source.kakscript:
   source.shell: false
 source.kickstart:
@@ -626,6 +637,8 @@ source.pic:
   text.html.basic: true
   text.roff: true
   text.tex: false
+source.pkgconf:
+  etc: true
 source.postscript:
   text.xml: false
 source.procfile:
@@ -706,6 +719,8 @@ source.smpl:
   source.python: false
 source.sparql:
   source.turtle: true
+source.spicedb:
+  source.cel: false
 source.spin:
   source.regexp.spin: false
 source.ssh-config:
@@ -749,7 +764,6 @@ source.vba:
 source.vento:
   source.js: true
   source.yaml: false
-  text.html.basic: true
 source.vim-snippet:
   source.python: false
   source.regexp: false

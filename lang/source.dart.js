@@ -32,6 +32,8 @@ const grammar = {
     {include: '#annotations'},
     {include: '#keywords'},
     {include: '#constants-and-special-vars'},
+    {include: '#class-identifier-with-optional-factory-method'},
+    {include: '#function-identifier'},
     {include: '#operators'},
     {include: '#strings'}
   ],
@@ -52,6 +54,35 @@ const grammar = {
         {
           begin: '(?<![a-zA-Z0-9_$])([_$]*[A-Z][a-zA-Z0-9_$]*)\\b',
           beginCaptures: {1: {name: 'support.class.dart'}},
+          end: '(?!<)',
+          patterns: [{include: '#type-args'}]
+        }
+      ]
+    },
+    'class-identifier-with-optional-factory-method': {
+      patterns: [
+        {
+          captures: {
+            1: {name: 'support.class.dart'},
+            2: {name: 'entity.name.function.dart'}
+          },
+          match:
+            '(?<!\\$)\\b(bool|num|int|double|dynamic)\\b(?!\\$)\\s*(factory\\b)?'
+        },
+        {
+          captures: {
+            1: {name: 'storage.type.primitive.dart'},
+            2: {name: 'entity.name.function.dart'}
+          },
+          match: '(?<!\\$)\\b(void)\\b(?!\\$)\\s*(factory\\b)?'
+        },
+        {
+          begin:
+            '(?<![a-zA-Z0-9_$])([_$]*[A-Z][a-zA-Z0-9_$]*)\\b\\s*(factory\\b)?',
+          beginCaptures: {
+            1: {name: 'support.class.dart'},
+            2: {name: 'entity.name.function.dart'}
+          },
           end: '(?!<)',
           patterns: [{include: '#type-args'}]
         }
@@ -126,9 +157,7 @@ const grammar = {
           match:
             '(?<!\\$)\\b((0(x|X)[0-9a-fA-F][0-9a-fA-F_]*)|(([0-9][0-9_]*\\.?[0-9_]*)|(\\.[0-9][0-9_]*))((e|E)(\\+|-)?[0-9][0-9_]*)?)\\b(?!\\$)',
           name: 'constant.numeric.dart'
-        },
-        {include: '#class-identifier'},
-        {include: '#function-identifier'}
+        }
       ]
     },
     dartdoc: {
@@ -167,6 +196,8 @@ const grammar = {
     expression: {
       patterns: [
         {include: '#constants-and-special-vars'},
+        {include: '#class-identifier-with-optional-factory-method'},
+        {include: '#function-identifier'},
         {include: '#strings'},
         {match: '[a-zA-Z0-9_]+', name: 'variable.parameter.dart'},
         {begin: '\\{', end: '\\}', patterns: [{include: '#expression'}]}
@@ -181,7 +212,8 @@ const grammar = {
           },
           match:
             '([_$]*[a-z][a-zA-Z0-9_$]*)(<(?:[a-zA-Z0-9_$<>?]|,\\s*|\\s+extends\\s+)+>)?[!?]?\\('
-        }
+        },
+        {match: '(?<=\\.)new\\b', name: 'entity.name.function.dart'}
       ]
     },
     keywords: {
@@ -202,7 +234,7 @@ const grammar = {
           name: 'keyword.control.dart'
         },
         {match: '(?<!\\$)\\bassert\\b(?!\\$)', name: 'keyword.control.dart'},
-        {match: '(?<!\\$)\\b(new)\\b(?!\\$)', name: 'keyword.control.new.dart'},
+        {match: '(?<![\\$\\.])\\b(new)\\b(?!\\$)', name: 'keyword.new.dart'},
         {
           match: '(?<!\\$)\\b(return)\\b(?!\\$)',
           name: 'keyword.control.return.dart'
@@ -218,7 +250,7 @@ const grammar = {
           name: 'storage.modifier.dart'
         },
         {
-          match: '(?<!\\$)\\b(?:void|var)\\b(?!\\$)',
+          match: '(?<!\\$)\\b(?:var)\\b(?!\\$)',
           name: 'storage.type.primitive.dart'
         }
       ]

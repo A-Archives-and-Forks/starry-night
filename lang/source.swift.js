@@ -240,6 +240,7 @@ const grammar = {
     },
     'builtin-types-builtin-protocol-type': {
       patterns: [
+        {match: '\\bActor\\b', name: 'support.type.swift'},
         {
           match:
             '\\b(?:Ra(?:n(?:domAccess(?:Collection|Indexable)|geReplaceable(?:Collection|Indexable))|wRepresentable)|M(?:irrorPath|utable(?:Collection|Indexable))|Bi(?:naryFloatingPoint|twiseOperations|directional(?:Collection|Indexable))|S(?:tr(?:ideable|eamable)|igned(?:Number|Integer)|e(?:tAlgebra|quence))|Hashable|C(?:o(?:llection|mparable)|ustom(?:Reflectable|StringConvertible|DebugStringConvertible|PlaygroundQuickLookable|LeafReflectable)|VarArg)|TextOutputStream|I(?:n(?:teger(?:Arithmetic)?|dexable(?:Base)?)|teratorProtocol)|OptionSet|Un(?:signedInteger|icodeCodec)|E(?:quatable|rror|xpressibleBy(?:BooleanLiteral|String(?:Interpolation|Literal)|NilLiteral|IntegerLiteral|DictionaryLiteral|UnicodeScalarLiteral|ExtendedGraphemeClusterLiteral|FloatLiteral|ArrayLiteral))|FloatingPoint|L(?:osslessStringConvertible|azy(?:SequenceProtocol|CollectionProtocol))|A(?:nyObject|bsoluteValuable))\\b',
@@ -576,6 +577,10 @@ const grammar = {
         {match: '\\b(?:repeat|each)\\b', name: 'keyword.control.loop.swift'},
         {
           match: '\\b(?:inout|isolated|borrowing|consuming)\\b',
+          name: 'storage.modifier.swift'
+        },
+        {
+          match: '\\bnonisolated(?:\\(nonsending\\)|\\b)',
           name: 'storage.modifier.swift'
         },
         {match: '\\bSelf\\b', name: 'variable.language.swift'},
@@ -1812,7 +1817,11 @@ const grammar = {
         },
         {
           match:
-            '(?<!\\.)\\b(?:inout|static|final|lazy|mutating|nonmutating|optional|indirect|required|override|dynamic|convenience|infix|prefix|postfix|distributed|nonisolated|borrowing|consuming)\\b',
+            '(?<!\\.)\\b(?:inout|static|final|lazy|mutating|nonmutating|optional|indirect|required|override|dynamic|convenience|infix|prefix|postfix|distributed|borrowing|consuming)\\b',
+          name: 'storage.modifier.swift'
+        },
+        {
+          match: '(?<!\\.)\\bnonisolated(?:\\(nonsending\\)|\\b)',
           name: 'storage.modifier.swift'
         },
         {
@@ -1843,7 +1852,7 @@ const grammar = {
         },
         {
           match:
-            '\\B(?:#file|#filePath|#fileID|#line|#column|#function|#dsohandle)\\b|\\b(?:__FILE__|__LINE__|__COLUMN__|__FUNCTION__|__DSO_HANDLE__)\\b',
+            '\\B(?:#file|#filePath|#fileID|#line|#column|#function|#dsohandle|#isolation)\\b|\\b(?:__FILE__|__LINE__|__COLUMN__|__FUNCTION__|__DSO_HANDLE__)\\b',
           name: 'support.variable.swift'
         },
         {match: '(?<!\\.)\\bimport\\b', name: 'keyword.control.import.swift'},
@@ -2360,7 +2369,7 @@ const grammar = {
           ]
         },
         {
-          begin: '#"""',
+          begin: '#"""(?!#)(?=(?:[^"]|"(?!#))*$)',
           beginCaptures: {
             0: {name: 'punctuation.definition.string.begin.swift'}
           },
@@ -2387,7 +2396,7 @@ const grammar = {
           ]
         },
         {
-          begin: '(##+)"""',
+          begin: '(?<!#)(##+)"""(?!\\1)(?=(?:[^"]|"(?!\\1))*$)',
           beginCaptures: {
             0: {name: 'punctuation.definition.string.begin.swift'}
           },
@@ -2424,7 +2433,7 @@ const grammar = {
           ]
         },
         {
-          begin: '(##+)"',
+          begin: '(?<!#)(##+)"',
           beginCaptures: {
             0: {name: 'punctuation.definition.string.begin.raw.swift'}
           },

@@ -8,10 +8,6 @@ const grammar = {
   names: [],
   patterns: [{include: '#frontMatter'}, {include: '#block'}],
   repository: {
-    ampersand: {
-      match: '&(?!([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+);)',
-      name: 'meta.other.valid-ampersand.markdown'
-    },
     block: {
       patterns: [
         {include: '#separator'},
@@ -21,7 +17,6 @@ const grammar = {
         {include: '#fenced_code_block'},
         {include: '#raw_block'},
         {include: '#link-def'},
-        {include: '#html'},
         {include: '#inline'},
         {include: '#heading-setext'},
         {include: '#paragraphb'}
@@ -38,18 +33,10 @@ const grammar = {
       begin:
         '(?x) (\\*\\*(?=\\w)|(?<!\\w)\\*\\*|(?<!\\w)\\b__)(?=\\S) (?=\n  (\n    <[^>]*+>              # HTML tags\n    | (?<raw>`+)([^`]|(?!(?<!`)\\k<raw>(?!`))`)*+\\k<raw>\n                      # Raw\n    | \\\\[\\\\`*_{}\\[\\]()#.!+\\->]?+      # Escapes\n    | \\[\n    (\n        (?<square>          # Named group\n          [^\\[\\]\\\\]        # Match most chars\n          | \\\\.            # Escaped chars\n          | \\[ \\g<square>*+ \\]    # Nested brackets\n        )*+\n      \\]\n      (\n        (              # Reference Link\n          [ ]?          # Optional space\n          \\[[^\\]]*+\\]        # Ref name\n        )\n        | (              # Inline Link\n          \\(            # Opening paren\n            [ \\t]*+        # Optional whitespace\n            <?(.*?)>?      # URL\n            [ \\t]*+        # Optional whitespace\n            (          # Optional Title\n              (?<title>[\'"])\n              (.*?)\n              \\k<title>\n            )?\n          \\)\n        )\n      )\n    )\n    | (?!(?<=\\S)\\1).            # Everything besides\n                      # style closer\n  )++\n  (?<=\\S)(?=__\\b|\\*\\*)\\1                # Close\n)\n',
       captures: {1: {name: 'punctuation.definition.bold.markdown'}},
-      end: '(?<=\\S)(\\1)',
+      end: '(?<=\\S)(\\1)|(?=$|-/)',
       name: 'markup.bold.markdown',
       patterns: [
-        {
-          applyEndPatternLast: true,
-          begin: '(?=<[^>]*?>)',
-          end: '(?<=>)',
-          patterns: []
-        },
         {include: '#escape'},
-        {include: '#ampersand'},
-        {include: '#bracket'},
         {include: '#raw'},
         {include: '#bold'},
         {include: '#italic'},
@@ -62,10 +49,6 @@ const grammar = {
         {include: '#link-ref'},
         {include: '#link-ref-shortcut'}
       ]
-    },
-    bracket: {
-      match: '<(?![a-zA-Z/?\\$!])',
-      name: 'meta.other.valid-bracket.markdown'
     },
     escape: {
       match: '\\\\[-`*_#+.!(){}\\[\\]\\\\>]',
@@ -1200,49 +1183,6 @@ const grammar = {
         }
       ]
     },
-    html: {
-      patterns: [
-        {
-          begin: '(^|\\G)\\s*(<!--)',
-          captures: {
-            1: {name: 'punctuation.definition.comment.html'},
-            2: {name: 'punctuation.definition.comment.html'}
-          },
-          end: '(-->)',
-          name: 'comment.block.html'
-        },
-        {
-          begin:
-            '(?i)(^|\\G)\\s*(?=<(script|style|pre)(\\s|$|>)(?!.*?</(script|style|pre)>))',
-          end: '(?i)(.*)((</)(script|style|pre)(>))',
-          endCaptures: {
-            1: {patterns: []},
-            2: {name: 'meta.tag.structure.$4.end.html'},
-            3: {name: 'punctuation.definition.tag.begin.html'},
-            4: {name: 'entity.name.tag.html'},
-            5: {name: 'punctuation.definition.tag.end.html'}
-          },
-          patterns: [
-            {
-              begin: '(\\s*|$)',
-              patterns: [],
-              while: '(?i)^(?!.*</(script|style|pre)>)'
-            }
-          ]
-        },
-        {
-          begin: '(?i)(^|\\G)\\s*(?=</?[a-zA-Z]+[^\\s/&gt;]*(\\s|$|/?>))',
-          patterns: [],
-          while: '^(?!\\s*$)'
-        },
-        {
-          begin:
-            '(^|\\G)\\s*(?=(<[a-zA-Z0-9\\-](/?>|\\s.*?>)|</[a-zA-Z0-9\\-]>)\\s*$)',
-          patterns: [],
-          while: '^(?!\\s*$)'
-        }
-      ]
-    },
     'image-inline': {
       captures: {
         1: {name: 'punctuation.definition.string.begin.markdown'},
@@ -1279,8 +1219,6 @@ const grammar = {
     },
     inline: {
       patterns: [
-        {include: '#ampersand'},
-        {include: '#bracket'},
         {include: '#bold'},
         {include: '#italic'},
         {include: '#raw'},
@@ -1299,18 +1237,10 @@ const grammar = {
       begin:
         '(?x) (\\*(?=\\w)|(?<!\\w)\\*|(?<!\\w)\\b_)(?=\\S)                # Open\n  (?=\n    (\n      <[^>]*+>              # HTML tags\n      | (?<raw>`+)([^`]|(?!(?<!`)\\k<raw>(?!`))`)*+\\k<raw>\n                        # Raw\n      | \\\\[\\\\`*_{}\\[\\]()#.!+\\->]?+      # Escapes\n      | \\[\n      (\n          (?<square>          # Named group\n            [^\\[\\]\\\\]        # Match most chars\n            | \\\\.            # Escaped chars\n            | \\[ \\g<square>*+ \\]    # Nested brackets\n          )*+\n        \\]\n        (\n          (              # Reference Link\n            [ ]?          # Optional space\n            \\[[^\\]]*+\\]        # Ref name\n          )\n          | (              # Inline Link\n            \\(            # Opening paren\n              [ \\t]*+        # Optional whtiespace\n              <?(.*?)>?      # URL\n              [ \\t]*+        # Optional whtiespace\n              (          # Optional Title\n                (?<title>[\'"])\n                (.*?)\n                \\k<title>\n              )?\n            \\)\n          )\n        )\n      )\n      | \\1\\1                # Must be bold closer\n      | (?!(?<=\\S)\\1).            # Everything besides\n                        # style closer\n    )++\n    (?<=\\S)(?=_\\b|\\*)\\1                # Close\n  )\n',
       captures: {1: {name: 'punctuation.definition.italic.markdown'}},
-      end: '(?<=\\S)(\\1)((?!\\1)|(?=\\1\\1))',
+      end: '(?<=\\S)(\\1)((?!\\1)|(?=\\1\\1))|(?=$|-/)',
       name: 'markup.italic.markdown',
       patterns: [
-        {
-          applyEndPatternLast: true,
-          begin: '(?=<[^>]*?>)',
-          end: '(?<=>)',
-          patterns: []
-        },
         {include: '#escape'},
-        {include: '#ampersand'},
-        {include: '#bracket'},
         {include: '#raw'},
         {include: '#bold'},
         {include: '#image-inline'},

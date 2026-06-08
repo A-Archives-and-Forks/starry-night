@@ -712,7 +712,7 @@ const grammar = {
       patterns: [{include: '#statement'}]
     },
     'double-raw-interpolation': {
-      begin: '(?<=[^\\{][^\\{]|^)((?:\\{)*)(\\{\\{)(?=[^\\{])',
+      begin: '(?<=[^\\{][^\\{]|^)((?:\\{)*)(\\{\\{)(?!\\{)',
       beginCaptures: {
         1: {name: 'string.quoted.double.cs'},
         2: {name: 'punctuation.definition.interpolation.begin.cs'}
@@ -1219,7 +1219,7 @@ const grammar = {
     'interpolated-string': {
       begin: '\\$"',
       beginCaptures: {0: {name: 'punctuation.definition.string.begin.cs'}},
-      end: '(")|((?:[^\\\\\\n])$)',
+      end: '(")|((?:[^\\\\\\n\\{])$)',
       endCaptures: {
         1: {name: 'punctuation.definition.string.end.cs'},
         2: {name: 'invalid.illegal.newline.cs'}
@@ -1231,7 +1231,7 @@ const grammar = {
       ]
     },
     interpolation: {
-      begin: '(?<=[^\\{]|^)((?:\\{\\{)*)(\\{)(?=[^\\{])',
+      begin: '(?<=[^\\{]|^)((?:\\{\\{)*)(\\{)(?!\\{)',
       beginCaptures: {
         1: {name: 'string.quoted.double.cs'},
         2: {name: 'punctuation.definition.interpolation.begin.cs'}
@@ -1755,6 +1755,17 @@ const grammar = {
         {include: '#variable-initializer'}
       ]
     },
+    'parenthesized-type-list': {
+      begin: '(\\()',
+      beginCaptures: {0: {name: 'punctuation.parenthesis.open.cs'}},
+      end: '(\\))',
+      endCaptures: {0: {name: 'punctuation.parenthesis.close.cs'}},
+      patterns: [
+        {include: '#comment'},
+        {include: '#type'},
+        {include: '#punctuation-comma'}
+      ]
+    },
     pattern: {
       patterns: [
         {include: '#intrusive'},
@@ -1820,14 +1831,30 @@ const grammar = {
       patterns: [
         {include: '#preprocessor-app-directive-package'},
         {include: '#preprocessor-app-directive-property'},
+        {include: '#preprocessor-app-directive-exclude'},
+        {include: '#preprocessor-app-directive-include'},
         {include: '#preprocessor-app-directive-project'},
         {include: '#preprocessor-app-directive-sdk'},
         {include: '#preprocessor-app-directive-generic'}
       ]
     },
+    'preprocessor-app-directive-exclude': {
+      captures: {
+        1: {name: 'keyword.preprocessor.exclude.cs'},
+        2: {name: 'string.unquoted.preprocessor.message.cs'}
+      },
+      match: '\\b(exclude)\\b\\s*(.*)?\\s*'
+    },
     'preprocessor-app-directive-generic': {
       captures: {1: {name: 'string.unquoted.preprocessor.message.cs'}},
       match: '\\b(.*)?\\s*'
+    },
+    'preprocessor-app-directive-include': {
+      captures: {
+        1: {name: 'keyword.preprocessor.include.cs'},
+        2: {name: 'string.unquoted.preprocessor.message.cs'}
+      },
+      match: '\\b(include)\\b\\s*(.*)?\\s*'
     },
     'preprocessor-app-directive-package': {
       captures: {
@@ -2058,7 +2085,7 @@ const grammar = {
     },
     'property-declaration': {
       begin:
-        "(?x)\n\n# The negative lookahead below ensures that we don't match nested types\n# or other declarations as properties.\n(?![[:word:][:space:]]*\\b(?:class|interface|struct|enum|event)\\b)\n\n(?<return_type>\n  (?<type_name>\n    (?:\n      (?:ref\\s+(?:readonly\\s+)?)?   # ref return\n      (?:\n        (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*\\:\\:\\s*)? # alias-qualification\n        (?<name_and_type_args> # identifier + type arguments (if any)\n          \\g<identifier>\\s*\n          (?<type_args>\\s*<(?:[^<>]|\\g<type_args>)+>\\s*)?\n        )\n        (?:\\s*\\.\\s*\\g<name_and_type_args>)* | # Are there any more names being dotted into?\n        (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))\n      )\n      (?:\\s*\\?\\s*)? # nullable suffix?\n      (?:\\s* # array suffix?\n        \\[\n          (?:\\s*,\\s*)* # commata for multi-dimensional arrays\n        \\]\n        \\s*\n        (?:\\?)? # arrays can be nullable reference types\n        \\s*\n      )*\n    )\n  )\\s+\n)\n(?<interface_name>\\g<type_name>\\s*\\.\\s*)?\n(?<property_name>\\g<identifier>)\\s*\n(?=\\{|=>|//|/\\*|$)",
+        "(?x)\n\n# The negative lookahead below ensures that we don't match nested types\n# or other declarations as properties.\n(?![[:word:][:space:]]*\\b(?:class|interface|struct|union|enum|event)\\b)\n\n(?<return_type>\n  (?<type_name>\n    (?:\n      (?:ref\\s+(?:readonly\\s+)?)?   # ref return\n      (?:\n        (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*\\:\\:\\s*)? # alias-qualification\n        (?<name_and_type_args> # identifier + type arguments (if any)\n          \\g<identifier>\\s*\n          (?<type_args>\\s*<(?:[^<>]|\\g<type_args>)+>\\s*)?\n        )\n        (?:\\s*\\.\\s*\\g<name_and_type_args>)* | # Are there any more names being dotted into?\n        (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))\n      )\n      (?:\\s*\\?\\s*)? # nullable suffix?\n      (?:\\s* # array suffix?\n        \\[\n          (?:\\s*,\\s*)* # commata for multi-dimensional arrays\n        \\]\n        \\s*\n        (?:\\?)? # arrays can be nullable reference types\n        \\s*\n      )*\n    )\n  )\\s+\n)\n(?<interface_name>\\g<type_name>\\s*\\.\\s*)?\n(?<property_name>\\g<identifier>)\\s*\n(?=\\{|=>|//|/\\*|$)",
       beginCaptures: {
         1: {patterns: [{include: '#type'}]},
         7: {patterns: [{include: '#type'}, {include: '#punctuation-accessor'}]},
@@ -2191,7 +2218,7 @@ const grammar = {
       patterns: [{include: '#raw-interpolation'}]
     },
     'raw-interpolation': {
-      begin: '(?<=[^\\{]|^)((?:\\{)*)(\\{)(?=[^\\{])',
+      begin: '(?<=[^\\{]|^)((?:\\{)*)(\\{)(?!\\{)',
       beginCaptures: {
         1: {name: 'string.quoted.double.cs'},
         2: {name: 'punctuation.definition.interpolation.begin.cs'}
@@ -2624,6 +2651,7 @@ const grammar = {
         {include: '#enum-declaration'},
         {include: '#interface-declaration'},
         {include: '#struct-declaration'},
+        {include: '#union-declaration'},
         {include: '#record-declaration'},
         {include: '#attribute-section'},
         {include: '#punctuation-semicolon'}
@@ -2746,6 +2774,36 @@ const grammar = {
         {include: '#type-arguments'},
         {include: '#type-array-suffix'},
         {match: '(?<!\\s)\\?', name: 'punctuation.separator.question-mark.cs'}
+      ]
+    },
+    'union-declaration': {
+      begin: '(?=\\bunion\\b)',
+      end: '(?<=\\})|(?=;)',
+      patterns: [
+        {
+          begin: '(?x)\n(union)\\b\\s+\n(@?[_[:alpha:]][_[:alnum:]]*)',
+          beginCaptures: {
+            1: {name: 'storage.type.union.cs'},
+            2: {name: 'entity.name.type.union.cs'}
+          },
+          end: '(?=\\{)|(?=;)',
+          patterns: [
+            {include: '#comment'},
+            {include: '#type-parameter-list'},
+            {include: '#parenthesized-type-list'},
+            {include: '#base-types'},
+            {include: '#generic-constraints'}
+          ]
+        },
+        {
+          begin: '\\{',
+          beginCaptures: {0: {name: 'punctuation.curlybrace.open.cs'}},
+          end: '\\}',
+          endCaptures: {0: {name: 'punctuation.curlybrace.close.cs'}},
+          patterns: [{include: '#class-or-struct-members'}]
+        },
+        {include: '#preprocessor'},
+        {include: '#comment'}
       ]
     },
     'using-directive': {

@@ -81,6 +81,22 @@ const grammar = {
       end: '$',
       name: 'comment.line.double-slash'
     },
+    commentStart: {patterns: [{include: '#commentStartHash'}]},
+    commentStartHash: {
+      begin: '^(?=#)',
+      end: '(?!\\G)',
+      patterns: [{include: '#commentHash'}]
+    },
+    commentStartSemi: {
+      begin: '^(?=;)',
+      end: '(?!\\G)',
+      patterns: [{include: '#commentSemi'}]
+    },
+    commentStartSlash: {
+      begin: '^(?=//)',
+      end: '(?!\\G)',
+      patterns: [{include: '#commentSlash'}]
+    },
     dash: {match: '-', name: 'punctuation.delimiter.separator.dash.hyphen'},
     dot: {
       match: '\\.',

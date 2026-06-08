@@ -94,6 +94,7 @@ const grammar = {
       name: 'keyword.control.import.bsl'
     },
     {match: '(?i)#native', name: 'keyword.control.native.bsl'},
+    {match: '(?i)#stack', name: 'keyword.control.stack.bsl'},
     {
       match:
         '(?i:(?<=[^\\wа-яё\\.]|^)(Прервать|Break|Продолжить|Continue|Возврат|Return)(?=[^\\wа-яё\\.]|$))',

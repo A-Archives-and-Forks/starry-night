@@ -15,6 +15,8 @@ const grammar = {
     {include: '#triple_comment'},
     {include: '#double_comment'},
     {include: '#multi_line_comment'},
+    {include: '#types_block_definition'},
+    {include: '#namespace_block_definition'},
     {include: '#model_block_definition'},
     {include: '#config_block_definition'},
     {include: '#enum_block_definition'},
@@ -201,6 +203,25 @@ const grammar = {
       name: 'source.prisma.named_argument',
       patterns: [{include: '#map_key'}, {include: '#value'}]
     },
+    namespace_block_definition: {
+      begin: '^\\s*(namespace)\\s+([A-Za-z][\\w]*)\\s*({)',
+      beginCaptures: {
+        1: {name: 'storage.type.namespace.prisma'},
+        2: {name: 'entity.name.type.namespace.prisma'},
+        3: {name: 'punctuation.definition.tag.prisma'}
+      },
+      end: '\\s*\\}',
+      endCaptures: {0: {name: 'punctuation.definition.tag.prisma'}},
+      name: 'source.prisma.embedded.source',
+      patterns: [
+        {include: '#triple_comment'},
+        {include: '#double_comment'},
+        {include: '#multi_line_comment'},
+        {include: '#model_block_definition'},
+        {include: '#enum_block_definition'},
+        {include: '#type_definition'}
+      ]
+    },
     number: {
       match:
         '((0(x|X)[0-9a-fA-F]*)|(\\+|-)?\\b(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)([LlFfUuDdg]|UL|ul)?\\b',
@@ -221,6 +242,20 @@ const grammar = {
       ]
     },
     triple_comment: {begin: '///', end: '$\\n?', name: 'comment.prisma'},
+    type_alias_definition: {
+      patterns: [
+        {
+          captures: {
+            1: {name: 'entity.name.type.alias.prisma'},
+            2: {name: 'keyword.operator.assignment.prisma'},
+            3: {name: 'support.type.primitive.prisma'}
+          },
+          match: '^\\s*(\\w+)\\s*(=)\\s*(\\w+)'
+        },
+        {include: '#attribute_with_arguments'},
+        {include: '#attribute'}
+      ]
+    },
     type_definition: {
       patterns: [
         {
@@ -233,6 +268,22 @@ const grammar = {
         },
         {include: '#attribute_with_arguments'},
         {include: '#attribute'}
+      ]
+    },
+    types_block_definition: {
+      begin: '^\\s*(types)\\s*({)',
+      beginCaptures: {
+        1: {name: 'storage.type.types.prisma'},
+        2: {name: 'punctuation.definition.tag.prisma'}
+      },
+      end: '\\s*\\}',
+      endCaptures: {0: {name: 'punctuation.definition.tag.prisma'}},
+      name: 'source.prisma.embedded.source',
+      patterns: [
+        {include: '#triple_comment'},
+        {include: '#double_comment'},
+        {include: '#multi_line_comment'},
+        {include: '#type_alias_definition'}
       ]
     },
     value: {

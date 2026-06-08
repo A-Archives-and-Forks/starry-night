@@ -171,7 +171,10 @@ const grammar = {
               begin: '(=)',
               beginCaptures: {1: {name: 'keyword.operator.assignment.php'}},
               end: '(?=,|\\))',
-              patterns: [{include: '#language'}]
+              patterns: [
+                {begin: '\\(', end: '\\)', patterns: [{include: '#language'}]},
+                {include: '#language'}
+              ]
             }
           ]
         }
@@ -208,7 +211,7 @@ const grammar = {
         {
           begin: '(:)',
           beginCaptures: {1: {name: 'punctuation.definition.type.php'}},
-          end: '(?=[{;])',
+          end: '(?=[{;]|\\bwhere\\b)',
           patterns: [
             {include: '#comments'},
             {include: '#type-annotation'},
@@ -342,7 +345,7 @@ const grammar = {
       patterns: [
         {include: '#comments'},
         {
-          begin: '(?=^\\s*<<)',
+          begin: '(?=^\\s*<<[^<])',
           end: '(?<=>>)',
           patterns: [{include: '#attributes'}]
         },
@@ -570,6 +573,23 @@ const grammar = {
           name: 'keyword.control.exception.php'
         },
         {
+          begin: '(?i)\\b(const)\\s+(?=[\\\\a-z_])',
+          beginCaptures: {1: {name: 'storage.modifier.php'}},
+          end: '(;)',
+          endCaptures: {1: {name: 'punctuation.terminator.expression.php'}},
+          name: 'meta.const.php',
+          patterns: [
+            {include: '#comments'},
+            {
+              captures: {1: {name: 'constant.other.php'}},
+              match: '(?i)([a-z_][a-z_0-9]*)\\s*(?==(?!=))'
+            },
+            {include: '#type-annotation'},
+            {match: '=', name: 'keyword.operator.assignment.php'},
+            {include: '#language'}
+          ]
+        },
+        {
           begin: '(?i)\\s*(?:(public|internal)\\s+)?(function)\\s*(?=\\()',
           beginCaptures: {
             1: {name: 'storage.modifier.php'},
@@ -652,7 +672,10 @@ const grammar = {
                 1: {name: 'punctuation.definition.parameters.end.php'}
               },
               end: '(?=[{;])',
-              patterns: [{include: '#function-return-type'}]
+              patterns: [
+                {include: '#function-return-type'},
+                {include: '#where-clause'}
+              ]
             }
           ]
         },
@@ -731,12 +754,12 @@ const grammar = {
         {match: '(\\-|\\+|\\*|/|%)', name: 'keyword.operator.arithmetic.php'},
         {match: '(!|&&|\\|\\|)', name: 'keyword.operator.logical.php'},
         {
-          begin: '(?i)\\b(as|is)\\b\\s+(?=[\\\\$a-z_])',
+          begin: '(?i)\\b(as|is|upcast)\\b\\s+(?=[\\\\$a-z_~?])',
           beginCaptures: {1: {name: 'keyword.operator.type.php'}},
           end: '(?=[^\\\\$A-Za-z_0-9])',
           patterns: [{include: '#class-name'}, {include: '#variable-name'}]
         },
-        {match: '(?i)\\b(is|as)\\b', name: 'keyword.operator.type.php'},
+        {match: '(?i)\\b(is|as|upcast)\\b', name: 'keyword.operator.type.php'},
         {include: '#function-call'},
         {match: '<<|>>|~|\\^|&|\\|', name: 'keyword.operator.bitwise.php'},
         {include: '#numbers'},
@@ -1537,15 +1560,15 @@ const grammar = {
       name: 'support.type.php',
       patterns: [
         {
-          match:
-            '\\b(?:bool|int|float|string|resource|mixed|arraykey|nonnull|dict|vec|keyset)\\b',
-          name: 'support.type.php'
-        },
-        {
           begin: '([A-Za-z_][A-Za-z0-9_]*)<',
           beginCaptures: {1: {name: 'support.class.php'}},
           end: '>',
           patterns: [{include: '#type-annotation'}]
+        },
+        {
+          match:
+            '\\b(?:bool|int|float|string|resource|mixed|arraykey|nonnull|dict|vec|keyset)\\b',
+          name: 'support.type.php'
         },
         {
           begin: '(shape\\()',
@@ -1632,6 +1655,21 @@ const grammar = {
           end: '(\\})',
           endCaptures: {1: {name: 'punctuation.definition.variable.php'}},
           patterns: [{include: '#language'}]
+        }
+      ]
+    },
+    'where-clause': {
+      patterns: [
+        {
+          begin: '\\b(where)\\b',
+          beginCaptures: {1: {name: 'storage.modifier.where.php'}},
+          end: '(?=[{;])',
+          patterns: [
+            {include: '#comments'},
+            {match: '\\b(as|super)\\b', name: 'storage.modifier.php'},
+            {include: '#type-annotation'},
+            {include: '#class-name'}
+          ]
         }
       ]
     },

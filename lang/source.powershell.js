@@ -492,7 +492,7 @@ const grammar = {
         },
         {
           captures: {
-            0: {name: 'support.constant.variable.powershell'},
+            0: {name: 'variable.other.constant.powershell'},
             1: {name: 'punctuation.definition.variable.powershell'},
             3: {name: 'variable.other.member.powershell'}
           },
@@ -574,7 +574,7 @@ const grammar = {
         },
         {
           captures: {
-            0: {name: 'support.constant.variable.powershell'},
+            0: {name: 'variable.other.constant.powershell'},
             1: {name: 'punctuation.definition.variable.powershell'},
             3: {name: 'variable.other.member.powershell'}
           },

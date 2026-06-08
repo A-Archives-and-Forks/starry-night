@@ -16,6 +16,7 @@ const grammar = {
     '.h.in',
     '.idc',
     '.opencl',
+    '.pc',
     '.upc',
     '.xbm',
     '.xpm',
@@ -27,6 +28,7 @@ const grammar = {
     'dtrace-script',
     'oncrpc',
     'opencl',
+    'pro*c',
     'rpc',
     'rpcgen',
     'unified-parallel-c',
@@ -62,6 +64,7 @@ const grammar = {
         '\\b(alignas|_Alignas|alignof|_Alignof|const|constexpr|extern|register|restrict|static|thread_local|_Thread_local|volatile|inline)\\b',
       name: 'storage.modifier.c'
     },
+    {match: '\\[\\[(?!=)[^\\]]*\\]\\]', name: 'storage.modifier.attribute.c'},
     {match: '\\bk[A-Z]\\w*\\b', name: 'constant.other.variable.mac-classic.c'},
     {
       match: '\\bg[A-Z]\\w*\\b',
@@ -74,6 +77,10 @@ const grammar = {
     {
       match: '\\b(NULL|nullptr|true|false|TRUE|FALSE)\\b',
       name: 'constant.language.c'
+    },
+    {
+      match: '\\b[A-Z][A-Z0-9_]+\\b',
+      name: 'constant.other.variable.all-caps.c'
     },
     {include: '#sizeof'},
     {

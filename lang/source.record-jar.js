@@ -12,7 +12,17 @@ const grammar = {
   dependencies: ['etc'],
   extensions: [],
   names: ['record-jar'],
-  patterns: [{include: '#main'}],
+  patterns: [
+    {
+      begin: '\\A',
+      end: '(?=A)B',
+      name: 'meta.database.record-jar',
+      patterns: [{include: '#main'}]
+    },
+    {include: '#separator'},
+    {include: '#field'},
+    {include: 'etc#commentHash'}
+  ],
   repository: {
     escape: {
       patterns: [
@@ -67,16 +77,25 @@ const grammar = {
         {include: 'etc#commentHash'}
       ]
     },
-    main: {patterns: [{include: '#record'}, {include: 'etc#commentHash'}]},
+    main: {
+      patterns: [
+        {include: '#separator'},
+        {include: '#record'},
+        {include: 'etc#commentHash'}
+      ]
+    },
     record: {
-      begin: '\\A|(?:^|\\G)(%%)(?:\\s*(\\S.*?))?[ \\t]*$',
-      beginCaptures: {
+      begin: '^(?!%%)(?=\\s*\\S)',
+      end: '^(?=%%)(?!\\G)',
+      name: 'meta.record.record-jar',
+      patterns: [{include: '#field'}, {include: 'etc#commentHash'}]
+    },
+    separator: {
+      captures: {
         1: {name: 'meta.separator.record-jar'},
         2: {name: 'comment.line.ignored.record-jar'}
       },
-      end: '(?=^%%)(?!\\G)',
-      name: 'meta.record.record-jar',
-      patterns: [{include: '#field'}, {include: 'etc#commentHash'}]
+      match: '(?:^|\\G)(%%+)(?:\\s*(\\S.*?))?[ \\t]*$'
     },
     string: {
       patterns: [

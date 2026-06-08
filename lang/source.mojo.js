@@ -1,7 +1,7 @@
 // This is a TextMate grammar distributed by `starry-night`.
 // This grammar is developed at
-// <https://github.com/modularml/mojo-syntax>
-// and licensed `mit`.
+// <https://github.com/modular/vscode-mojo>
+// and licensed `apache-2.0`.
 // See <https://github.com/wooorm/starry-night> for more info.
 /**
  * @import {Grammar} from '@wooorm/starry-night'
@@ -69,7 +69,7 @@ const grammar = {
     },
     'builtin-types': {
       match:
-        "(?x)\n  (?<!\\.) \\b(\n    __mlir_attr | __mlir_op | __mlir_type | bool | bytearray | bytes | classmethod | complex | dict\n    | float | frozenset | int | list | object | property\n    | set | slice | staticmethod | str | tuple | type\n\n    (?# Although 'super' is not a type, it's related to types,\n        and is special enough to be highlighted differently from\n        other built-ins)\n    | super\n  )\\b\n",
+        "(?x)\n  (?<!\\.) \\b(\n    __mlir_attr | __mlir_op | __mlir_type | bool | bytearray | bytes | classmethod | complex | dict\n    | float | frozenset | int | SIMD | list | object | property\n    | set | slice | staticmethod | always_inline | capturing | parameter | throws | escaping | str | tuple | type\n\n    (?# Although 'super' is not a type, it's related to types,\n        and is special enough to be highlighted differently from\n        other built-ins)\n    | super\n  )\\b\n",
       name: 'support.type.python'
     },
     'call-wrapper-inheritance': {
@@ -260,7 +260,7 @@ const grammar = {
           },
           name: 'meta.character.set.regexp',
           patterns: [
-            {include: '#regexp-charecter-set-escapes'},
+            {include: '#regexp-character-set-escapes'},
             {match: '[^\\n]', name: 'constant.character.set.regexp'}
           ]
         }
@@ -440,7 +440,7 @@ const grammar = {
           },
           name: 'meta.character.set.regexp',
           patterns: [
-            {include: '#regexp-charecter-set-escapes'},
+            {include: '#regexp-character-set-escapes'},
             {match: '[^\\n]', name: 'constant.character.set.regexp'}
           ]
         }
@@ -1098,7 +1098,7 @@ const grammar = {
       ]
     },
     'function-modifier': {
-      match: '(raises|capturing)',
+      match: '\\b(raises|capturing)\\b',
       name: 'storage.modifier'
     },
     'function-name': {
@@ -1124,7 +1124,7 @@ const grammar = {
         3: {name: 'keyword.control.import.python'}
       },
       match:
-        '(?x)\n  \\b(?:\n    (\n      and | assert | async | await | break | class | struct | trait | continue | del | elif | else | except | finally | for | from | global\n      | if | in | is | (?<=\\.)lambda | lambda(?=\\s*[\\.=])\n      | nonlocal | not | or | pass | raise | return | try | while | with\n      | yield\n    ) | (def | fn | capturing | raises) | (\n      as | import\n    )\n  )\\b\n'
+        '(?x)\n  \\b(?:\n    (\n      and | assert | async | await | break | class | struct | trait | continue | del | __disable_del | elif | else | except | finally | for | from | global\n      | if | in | is | (?<=\\.)lambda | lambda(?=\\s*[\\.=])\n      | nonlocal | not | or | pass | raise | return | try | while | with\n      | yield\n    ) | (def | fn | capturing | raises) | (\n      as | import\n    )\n  )\\b\n'
     },
     'illegal-object-name': {
       match: '\\b(True|False|None)\\b',
@@ -1231,7 +1231,7 @@ const grammar = {
           },
           name: 'meta.lambda-function.python',
           patterns: [
-            {match: '\\b(owned|borrowed|inout)\\b', name: 'storage.modifier'},
+            {match: '\\b(var|read|mut|out|ref)\\b', name: 'storage.modifier'},
             {match: '/', name: 'keyword.operator.positional.parameter.python'},
             {
               match: '(\\*\\*|\\*)',
@@ -1318,7 +1318,7 @@ const grammar = {
     'magic-function-names': {
       captures: {1: {name: 'support.function.magic.python'}},
       match:
-        '(?x)\n  \\b(\n    __(?:\n      abs | add | aenter | aexit | aiter | and | anext\n      | await | bool | call | ceil | class_getitem\n      | cmp | coerce | complex | contains | copy\n      | deepcopy | del | delattr | delete | delitem\n      | delslice | dir | div | divmod | enter | eq\n      | exit | float | floor | floordiv | format | ge\n      | get | getattr | getattribute | getinitargs\n      | getitem | getnewargs | getslice | getstate | gt\n      | hash | hex | iadd | iand | idiv | ifloordiv |\n      | ilshift | imod | imul | index | init\n      | instancecheck | int | invert | ior | ipow\n      | irshift | isub | iter | itruediv | ixor | le\n      | len | long | lshift | lt | missing | mod | mul\n      | ne | neg | new | next | nonzero | oct | or | pos\n      | pow | radd | rand | rdiv | rdivmod | reduce\n      | reduce_ex | repr | reversed | rfloordiv |\n      | rlshift | rmod | rmul | ror | round | rpow\n      | rrshift | rshift | rsub | rtruediv | rxor | set\n      | setattr | setitem | set_name | setslice\n      | setstate | sizeof | str | sub | subclasscheck\n      | truediv | trunc | unicode | xor | matmul\n      | rmatmul | imatmul | init_subclass | set_name\n      | fspath | bytes | prepare | length_hint\n    )__\n  )\\b\n'
+        '(?x)\n  \\b(\n    __(?:\n      abs | add | aenter | aexit | aiter | and | anext\n      | await | bool | call | ceil | class_getitem\n      | cmp | coerce | complex | contains | copy\n      | deepcopy | del | __disable_del | delattr | delete | delitem\n      | delslice | dir | div | divmod | enter | eq\n      | exit | float | floor | floordiv | format | ge\n      | get | getattr | getattribute | getinitargs\n      | getitem | getnewargs | getslice | getstate | gt\n      | hash | hex | iadd | iand | idiv | ifloordiv |\n      | ilshift | imod | imul | index | init\n      | instancecheck | int | invert | ior | ipow\n      | irshift | isub | iter | itruediv | ixor | le\n      | len | long | lshift | lt | missing | mod | mul\n      | ne | neg | new | next | nonzero | oct | or | pos\n      | pow | radd | rand | rdiv | rdivmod | reduce\n      | reduce_ex | repr | reversed | rfloordiv |\n      | rlshift | rmod | rmul | ror | round | rpow\n      | rrshift | rshift | rsub | rtruediv | rxor | set\n      | setattr | setitem | set_name | setslice\n      | setstate | sizeof | str | sub | subclasscheck\n      | truediv | trunc | unicode | xor | matmul\n      | rmatmul | imatmul | init_subclass | set_name\n      | fspath | bytes | prepare | length_hint\n    )__\n  )\\b\n'
     },
     'magic-names': {
       patterns: [
@@ -1472,7 +1472,7 @@ const grammar = {
       endCaptures: {1: {name: 'punctuation.definition.parameters.end.python'}},
       name: 'meta.function.parameters.python',
       patterns: [
-        {match: '\\b(owned|borrowed|inout)\\b', name: 'storage.modifier'},
+        {match: '\\b(var|read|mut|out|ref)\\b', name: 'storage.modifier'},
         {match: '/', name: 'keyword.operator.positional.parameter.python'},
         {
           match: '(\\*\\*|\\*)',
@@ -1543,7 +1543,7 @@ const grammar = {
         {include: '#regexp-base-common'}
       ]
     },
-    'regexp-charecter-set-escapes': {
+    'regexp-character-set-escapes': {
       patterns: [
         {match: '\\\\[abfnrtv\\\\]', name: 'constant.character.escape.regexp'},
         {include: '#regexp-escape-special'},
@@ -1691,7 +1691,7 @@ const grammar = {
           },
           name: 'meta.character.set.regexp',
           patterns: [
-            {include: '#regexp-charecter-set-escapes'},
+            {include: '#regexp-character-set-escapes'},
             {match: '[^\\n]', name: 'constant.character.set.regexp'}
           ]
         }
@@ -1871,7 +1871,7 @@ const grammar = {
           },
           name: 'meta.character.set.regexp',
           patterns: [
-            {include: '#regexp-charecter-set-escapes'},
+            {include: '#regexp-character-set-escapes'},
             {match: '[^\\n]', name: 'constant.character.set.regexp'}
           ]
         }
@@ -2069,6 +2069,11 @@ const grammar = {
     },
     statement: {
       patterns: [
+        {match: '^\\s*\\%\\#', name: 'comment.line.mojo'},
+        {
+          match: '^\\%[a-zA-Z0-9_]+',
+          name: 'entity.name.function.decorator.python'
+        },
         {include: '#import'},
         {include: '#class-declaration'},
         {include: '#function-declaration'},
@@ -2092,7 +2097,7 @@ const grammar = {
         {match: '\\b(?<!\\.)as\\b', name: 'keyword.control.import.python'},
         {
           match:
-            '(?x)\n  \\b(?<!\\.)(\n    async | continue | del | assert | break | finally | for\n    | from | elif | else | if | except | pass | raise\n    | return | try | while | with\n  )\\b\n',
+            '(?x)\n  \\b(?<!\\.)(\n    async | continue | del | __disable_del | assert | break | finally | for\n    | from | elif | else | if | except | pass | raise\n    | return | try | while | with\n  )\\b\n',
           name: 'keyword.control.flow.python'
         },
         {

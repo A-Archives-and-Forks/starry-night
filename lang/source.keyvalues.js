@@ -9,7 +9,7 @@
 
 /** @type {Grammar} */
 const grammar = {
-  extensions: ['.vdf'],
+  extensions: ['.vdf', '.vmf'],
   names: ['valve-data-format', 'keyvalues', 'vdf'],
   patterns: [{include: '#main'}],
   repository: {

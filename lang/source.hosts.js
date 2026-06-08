@@ -12,7 +12,7 @@ const grammar = {
   dependencies: ['etc'],
   extensions: [],
   names: ['hosts-file', 'hosts'],
-  patterns: [{include: '#main'}],
+  patterns: [{include: '#swc'}, {include: '#main'}],
   repository: {
     host: {
       captures: {0: {patterns: [{include: 'etc#dot'}]}},
@@ -210,6 +210,131 @@ const grammar = {
         {include: 'etc#ip'},
         {include: '#loopback'},
         {include: '#host'}
+      ]
+    },
+    swc: {
+      begin: '\\A(?=# This hosts file is brought to you by Dan Pollock)',
+      end: '(?=A)B',
+      name: 'meta.swc.hosts',
+      patterns: [
+        {
+          begin: '\\G',
+          end: '(?=^(?:#<(?!-)[-\\w]+>$|\\s*[^#\\s]))',
+          name: 'meta.prologue.hosts',
+          patterns: [{include: '#swc-prologue'}]
+        },
+        {include: '#swc-section'},
+        {include: '#swc-comment'},
+        {include: '#modern'}
+      ]
+    },
+    'swc-comment': {
+      begin: '#',
+      beginCaptures: {0: {name: 'punctuation.definition.comment.hosts'}},
+      end: '$',
+      name: 'comment.line.number-sign.hosts',
+      patterns: [{include: '#swc-comment-additions'}]
+    },
+    'swc-comment-additions': {
+      patterns: [
+        {include: 'etc#url'},
+        {include: 'etc#emailUnquoted'},
+        {
+          match:
+            '(?<=\\s)(?:adguard\\.com|\\w+\\.wiki[mp]edia\\.org(?:/[^/\\s]+)*+)\\b',
+          name: 'constant.other.reference.link.underline.http.url.hosts'
+        }
+      ]
+    },
+    'swc-prologue': {
+      begin: '^#',
+      beginCaptures: {0: {name: 'comment.line.number-sign.hosts'}},
+      end: '$',
+      name: 'comment.line.number-sign.hosts',
+      patterns: [
+        {
+          begin: '\\G\\s+(Last updated(:))[ \\t]*',
+          beginCaptures: {
+            1: {name: 'variable.timestamp.last-updated.hosts'},
+            2: {patterns: [{include: 'etc#kolon'}]}
+          },
+          contentName: 'constant.numeric.date.last-updated.hosts',
+          end: '(?=\\s*$)'
+        },
+        {
+          match:
+            '(?x)\\G\\s+For\\s+(?:\n\t(?-x:Windows 9x and ME|NT, Win2K and XP|Windows \\d+ and (?:Vista|Windows \\d+)) |\n\t(?-x:Linux, Unix, or OS X|OS/2|Android|BeOS|Netware|Macintosh \\(pre OS X\\))\n)',
+          name: 'markup.bold.emphasis.strong.md.hosts'
+        },
+        {
+          captures: {
+            1: {name: 'constant.other.reference.link.pathname.posix.hosts'},
+            2: {name: 'constant.other.reference.link.pathname.windows.hosts'},
+            3: {
+              name: 'variable.other.readwrite.batchfile.${5:/downcase}.hosts'
+            },
+            4: {name: 'punctuation.definition.variable.begin.hosts'},
+            6: {name: 'punctuation.definition.variable.end.hosts'},
+            7: {name: 'constant.other.reference.link.pathname.netware.hosts'},
+            8: {name: 'constant.other.reference.link.pathname.macos.hosts'}
+          },
+          match:
+            '(?x)\n(?<=")(?:(~?(?:/[^/"]+)++)|((?:((%)(ETC|systemroot)(%))|C:\\\\)[^"]+))(?=") |\n(?<="|\\s)(?:(System\\\\etc\\\\hosts)|((?-x)HD:System Folder:Preferences:Hosts))'
+        },
+        {
+          captures: {0: {patterns: [{include: 'source.shell'}]}},
+          match: '(?<=")sudo [^"]+?(?=")',
+          name: 'source.embedded.shell'
+        },
+        {
+          captures: {
+            1: {name: 'keyword.command.batchfile'},
+            2: {name: 'variable.other.readwrite.batchfile'},
+            3: {name: 'keyword.operator.assignment.batchfile'},
+            4: {name: 'constant.numeric.batchfile'}
+          },
+          match: '(?<=")(SET)\\s+(USE_HOSTS_FIRST)(=)(\\d+)(?=")',
+          name: 'source.embedded.batchfile'
+        },
+        {
+          match: '\\bCONFIG\\.SYS\\b',
+          name: 'constant.other.reference.link.os2.hosts'
+        },
+        {
+          captures: {
+            1: {name: 'punctuation.definition.string.begin.hosts'},
+            2: {name: 'punctuation.definition.string.end.hosts'}
+          },
+          match: '(")(?:hosts(?:\\.txt)?|\\.txt)(")',
+          name: 'string.quoted.double.filename.hosts'
+        },
+        {include: '#swc-comment-additions'}
+      ]
+    },
+    'swc-section': {
+      begin: '^(#)((<)((?!-)[-\\w]+)(>))[ \\t]*$',
+      beginCaptures: {
+        0: {name: 'comment.line.number-sign.hosts'},
+        1: {name: 'punctuation.definition.comment.hosts'},
+        2: {name: 'meta.tag.other.section.begin.hosts'},
+        3: {name: 'punctuation.definition.tag.begin.hosts'},
+        4: {name: 'entity.name.tag.section.hosts'},
+        5: {name: 'punctuation.definition.tag.end.hosts'}
+      },
+      end: '^(#)((</)(\\4)(>))[ \\t]*$',
+      endCaptures: {
+        0: {name: 'comment.line.number-sign.hosts'},
+        1: {name: 'punctuation.definition.comment.hosts'},
+        2: {name: 'meta.tag.other.section.end.hosts'},
+        3: {name: 'punctuation.definition.tag.begin.hosts'},
+        4: {name: 'entity.name.tag.section.hosts'},
+        5: {name: 'punctuation.definition.tag.end.hosts'}
+      },
+      name: 'meta.section.$4.hosts',
+      patterns: [
+        {include: '#swc-section'},
+        {include: '#swc-comment'},
+        {include: '#modern'}
       ]
     }
   },

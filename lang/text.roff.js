@@ -3121,7 +3121,7 @@ const grammar = {
       patterns: [
         {
           begin:
-            '(?x) (?:^|\\G)([.\'])[ \\t]* (?:(do)[ \\t]+)?\n(aln|als|asciify|backtrace|blm|boxa|box|brp|cflags|chop|close|composite|color\n|cp|devicem|ecs|ecr|evc|fam|fchar|fcolor|fschar|fspecial|ftr|fzoom\n|gcolor|hcode|hla|hlm|hpfa|hpfcode|hpf|hym|hys|itc|kern|length|linetabs|lsm\n|mso|m?soquiet|nroff|opena|open|pev|pnr|psbb|ptr|pvs|rchar|rfschar|rj\n|rnn|schar|shc|shift|sizes|special|spreadwarn|stringdown|stringup|sty\n|substring|tkf|tm1|tmc|trf|trin|trnt|troff|unformat|vpt|warnscale|warn\n|writec|writem|write)\n(?=\\s|\\\\E?["#])',
+            '(?x) (?:^|\\G)([.\'])[ \\t]* (?:(do)[ \\t]+)?\n(aln|als|asciify|backtrace|blm|boxa?|brp|cflags|chop|close|composite|color\n|cp|devicem|ecs|ecr|evc|fam|fchar|fcolor|fschar|fspecial|ftr|fzoom\n|gcolor|hcode|hla|hlm|hpfa|hpfcode|hpf|hydefault|hym|hys|itc|kern|length\n|linetabs|lsm|mso|m?soquiet|nroff|opena|open|pchar|pcolor|pcomposite|pev|pfp\n|pftr|phw|pline|pstream|pwh|pnr|psbb|ptr|pvs|rchar|rfschar|rj|rnn|schar|shc\n|shift|sizes|special|spreadwarn|stringdown|stringup|sty|substring|taga?|tkf\n|tm1|tmc|trf|trin|trnt|troff|unformat|vpt|warnscale|warn|writec|writem|write)\n(?=\\s|\\\\E?["#])',
           beginCaptures: {
             1: {name: 'punctuation.definition.request.roff'},
             2: {name: 'entity.function.name.roff'},

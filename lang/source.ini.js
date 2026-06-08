@@ -9,19 +9,26 @@
 const grammar = {
   extensions: [
     '.cnf',
+    '.container',
     '.dof',
     '.frm',
     '.ini',
     '.lektorproject',
+    '.mount',
+    '.network',
     '.outjob',
     '.pcbdoc',
     '.prefs',
     '.prjpcb',
     '.properties',
     '.schdoc',
+    '.service',
+    '.socket',
+    '.target',
+    '.timer',
     '.url'
   ],
-  names: ['altium', 'altium-designer', 'dosini', 'ini'],
+  names: ['altium', 'altium-designer', 'conf', 'dosini', 'ini'],
   patterns: [
     {
       begin: '(^[ \\t]+)?(?=#)',

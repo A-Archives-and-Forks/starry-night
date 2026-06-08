@@ -69,9 +69,20 @@ const grammar = {
       patterns: [{include: '#text'}]
     },
     dash: {
-      captures: {1: {name: 'punctuation.section.quote.srt'}},
-      match: '(?:^|\\G)(-)',
-      name: 'markup.quote.quotation-dash.srt'
+      patterns: [
+        {
+          captures: {1: {name: 'punctuation.section.quote.srt'}},
+          match: '(?:^|\\G)(-)',
+          name: 'markup.quote.quotation-dash.srt'
+        },
+        {
+          captures: {
+            1: {patterns: [{include: '#ssa'}]},
+            2: {patterns: [{include: '#dash'}]}
+          },
+          match: '(?:^|\\G)((?:{(?:.:|\\\\)[^}]*})++)(-)'
+        }
+      ]
     },
     escapes: {
       patterns: [
@@ -113,8 +124,7 @@ const grammar = {
         {include: '#underline'},
         {include: '#strike'},
         {include: '#font'},
-        {include: '#align'},
-        {include: '#unknownTag'}
+        {include: '#ssa'}
       ]
     },
     italic: {
@@ -157,16 +167,18 @@ const grammar = {
     main: {patterns: [{include: '#subtitle'}]},
     speaker: {
       captures: {
-        1: {patterns: [{include: '#dash'}]},
-        2: {
+        1: {patterns: [{include: '#ssa'}]},
+        2: {patterns: [{include: '#dash'}, {include: '#escapes'}]},
+        3: {
           name: 'entity.name.speaker.srt',
           patterns: [{include: '#formatting'}, {include: '#action'}]
         },
-        3: {name: 'punctuation.separator.speaker.colon.srt'}
+        4: {name: 'punctuation.separator.speaker.colon.srt'}
       },
       match:
-        '(?x)\n(?:^|\\G)\n(-[ \\t]*)?\n(\n\t(?: [^-<>\\s:]    [^<>:]* (?=:[ \\t]*\\S)\n\t|   [^-<>\\s:a-z] [^<>:a-z]*\n\t|   <(?!/(?i:[bisu]|font)>\\s*:)\n\t)++\n\t(?:\n\t\t(?=(?:\\s*</(?i:[bisu]|font)>)++\\s*:)\n\t\t|\n\t\t(:)\n\t)\n)(?=$|\\s|</)'
+        '(?x)\n(?:^|\\G)\n((?:{(?:.:|\\\\)[^}]*})*+)\n(-(?:\\\\h|[ \\t])*)?\n(\n\t(?: [^-<>\\s:]    [^<>:]* (?=:[ \\t]*\\S)\n\t|   [^-<>\\s:a-z] [^<>:a-z]*\n\t|   <(?!/(?i:[bisu]|font)>\\s*:)\n\t)++\n\t(?:\n\t\t(?=(?:\\s*</(?i:[bisu]|font)>)++\\s*:)\n\t\t|\n\t\t(:)\n\t)\n)(?=$|\\s|</)'
     },
+    ssa: {patterns: [{include: '#align'}, {include: '#unknownTag'}]},
     strike: {
       begin: '(<)([Ss])(?=$|>|\\s)([^>]*)(>)',
       beginCaptures: {
@@ -282,7 +294,7 @@ const grammar = {
         1: {name: 'punctuation.definition.tag.begin.srt'},
         2: {name: 'punctuation.definition.tag.end.srt'}
       },
-      match: '({)(?:.:[^}]*|\\\\[^}]*)(})',
+      match: '({)(?:.:|\\\\)[^}]*(})',
       name: 'meta.tag.override.unsupported.srt'
     }
   },

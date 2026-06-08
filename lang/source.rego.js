@@ -29,9 +29,30 @@ const grammar = {
       name: 'meta.function-call.rego'
     },
     comment: {
-      captures: {1: {name: 'punctuation.definition.comment.rego'}},
-      match: '(#).*$\\n?',
-      name: 'comment.line.number-sign.rego'
+      patterns: [
+        {
+          captures: {
+            1: {name: 'punctuation.definition.comment.rego'},
+            2: {name: 'strong'}
+          },
+          match: '(#)\\s*(METADATA)\\s*$\\n?',
+          name: 'comment.line.number-sign.rego'
+        },
+        {
+          captures: {
+            1: {name: 'punctuation.definition.comment.rego'},
+            2: {name: 'strong'}
+          },
+          match:
+            '(#)\\s*(scope|title|description|related_resources|authors|organizations|schemas|entrypoint|custom):.*$\\n?',
+          name: 'comment.line.number-sign.rego'
+        },
+        {
+          captures: {1: {name: 'punctuation.definition.comment.rego'}},
+          match: '(#).*$\\n?',
+          name: 'comment.line.number-sign.rego'
+        }
+      ]
     },
     'comparison-operators': {
       match: '\\=\\=|\\!\\=|>|<|<\\=|>\\=|\\+|-|\\*|%|/|\\||&',
@@ -87,19 +108,24 @@ const grammar = {
         {include: '#string'},
         {include: '#number'},
         {include: '#call'},
+        {include: '#root-document'},
         {include: '#variable'},
         {include: '#comparison-operators'}
       ]
     },
     keyword: {
       match:
-        '(^|\\s+)(?:(default|not|package|import|as|with|else|some|in|every|if|contains))\\s+',
+        '(^|\\s+)(?:(default|not|package|import|as|with|else|some|in|every|if|contains))(?=\\s|$)',
       name: 'keyword.other.rego'
     },
     number: {
       match:
         '(?x:                # turn on extended mode\n                             -?         # an optional minus\n                             (?:\n                               0        # a zero\n                               |        # ...or...\n                               [1-9]    # a 1-9 character\n                               \\d*      # followed by zero or more digits\n                             )\n                             (?:\n                               (?:\n                                 \\.     # a period\n                                 \\d+    # followed by one or more digits\n                               )?\n                               (?:\n                                 [eE]   # an e character\n                                 [+-]?  # followed by an option +/-\n                                 \\d+    # followed by one or more digits\n                               )?       # make exponent optional\n                             )?         # make decimal portion optional\n                           )',
       name: 'constant.numeric.rego'
+    },
+    'root-document': {
+      match: '(?<!\\.)\\b(?:input|data)\\b',
+      name: 'variable.other.constant.rego support.constant.rego variable.language.rego'
     },
     string: {
       patterns: [
@@ -144,6 +170,7 @@ const grammar = {
         {include: '#string'},
         {include: '#number'},
         {include: '#call'},
+        {include: '#root-document'},
         {include: '#variable'}
       ]
     },

@@ -461,7 +461,7 @@ export const info = {
   },
   'source.astro': {
     dependencies: ['source.js', 'source.ts', 'source.tsx'],
-    homepage: 'https://github.com/withastro/language-tools',
+    homepage: 'https://github.com/withastro/astro',
     license: 'mit'
   },
   'source.editorconfig': {
@@ -836,6 +836,10 @@ export const info = {
     homepage: 'https://github.com/idris-hackers/idris-sublime',
     license: 'mit'
   },
+  'source.il': {
+    homepage: 'https://github.com/mg0x7BE/il-assembly-grammar',
+    license: 'unlicense'
+  },
   'source.imba': {
     homepage: 'https://github.com/imba/imba-linguist-grammar',
     license: 'mit'
@@ -907,6 +911,7 @@ export const info = {
     license: 'apache-2.0'
   },
   'source.4dm': {
+    homepage: 'https://github.com/4d/language-4d',
     license: 'mit'
   },
   'source.agc': {
@@ -1075,6 +1080,11 @@ export const info = {
     homepage: 'https://github.com/Alhadis/language-etc',
     license: 'isc'
   },
+  'source.gtkrc': {
+    dependencies: ['etc'],
+    homepage: 'https://github.com/Alhadis/language-etc',
+    license: 'isc'
+  },
   'source.hosts': {
     dependencies: ['etc'],
     homepage: 'https://github.com/Alhadis/language-etc',
@@ -1115,6 +1125,11 @@ export const info = {
     license: 'isc'
   },
   'source.opts': {
+    dependencies: ['etc'],
+    homepage: 'https://github.com/Alhadis/language-etc',
+    license: 'isc'
+  },
+  'source.pkgconf': {
     dependencies: ['etc'],
     homepage: 'https://github.com/Alhadis/language-etc',
     license: 'isc'
@@ -1826,6 +1841,9 @@ export const info = {
   'source.mercury': {
     license: 'mit'
   },
+  'source.metta': {
+    license: 'mit'
+  },
   'source.mint': {
     dependencies: ['source.css', 'source.css.scss', 'source.js'],
     homepage: 'https://github.com/mint-lang/mint-vscode',
@@ -1834,10 +1852,6 @@ export const info = {
   'source.mlir': {
     homepage: 'https://github.com/jpienaar/mlir-grammar',
     license: 'apache-2.0'
-  },
-  'source.mojo': {
-    homepage: 'https://github.com/modularml/mojo-syntax',
-    license: 'mit'
   },
   'source.monkey': {
     license: 'mit'
@@ -1909,6 +1923,10 @@ export const info = {
     homepage: 'https://github.com/nickswalker/overpassql-tmlanguage',
     license: 'mpl-2.0'
   },
+  'source.opy': {
+    homepage: 'https://github.com/Zezombye/overpy-grammar',
+    license: 'mit'
+  },
   'source.oz': {
     license: 'mit'
   },
@@ -1952,6 +1970,10 @@ export const info = {
     homepage: 'https://github.com/luisgbr1el/portugol-grammar',
     license: 'mit'
   },
+  'source.powerquery': {
+    homepage: 'https://github.com/microsoft/powerquery-language',
+    license: 'mit'
+  },
   'source.powershell': {
     homepage: 'https://github.com/PowerShell/EditorSyntax',
     license: 'mit'
@@ -1979,6 +2001,10 @@ export const info = {
     homepage: 'https://github.com/4LT/quakec-syntax',
     license: 'mit'
   },
+  'source.quint': {
+    homepage: 'https://github.com/informalsystems/quint-grammars',
+    license: 'mit'
+  },
   'source.r': {},
   'source.rascal': {
     homepage: 'https://github.com/usethesource/rascal-syntax-highlighting',
@@ -1991,6 +2017,10 @@ export const info = {
   'text.html.cshtml': {
     dependencies: ['source.cs', 'text.html.basic'],
     homepage: 'https://github.com/github-linguist/razor-plus',
+    license: 'mit'
+  },
+  'source.redscript': {
+    homepage: 'https://github.com/jackhumbert/redscript-syntax-highlighting',
     license: 'mit'
   },
   'source.rescript': {
@@ -2066,6 +2096,10 @@ export const info = {
   'source.sourcepawn': {
     homepage: 'https://github.com/Sarrus1/sourcepawn-vscode',
     license: 'mit'
+  },
+  'source.spicedb': {
+    homepage: 'https://github.com/authzed/spicedb-vscode',
+    license: 'apache-2.0'
   },
   'source.wdl': {
     homepage: 'https://github.com/stjude-rust-labs/sprocket-vscode',
@@ -2259,6 +2293,15 @@ export const info = {
     homepage: 'https://github.com/templ-go/templ-vscode',
     license: 'mit'
   },
+  'source.baml': {
+    dependencies: ['source.baml-jinja'],
+    homepage: 'https://github.com/boundaryml/textMate-baml',
+    license: 'apache-2.0'
+  },
+  'source.baml-jinja': {
+    homepage: 'https://github.com/boundaryml/textMate-baml',
+    license: 'apache-2.0'
+  },
   'source.flix': {
     homepage: 'https://github.com/flix/textmate',
     license: 'apache-2.0'
@@ -2392,6 +2435,10 @@ export const info = {
     homepage: 'https://github.com/fastly/vscode-fastly-vcl',
     license: 'mit'
   },
+  'source.flatbuffers': {
+    homepage: 'https://github.com/floxay/vscode-flatbuffers',
+    license: 'mit'
+  },
   'source.ftl': {
     homepage: 'https://github.com/macabeus/vscode-fluent',
     license: 'mit'
@@ -2470,6 +2517,10 @@ export const info = {
     homepage: 'https://github.com/leanprover/vscode-lean4',
     license: 'apache-2.0'
   },
+  'source.liquidsoap': {
+    homepage: 'https://github.com/savonet/vscode-liquidsoap',
+    license: 'mit'
+  },
   'source.livecodescript': {
     homepage: 'https://github.com/Ferruslogic/vscode-livecodescript',
     license: 'bsd-3-clause'
@@ -2478,7 +2529,12 @@ export const info = {
     homepage: 'https://github.com/Dekker1/vscode-minizinc',
     license: 'mpl-2.0'
   },
+  'source.mojo': {
+    homepage: 'https://github.com/modular/vscode-mojo',
+    license: 'apache-2.0'
+  },
   'source.mc': {
+    homepage: 'https://github.com/ghisguth/vscode-monkey-c',
     license: 'mit'
   },
   'source.mo': {
@@ -2577,7 +2633,7 @@ export const info = {
     license: 'mit'
   },
   'source.vento': {
-    dependencies: ['source.js', 'text.html.basic'],
+    dependencies: ['source.js'],
     homepage: 'https://github.com/ventojs/vscode-vento',
     license: 'mit'
   },

@@ -8,7 +8,7 @@
 /** @type {Grammar} */
 const grammar = {
   extensions: ['.applescript', '.scpt'],
-  names: ['applescript', 'osascript'],
+  names: ['applescript', 'apples', 'osascript'],
   patterns: [{include: '#blocks'}, {include: '#inline'}],
   repository: {
     'attributes.considering-ignoring': {

@@ -1,5 +1,7 @@
 // This is a TextMate grammar distributed by `starry-night`.
-// This grammar is licensed `mit`.
+// This grammar is developed at
+// <https://github.com/ghisguth/vscode-monkey-c>
+// and licensed `mit`.
 // See <https://github.com/wooorm/starry-night> for more info.
 /**
  * @import {Grammar} from '@wooorm/starry-night'
@@ -14,7 +16,8 @@ const grammar = {
     'access-modifier': {
       patterns: [
         {
-          match: '(?<!\\.|\\$)\\b(hidden|static)\\b(?!\\$)',
+          match:
+            '(?<!\\.|\\$)\\b(hidden|static|public|private|protected)\\b(?!\\$)',
           name: 'storage.modifier.mc'
         }
       ]
@@ -152,6 +155,10 @@ const grammar = {
     'control-statement': {
       patterns: [
         {
+          match: '(?<!\\.|\\$)\\b(typedef)\\b(?!\\$)',
+          name: 'keyword.control.typedef.mc'
+        },
+        {
           match: '(?<!\\.|\\$)\\b(catch|finally|throw|try)\\b(?!\\$)',
           name: 'keyword.control.trycatch.mc'
         },
@@ -185,6 +192,7 @@ const grammar = {
       name: 'meta.declaration.mc',
       patterns: [
         {include: '#decorator'},
+        {include: '#access-modifier'},
         {include: '#var-expr'},
         {include: '#function-declaration'},
         {include: '#class-declaration'},
@@ -267,10 +275,8 @@ const grammar = {
           match: '(?<!\\.|\\$)\\binstanceof\\b(?!\\$)',
           name: 'keyword.operator.expression.instanceof.mc'
         },
-        {
-          match: '(?<!\\.|\\$)\\bhas\\b(?!\\$)',
-          name: 'keyword.operator.expression.has.mc'
-        },
+        {match: '(?<!\\.|\\$)\\bhas\\b(?!\\$)', name: 'keyword.control.has.mc'},
+        {match: '(?<!\\.|\\$)\\bas\\b(?!\\$)', name: 'keyword.control.as.mc'},
         {
           match: '(?<!\\.|\\$)\\bnew\\b(?!\\$)',
           name: 'keyword.operator.new.mc'
@@ -312,7 +318,7 @@ const grammar = {
       beginCaptures: {1: {name: 'storage.type.mc'}},
       end: '(?=\\}|;|,|$)|(?<=\\})',
       name: 'meta.field.declaration.mc',
-      patterns: [{include: '#variable-initializer'}]
+      patterns: [{include: '#type-clause'}, {include: '#variable-initializer'}]
     },
     'for-loop': {
       begin: '(?<!\\.|\\$)\\b(for)\\s*(\\()',
@@ -333,6 +339,11 @@ const grammar = {
         '(?=(\\.\\s*)?([_$[:alpha:]][_$[:alnum:]]*)\\s*(<([^<>]|\\<[^<>]+\\>)+>\\s*)?\\()',
       end: '(?<=\\))(?!(\\.\\s*)?([_$[:alpha:]][_$[:alnum:]]*)\\s*(<([^<>]|\\<[^<>]+\\>)+>\\s*)?\\()',
       patterns: [
+        {
+          match:
+            '(?<!\\.|\\$)\\b(Number|Float|Double|Long|Boolean|String|Char|Symbol|Array|Dictionary|Method|Null|Object|WeakReference|Void)\\b(?!\\$)',
+          name: 'storage.type.builtin.mc'
+        },
         {include: '#support-objects'},
         {include: '#punctuation-accessor'},
         {
@@ -355,6 +366,7 @@ const grammar = {
       patterns: [
         {include: '#comment'},
         {include: '#function-parameters'},
+        {include: '#type-clause'},
         {include: '#decl-block'}
       ]
     },
@@ -367,13 +379,20 @@ const grammar = {
       patterns: [
         {include: '#comment'},
         {include: '#decorator'},
+        {include: '#type-dictionary'},
         {include: '#parameter-name'},
+        {include: '#type-clause'},
         {include: '#variable-initializer'},
         {match: ',', name: 'punctuation.separator.parameter.mc'}
       ]
     },
     identifiers: {
       patterns: [
+        {
+          match:
+            '(?<!\\.|\\$)\\b(Number|Float|Double|Long|Boolean|String|Char|Symbol|Array|Dictionary|Method|Null|Object|WeakReference|Void)\\b(?!\\$)',
+          name: 'storage.type.builtin.mc'
+        },
         {
           match:
             '([_$[:alpha:]][_$[:alnum:]]*)(?=\\s*\\.\\s*prototype\\b(?!\\$))',
@@ -430,7 +449,7 @@ const grammar = {
       ]
     },
     'import-declaration': {
-      begin: '(?<!\\.|\\$)\\b(using)(?!(\\s*:)|(\\$))\\b',
+      begin: '(?<!\\.|\\$)\\b(using|import)(?!(\\s*:)|(\\$))\\b',
       beginCaptures: {1: {name: 'keyword.control.import.mc'}},
       end: '(?=;|$)',
       name: 'meta.import.mc',
@@ -476,7 +495,7 @@ const grammar = {
     },
     'method-declaration': {
       begin:
-        '(?<!\\.|\\$)(?:\\b(hidden)\\s+)?(?:\\b(function)\\s+)(?:(?:\\b(?:(initialize)|(initialize))\\b(?!\\$|:))|(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\\'[^\']*\\\')|(\\"[^"]*\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))?\\s*[\\(\\<]))',
+        '(?<!\\.|\\$)(?:\\b(hidden|public|private|protected)\\s+)?(?:\\b(function)\\s+)(?:(?:\\b(?:(initialize)|(initialize))\\b(?!\\$|:))|(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\\'[^\']*\\\')|(\\"[^"]*\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))?\\s*[\\(\\<]))',
       beginCaptures: {
         1: {name: 'storage.modifier.mc'},
         2: {name: 'storage.type.function.mc'},
@@ -490,6 +509,7 @@ const grammar = {
         {include: '#method-declaration-name'},
         {include: '#comment'},
         {include: '#function-parameters'},
+        {include: '#type-clause'},
         {include: '#decl-block'}
       ]
     },
@@ -586,10 +606,20 @@ const grammar = {
       patterns: [
         {include: '#comment'},
         {
-          begin: '(?:[:_$[:alpha:]][_$[:alnum:]]*)\\s*(=>)',
+          begin: '(:[_$[:alpha:]][_$[:alnum:]]*)\\s*(=>)',
           beginCaptures: {
-            0: {name: 'meta.object-literal.key.mc'},
-            1: {name: 'punctuation.separator.key-value.mc'}
+            1: {name: 'constant.other.symbol.mc'},
+            2: {name: 'punctuation.separator.key-value.mc'}
+          },
+          end: '(?=,|\\})',
+          name: 'meta.object.member.mc',
+          patterns: [{include: '#expression'}]
+        },
+        {
+          begin: '([_$[:alpha:]][_$[:alnum:]]*)\\s*(=>)',
+          beginCaptures: {
+            1: {name: 'meta.object-literal.key.mc'},
+            2: {name: 'punctuation.separator.key-value.mc'}
           },
           end: '(?=,|\\})',
           name: 'meta.object.member.mc',
@@ -607,21 +637,10 @@ const grammar = {
         {
           captures: {
             1: {name: 'storage.modifier.mc'},
-            2: {name: 'keyword.operator.rest.mc'},
-            3: {name: 'entity.name.function.mc'},
-            4: {name: 'keyword.operator.optional.mc'}
+            2: {name: 'variable.parameter.mc'}
           },
           match:
-            '(?x)(?:\\s*\\b(hidden|static)\\s+)?(\\.\\.\\.)?\\s*(?<!=|:)([_$[:alpha:]][_$[:alnum:]]*)\\s*(\\??)(?=\\s*\n  (=\\s*(\n    (function\\s*[(<]) |\n    (function\\s+) |\n    ([_$[:alpha:]][_$[:alnum:]]*\\s*=>) |\n    ([(]\\s*(([)]\\s*:)|([_$[:alpha:]][_$[:alnum:]]*\\s*:)|(\\.\\.\\.) )) |\n    ([<]\\s*[_$[:alpha:]][_$[:alnum:]]*((\\s+extends\\s*[^=>])|(\\s*[,]))) |\n    ((<([^<>]|\\<[^<>]+\\>)+>\\s*)?\\(([^()]|\\([^()]*\\))*\\)(\\s*:\\s*(.)*)?\\s*=>))\n  ) |\n  (:\\s*(\n    (<) |\n    ([(]\\s*(\n      ([)]) |\n      (\\.\\.\\.) |\n      ([_$[:alnum:]]+\\s*(\n        ([:,?=])|\n        ([)]\\s*=>)\n      ))\n    )))\n  )\n)'
-        },
-        {
-          captures: {
-            1: {name: 'storage.modifier.mc'},
-            2: {name: 'keyword.operator.rest.mc'},
-            3: {name: 'variable.parameter.mc'}
-          },
-          match:
-            '(?:\\s*\\b(hidden|static)\\s+)?\\s*(?<!=|:)([_$[:alpha:]][_$[:alnum:]]*)\\s*'
+            '(?:\\s*\\b(hidden|static|public|private|protected)\\s+)?\\s*(?<!=|:)([_$[:alpha:]][_$[:alnum:]]*)(?=\\s*(as|,|\\)|=))'
         }
       ]
     },
@@ -758,8 +777,31 @@ const grammar = {
       ]
     },
     'type-builtin-literals': {
-      match: '(?<!\\.|\\$)\\b(this|true|false|null)\\b(?!\\$)',
-      name: 'support.type.builtin.mc'
+      match:
+        '(?<!\\.|\\$)\\b(this|true|false|null|Number|Float|Double|Long|Boolean|String|Char|Symbol|Array|Dictionary|Method|Object|WeakReference|Void)\\b(?!\\$)',
+      name: 'storage.type.builtin.mc'
+    },
+    'type-clause': {
+      begin: '(?<!\\.|\\$)\\b(as)\\b(?!\\$)',
+      beginCaptures: {1: {name: 'keyword.control.as.mc'}},
+      end: '(?=[;,={)])|(?=^\\s*$)',
+      patterns: [{include: '#type'}]
+    },
+    'type-dictionary': {
+      begin: '\\{',
+      beginCaptures: {0: {name: 'meta.brace.curly.mc'}},
+      end: '\\}',
+      endCaptures: {0: {name: 'meta.brace.curly.mc'}},
+      name: 'meta.type.dictionary.mc',
+      patterns: [
+        {include: '#comment'},
+        {
+          match: '(:[_$[:alpha:]][_$[:alnum:]]*)',
+          name: 'constant.other.symbol.mc'
+        },
+        {include: '#type-clause'},
+        {match: ',', name: 'punctuation.separator.parameter.mc'}
+      ]
     },
     'type-fn-type-parameters': {
       patterns: [
@@ -817,6 +859,7 @@ const grammar = {
       name: 'meta.var.expr.mc',
       patterns: [
         {include: '#var-single-variable'},
+        {include: '#type-clause'},
         {include: '#variable-initializer'},
         {include: '#comment'},
         {include: '#punctuation-comma'}
@@ -828,22 +871,20 @@ const grammar = {
           begin:
             '(?x)([_$[:alpha:]][_$[:alnum:]]*)(?=\\s*\n  (=\\s*(\n    (function\\s*[(<]) |\n    (function\\s+) |\n    ([_$[:alpha:]][_$[:alnum:]]*\\s*=>) |\n    ([(]\\s*(([)]\\s*:)|([_$[:alpha:]][_$[:alnum:]]*\\s*:)|(\\.\\.\\.) )) |\n    ([<]\\s*[_$[:alpha:]][_$[:alnum:]]*((\\s+extends\\s*[^=>])|(\\s*[,]))) |\n    ((<([^<>]|\\<[^<>]+\\>)+>\\s*)?\\(([^()]|\\([^()]*\\))*\\)(\\s*:\\s*(.)*)?\\s*=>))\n  ) |\n  (:\\s*(\n    (<) |\n    ([(]\\s*(\n      ([)]) |\n      (\\.\\.\\.) |\n      ([_$[:alnum:]]+\\s*(\n        ([:,?=])|\n        ([)]\\s*=>)\n      ))\n    )))\n  )\n)',
           beginCaptures: {1: {name: 'entity.name.function.mc'}},
-          end: '(?=$|[;,=}]|(\\s+(of|in)\\s+))',
-          name: 'meta.var-single-variable.expr.mc',
-          patterns: [{include: '#string'}, {include: '#comment'}]
+          end: '(?=\\s*(as|of|in|=|[;,}]))',
+          name: 'meta.var-single-variable.expr.mc'
         },
         {
           begin: '([[:upper:]][_$[:digit:][:upper:]]*)(?![_$[:alnum:]])',
           beginCaptures: {1: {name: 'variable.other.constant.mc'}},
-          end: '(?=$|[;,=}]|(\\s+(of|in)\\s+))',
+          end: '(?=\\s*(as|of|in|=|[;,}]))',
           name: 'meta.var-single-variable.expr.mc'
         },
         {
           begin: '([_$[:alpha:]][_$[:alnum:]]*)',
           beginCaptures: {1: {name: 'variable.other.readwrite.mc'}},
-          end: '(?=$|[;,=}]|(\\s+(of|in)\\s+))',
-          name: 'meta.var-single-variable.expr.mc',
-          patterns: [{include: '#string'}, {include: '#comment'}]
+          end: '(?=\\s*(as|of|in|=|[;,}]))',
+          name: 'meta.var-single-variable.expr.mc'
         }
       ]
     },

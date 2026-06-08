@@ -10,7 +10,7 @@
 /** @type {Grammar} */
 const grammar = {
   extensions: ['.tsx'],
-  names: ['tsx'],
+  names: ['tsx', 'typescriptreact'],
   patterns: [
     {include: '#directives'},
     {include: '#statements'},

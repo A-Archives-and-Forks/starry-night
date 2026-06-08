@@ -28,7 +28,7 @@ const grammar = {
         },
         {
           match:
-            '(?x)\\b (chop|cw|dashed|diameter|diam|dotted|down|height|ht|invisible |invis|left|radius|rad|right|same|up|width|wid)\\b',
+            '(?x)\\b (chop|cw|dashed|diameter|diam|dotted|down|figname|height|ht |invisible|invis|left|radius|rad|right|same|up|width|wid)\\b',
           name: 'entity.other.attribute-name.$1.pic'
         },
         {
@@ -343,7 +343,7 @@ const grammar = {
         },
         {
           match:
-            '\\b((?:left|right|top|bottom)?margin|charht|charwid|color|fill|fontscale|thickness)\\b',
+            '\\b((?:left|right|top|bottom)?margin|charht|charwid|color|diamond(?:ht|wid)|fill|fontscale|thickness)\\b',
           name: 'variable.language.global.pikchr.pic'
         }
       ]
@@ -579,11 +579,11 @@ const grammar = {
       patterns: [
         {
           match:
-            '\\b(box|line|arrow|circle|ellipse|arc|move|spline|print|command|plot)\\b',
+            '\\b(box|line|arrow|circle|ellipse|arc|move|spline|polygon|print|command|plot)\\b',
           name: 'storage.type.primitive.$1.pic'
         },
         {
-          match: '\\b(oval|cylinder|file|dot|text)\\b',
+          match: '\\b(oval|diamond|cylinder|file|dot|text)\\b',
           name: 'storage.type.primitive.$1.pikchr.pic'
         }
       ]

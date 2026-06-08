@@ -395,7 +395,7 @@ const grammar = {
     },
     'primitive-type': {
       match:
-        '\\b(Blob|Bool|Char|Float|(Int|Nat)(8|16|32|64)?|Principal|Text|Error)\\b',
+        '\\b(Blob|Bool|Char|Float|Float32|(Int|Nat)(8|16|32|64)?|Principal|Text|Error)\\b',
       name: 'support.type.motoko'
     },
     'protocol-composition-type': {

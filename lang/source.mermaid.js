@@ -230,6 +230,11 @@ const grammar = {
       name: 'meta.gitgraph.mermaid',
       patterns: [{include: 'source.mermaid.gitgraph'}]
     },
+    info: {
+      captures: {1: {name: 'keyword.control.engine-info.github'}},
+      match: '^\\s*(info)(?=\\s*$)',
+      name: 'meta.version-info.statement.github'
+    },
     'inline-css': {
       patterns: [
         {
@@ -252,6 +257,7 @@ const grammar = {
     },
     main: {
       patterns: [
+        {include: '#info'},
         {include: '#directive'},
         {include: '#comment'},
         {include: '#flowchart'},
